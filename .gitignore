@@ -1,0 +1,14 @@
+node_modules/
+.next/
+out/
+dist/
+.DS_Store
+*.log
+.env*
+!.env.example
+# 교보문고에서 저장한 페이지와 압축본은 원본 이미지만 쓰므로 제외
+asset/*.html
+asset/*_files/
+asset/*.zip
+video/out/
+docs/content/photo-src-*.png
