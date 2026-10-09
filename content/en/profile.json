@@ -1,0 +1,80 @@
+{
+  "name": "Jae-hyuk Choi",
+  "nameLatin": "최재혁",
+  "tagline": "Math teacher · Maker",
+  "intro": "I have taught mathematics at middle and high schools in Daegu since 2012. What began as GeoGebra-based lessons grew into Python and AI mathematics, and today I solve classroom and school-office problems by building web services myself. What I learn, I pass on through teacher training and student lectures.",
+  "affiliation": "Posan High School",
+  "role": "Mathematics Teacher",
+  "since": "2012-03",
+  "photo": "/img/photo.webp",
+  "pictogram": "/img/pictogram.png",
+  "education": [
+    { "id": "edu-ba", "period": "– Aug 2011", "title": "B.Ed. in Mathematics Education, Hongik University", "kind": "edu" },
+    { "id": "edu-ma", "period": "Sep 2021 – Feb 2024", "title": "M.Ed. in AI Convergence Education, Kyungpook National University", "kind": "edu", "highlight": true }
+  ],
+  "career": [
+    { "id": "car-2012", "period": "Mar 2012 – Feb 2014", "title": "Teacher, Siji Middle School", "detail": "Gifted-class mathematics", "kind": "career" },
+    { "id": "car-2013", "period": "2013 – 2015", "title": "Instructor, Gifted Education Center, Daegu Dongbu Office of Education", "kind": "career" },
+    { "id": "car-2014", "period": "Mar 2014 – Feb 2019", "title": "Teacher, Daegu Seobu High School", "detail": "Department head, 2018", "kind": "career" },
+    { "id": "car-2019", "period": "Mar 2019 – Feb 2025", "title": "Teacher, Daegu Science High School (gifted school)", "detail": "Head of curriculum · launched and taught the \"Artificial Intelligence\" course (2022–2024)", "kind": "career" },
+    { "id": "car-2025", "period": "Mar 2025 – Feb 2026", "title": "Seconded teacher, Kyungpook National University", "detail": "IBEC programme", "kind": "career" },
+    { "id": "car-2026", "period": "Mar 2026 – present", "title": "Teacher, Posan High School", "detail": "IB Math AA · AI Mathematics joint curriculum", "kind": "career" }
+  ],
+  "awards": [
+    { "id": "awd-2019", "period": "2019", "title": "Coach Award (Honorable Mention), National Student Statistics Competition", "kind": "award" },
+    { "id": "awd-2020", "period": "2020", "title": "Coach Award (Silver), National Student Statistics Competition", "kind": "award" },
+    { "id": "cert-2023-12", "period": "Dec 2023", "title": "AIEDAP Master Teacher", "org": "Ministry of Education AI·Digital Education Alliance & Policy (Daegu–Gyeongbuk)", "kind": "cert", "highlight": true },
+    { "id": "awd-2024-05", "period": "May 2024", "title": "Teachers' Day Commendation", "org": "Superintendent, Daegu Metropolitan Office of Education", "kind": "award" },
+    { "id": "cert-2024-09", "period": "Sep 2024", "title": "Visiting Researcher, Daegu AI·Digital Convergence Education Innovation Platform", "kind": "cert" },
+    { "id": "awd-2024-12", "period": "Dec 2024", "title": "Commendation for Teachers' Digital Competency", "org": "Deputy Prime Minister and Minister of Education", "kind": "award", "highlight": true }
+  ],
+  "groups": [
+    { "id": "grp-2014", "period": "2014 – 2018", "title": "Member, Technology Tools Team, Daegu Secondary Mathematics Research Society", "kind": "group" },
+    { "id": "grp-2020", "period": "2020 – 2022", "title": "Chair, AI Mathematics Curriculum Development Research Group", "org": "Daegu Metropolitan Office of Education", "kind": "group" },
+    { "id": "grp-2021-jump", "period": "2021 – 2023", "title": "Participating teacher, AI-powered Math Jumping School", "detail": "Khan Academy · teacher–student mentoring", "kind": "group" },
+    { "id": "grp-2022-pilot", "period": "Jun – Dec 2022", "title": "Led the AI Convergence Education pilot class", "detail": "Grade 10 mathematics, earth science and informatics; drones and image classification", "kind": "group" },
+    { "id": "grp-2022-share", "period": "2022 – 2024", "title": "Ran the Math Sharing School programme", "org": "Daegu Metropolitan Office of Education", "kind": "group" },
+    { "id": "grp-fest", "period": "2021 · 2022 · 2024", "title": "Programme developer and team lead, Daegu Math Festival", "detail": "13th, 14th and 16th festivals — led the Math Inquiry Contest team (2022) and the Math Experience Planning team (2024)", "kind": "group" },
+    { "id": "grp-2026", "period": "2026", "title": "Chair, Mathematics Immersion Camp Research Group", "kind": "group" }
+  ],
+  "materials": [
+    { "id": "mat-2017-ebs", "period": "2017 – 2018", "title": "EBS-linked item development team, Daegu Metropolitan Office of Education", "kind": "material" },
+    { "id": "mat-2017-exam", "period": "Nov 2017", "title": "Item writer, Daegu mock examination (Mathematics)", "kind": "material" },
+    { "id": "mat-2024-aidt", "period": "2024", "title": "Field review panel, AI Digital Textbook for High School Mathematics 1", "kind": "material" }
+  ],
+  "lecturesTeacher": [
+    { "id": "lt-2024-02", "period": "Feb 2024", "title": "Case presentation on AI convergence education", "org": "KNU AIEDAP project workshop", "kind": "lecture-teacher" },
+    { "id": "lt-2024-06", "period": "Jun 2024", "title": "AI convergence education and using ChatGPT", "org": "Daegu Secondary Chemistry Research Society", "kind": "lecture-teacher" },
+    { "id": "lt-2024-07a", "period": "Jul 2024", "title": "Lead instructor, Classroom Revolution Leading Teacher training", "org": "Gyeongbuk team 1", "kind": "lecture-teacher" },
+    { "id": "lt-2024-07b", "period": "Jul 2024", "title": "Lead instructor (secondary), AIEDAP Master Teacher promotion training", "org": "Seoul National University, Siheung campus", "kind": "lecture-teacher" },
+    { "id": "lt-2024-08", "period": "Aug 2024", "title": "Instructor, AIEDAP secondary pre-service teacher workshop", "org": "Gyeongju", "kind": "lecture-teacher" },
+    { "id": "lt-2025-06", "period": "Jun 2025 –", "title": "Instructor, 2025 Classroom Revolution Leading Teacher training", "org": "KERIS", "kind": "lecture-teacher" },
+    { "id": "lt-2025-consult", "period": "Aug 2025 – Feb 2026", "title": "Lead instructor and coordinator, School Visit Consulting (20 sessions)", "org": "Geumo High, Haemaru Middle, Gumi Indeok Middle and others", "detail": "Digital literacy · data-driven field research · curriculum evaluation and feedback", "kind": "lecture-teacher" },
+    { "id": "lt-2025-10", "period": "Oct 2025", "title": "Instructor, 2025 AIEDAP Master Teacher induction training (secondary)", "org": "Osong", "kind": "lecture-teacher" },
+    { "id": "lt-2025-11", "period": "Nov 2025", "title": "Instructor, 2025 secondary mathematics teaching competency in-service course", "org": "Daegu Education Training Institute", "kind": "lecture-teacher" }
+  ],
+  "lecturesStudent": [
+    { "id": "ls-small", "period": "2022 – present", "title": "Small-cohort courses: AI Mathematics, Advanced Mathematics", "org": "Chilseong High, Hosan High, Dalseong High, Daegu Online School and others", "kind": "lecture-student" },
+    { "id": "ls-ml", "period": "2022 – present", "title": "Lecture series: the mathematics behind AI", "org": "Seonghwa Girls' High, Pohang Jecheol High", "detail": "2024: \"The mathematics of machine learning — PCA\"", "kind": "lecture-student" },
+    { "id": "ls-rne", "period": "2022 – 2023", "title": "R&E mentor, Korea Foundation for the Advancement of Science and Creativity", "detail": "Students won at the presentation contest", "kind": "lecture-student" },
+    { "id": "ls-dgist", "period": "2026", "title": "Vibe-coding class for 9th graders, DGIST", "detail": "2 sessions × 150 min", "kind": "lecture-student" }
+  ],
+  "books": [
+    { "id": "book-geogebra-middle", "title": "GeoGebra for Middle School Mathematics", "role": "Co-author", "year": 2017, "isbn": "9791187541202", "url": "https://product.kyobobook.co.kr/detail/S000001903386", "cover": "/img/books/geogebra-middle.webp" },
+    { "id": "book-geogebra-high", "title": "GeoGebra for High School Mathematics", "role": "Co-author", "year": 2017, "isbn": "9791187541196", "url": "https://product.kyobobook.co.kr/detail/S000001903385", "cover": "/img/books/geogebra-high.webp" },
+    { "id": "book-agentic-ai", "title": "Agentic AI in School Education", "role": "Co-author (with Hong Jin-woo, Ryu Jin-hyeon, Yu Sang-eun)", "year": 2026, "isbn": "9791193059975", "publisher": "Answerbook", "url": "https://product.kyobobook.co.kr/detail/S000221379920", "cover": "/img/books/agentic-ai.webp" }
+  ],
+  "pillars": [
+    { "id": "teach", "title": "Teaching mathematics", "summary": "Technology lets every student move at their own pace.", "items": ["IB Math AA · Calculus · AI Mathematics", "Differentiated lessons with GeoGebra, Desmos and Python", "R&E and statistics-competition coaching"] },
+    { "id": "train", "title": "AI convergence training", "summary": "I pass on what I learn in a form teachers and students can use right away.", "items": ["AIEDAP Master Teacher · instructor for promotion and induction courses", "Instructor, Classroom Revolution Leading Teacher training", "20 school-visit consulting sessions"] },
+    { "id": "build", "title": "Building education services", "summary": "Problems I meet at school become web services I run myself.", "items": ["Teacher planner · lesson platform · meals · attendance apps", "Shipped on Next.js, Rails and Railway", "Vibe-coding with students"] }
+  ],
+  "links": {
+    "email": "complete860127@gmail.com",
+    "github": "https://github.com/ChoisMath",
+    "sites": [
+      { "label": "ChoisNote", "url": "https://chois.pro" },
+      { "label": "ChoisClass", "url": "https://class.chois.ai.kr" }
+    ]
+  }
+}

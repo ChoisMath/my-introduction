@@ -1,0 +1,7 @@
+[
+  { "id": "choisnote", "name": "ChoisNote", "tagline": "Smart planner and collaboration platform for teachers", "description": "Schedules, classes, counselling, AI-assisted student records, Google sync. Available as a PWA and an Android app.", "stack": ["Rails 8", "Hotwire", "Tailwind", "PostgreSQL", "Railway"], "url": "https://chois.pro", "mockup": "/img/projects/choisnote.svg" },
+  { "id": "choisclass", "name": "ChoisClass", "tagline": "Tablet handwriting platform for math lessons", "description": "Live shared handwriting and interactive HTML tool pages.", "stack": ["React", "Fastify", "Socket.IO", "Excalidraw"], "url": "https://class.chois.ai.kr", "urlNote": "Teachers and students only", "mockup": "/img/projects/choisclass.svg" },
+  { "id": "posanmeal", "name": "PosanMeal", "tagline": "School meal sign-up and check-in app", "stack": ["Next.js", "Prisma", "Railway"], "url": "https://meal.posan.kr", "urlNote": "School members only", "mockup": "/img/projects/posanmeal.svg" },
+  { "id": "selfstudy", "name": "Self-study Attendance", "tagline": "Attendance management for afternoon and evening self-study", "stack": ["Next.js", "Prisma", "Railway"], "url": "https://self.posan.kr", "urlNote": "School members only", "mockup": "/img/projects/selfstudy.svg" },
+  { "id": "mathcoach", "name": "MathCoach", "tagline": "AI math coaching tool", "description": "Reads student work with OCR against a problem bank and gives feedback.", "stack": ["Firebase", "Genkit", "Gemini"], "mockup": "/img/projects/mathcoach.svg" }
+]
