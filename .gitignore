@@ -12,3 +12,10 @@ asset/*_files/
 asset/*.zip
 video/out/
 docs/content/photo-src-*.png
+web/out/
+web/.next/
+web/src/app/tokens.css
+web/test-results/
+web/playwright-report/
+video/.remotion/
+.superpowers/

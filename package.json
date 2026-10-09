@@ -1,0 +1,25 @@
+{
+  "name": "my-introduction",
+  "private": true,
+  "type": "module",
+  "workspaces": ["content", "web", "video"],
+  "engines": { "node": ">=24 <25" },
+  "scripts": {
+    "test": "vitest run",
+    "content:validate": "tsx scripts/validate-content.ts",
+    "tokens:css": "tsx scripts/gen-tokens-css.ts",
+    "assets": "bash scripts/prepare-assets.sh",
+    "dev": "npm run dev -w web",
+    "build:web": "npm run build -w web",
+    "video:studio": "npm run studio -w video",
+    "render": "bash scripts/render-video.sh",
+    "e2e": "npm run e2e -w web",
+    "check": "npm run content:validate && npm run test && npm run lint -w web && npm run typecheck -w web && npm run typecheck -w video"
+  },
+  "devDependencies": {
+    "tsx": "4.23.15",
+    "typescript": "6.0.3",
+    "vitest": "5.0.3",
+    "zod": "4.6.5"
+  }
+}
