@@ -7,6 +7,7 @@ import projectsEn from './en/projects.json';
 import uiEn from './en/ui.json';
 
 export * from './schema';
+export { computeStats, type Stats } from './stats';
 
 export const locales = ['ko', 'en'] as const;
 
