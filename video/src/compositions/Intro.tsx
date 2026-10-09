@@ -2,11 +2,14 @@ import { AbsoluteFill, Audio, Sequence, interpolate, staticFile } from 'remotion
 import { getContent, type Content, type Locale } from '@me/content';
 import { INTRO_DURATION, SCENES, sceneFrames, type SceneId } from '../timeline';
 import { theme } from '../theme';
-import { Caption } from '../components/Caption';
 import { Opening } from '../scenes/Opening';
 import { Tagline } from '../scenes/Tagline';
 import { Timeline } from '../scenes/Timeline';
 import { Pillars } from '../scenes/Pillars';
+import { Stats } from '../scenes/Stats';
+import { Projects } from '../scenes/Projects';
+import { Books } from '../scenes/Books';
+import { Ending } from '../scenes/Ending';
 
 export type IntroProps = { locale: Locale; bgm: string | null };
 
@@ -15,10 +18,10 @@ const scenes: Record<SceneId, (p: { content: Content }) => React.JSX.Element> = 
   tagline: Tagline,
   timeline: Timeline,
   pillars: Pillars,
-  stats: () => <Caption text="stats" />,
-  projects: () => <Caption text="projects" dark />,
-  books: () => <Caption text="books" />,
-  ending: () => <Caption text="ending" />,
+  stats: Stats,
+  projects: Projects,
+  books: Books,
+  ending: Ending,
 };
 
 export function Intro({ locale, bgm }: IntroProps) {
