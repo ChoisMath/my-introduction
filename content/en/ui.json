@@ -1,13 +1,61 @@
 {
   "siteTitle": "Jae-hyuk Choi — Math teacher · Maker",
   "siteDescription": "Jae-hyuk Choi, mathematics teacher at Posan High School, Daegu: AI convergence training, self-built education services, books and career.",
-  "nav": { "hero": "About", "stats": "Numbers", "timeline": "Career", "pillars": "Work", "projects": "Projects", "books": "Books", "lectures": "Lectures", "contact": "Contact" },
-  "hero": { "watchVideo": "Watch the intro video", "playVideo": "Play video", "closeVideo": "Close", "scrollHint": "Scroll" },
-  "stats": { "years": "Years teaching", "lectures": "Lectures & trainings", "books": "Books (co-authored)", "services": "Services in production", "awards": "Commendations & awards" },
-  "sections": { "stats": "By the numbers", "timeline": "The road so far", "education": "Education", "awards": "Credentials & awards", "pillars": "What I do", "projects": "Things I built", "books": "Books", "materials": "Items & materials", "lectures": "Lectures & trainings", "contact": "Contact & links" },
-  "projects": { "visit": "Site", "watch": "Video", "stack": "Stack" },
-  "lectures": { "teacher": "For teachers", "student": "For students", "period": "When", "title": "What", "org": "Where" },
-  "contact": { "email": "Email", "github": "GitHub", "sites": "Live sites" },
-  "lang": { "switchTo": "한국어", "switchLabel": "한국어로 보기" },
+  "nav": {
+    "hero": "About",
+    "stats": "Numbers",
+    "timeline": "Career",
+    "pillars": "Work",
+    "projects": "Projects",
+    "books": "Books",
+    "lectures": "Lectures",
+    "contact": "Contact"
+  },
+  "hero": {
+    "watchVideo": "Watch the intro video",
+    "playVideo": "Play video",
+    "closeVideo": "Close",
+    "scrollHint": "Scroll"
+  },
+  "stats": {
+    "years": "Years in teaching (incl. current)",
+    "lectures": "Lectures & trainings",
+    "books": "Books (co-authored)",
+    "services": "Services in production",
+    "awards": "Commendations & awards"
+  },
+  "sections": {
+    "stats": "By the numbers",
+    "timeline": "The road so far",
+    "education": "Education",
+    "awards": "Credentials & awards",
+    "pillars": "What I do",
+    "projects": "Things I built",
+    "books": "Books",
+    "materials": "Items & materials",
+    "lectures": "Lectures & trainings",
+    "contact": "Contact & links"
+  },
+  "projects": {
+    "visit": "Site",
+    "watch": "Video",
+    "stack": "Stack"
+  },
+  "lectures": {
+    "teacher": "For teachers",
+    "student": "For students",
+    "period": "When",
+    "title": "What",
+    "org": "Where"
+  },
+  "contact": {
+    "email": "Email",
+    "github": "GitHub",
+    "sites": "Live sites"
+  },
+  "lang": {
+    "switchTo": "한국어",
+    "switchLabel": "한국어로 보기"
+  },
   "footer": "© 2026 Jae-hyuk Choi. Built with Next.js and Remotion."
 }

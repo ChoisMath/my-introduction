@@ -31,3 +31,9 @@ describe('ko content matches schema', () => {
     expect(() => profileSchema.parse(bad)).toThrow();
   });
 });
+
+describe('profile schema shape', () => {
+  it('has no nameLatin field (it was unused and misleading in en)', () => {
+    expect('nameLatin' in profileSchema.shape).toBe(false);
+  });
+});

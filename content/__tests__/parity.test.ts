@@ -23,3 +23,24 @@ describe('ko/en parity', () => {
     expect(checkParity(ko, en).join('\n')).toContain('projects: mathcoach');
   });
 });
+
+describe('ko/en parity of nested arrays', () => {
+  it('reports a link site present only in one locale', () => {
+    const ko = getContent('ko');
+    const en = structuredClone(getContent('en'));
+    en.profile.links.sites = en.profile.links.sites.slice(0, 1);
+    expect(checkParity(ko, en).join('\n')).toContain('profile.links.sites');
+  });
+  it('reports a pillar item count mismatch', () => {
+    const ko = getContent('ko');
+    const en = structuredClone(getContent('en'));
+    en.profile.pillars[0]!.items = en.profile.pillars[0]!.items.slice(0, 1);
+    expect(checkParity(ko, en).join('\n')).toContain('profile.pillars[teach].items');
+  });
+  it('reports a project stack count mismatch', () => {
+    const ko = getContent('ko');
+    const en = structuredClone(getContent('en'));
+    en.projects[0]!.stack = en.projects[0]!.stack.slice(0, 1);
+    expect(checkParity(ko, en).join('\n')).toContain('projects[choisnote].stack');
+  });
+});

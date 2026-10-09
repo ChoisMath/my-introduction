@@ -6,8 +6,8 @@ import { Reveal } from '../motion/Reveal';
 function Item({ item, index = 0 }: { item: TimelineItem; index?: number }) {
   return (
     <li className="relative pl-6">
-      <Reveal delay={index * 0.05}>
       <span className={`absolute top-1.5 left-0 h-3 w-3 rounded-full ${item.highlight ? 'bg-accent' : 'border-2 border-accent bg-bg'}`} />
+      <Reveal delay={index * 0.05}>
       <p className="font-mono text-xs text-muted">{item.period}</p>
       <p className="font-semibold">{item.title}</p>
       {item.org ? <p className="text-sm text-muted">{item.org}</p> : null}

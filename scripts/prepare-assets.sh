@@ -11,6 +11,7 @@ command -v cwebp >/dev/null || { echo "cwebp not found: brew install webp"; exit
 
 cwebp -quiet -q 85 -resize 600 0 "$SRC/최재혁_증명사진.jpg" -o "$OUT/photo.webp"
 sips -s format png -Z 512 "$SRC/최재혁_픽토그램.jpg" --out "$OUT/pictogram.png" >/dev/null
+cwebp -quiet -q 90 -resize 512 0 "$SRC/최재혁_픽토그램.jpg" -o "$OUT/pictogram.webp"
 sips -s format png -Z 180 "$SRC/최재혁_픽토그램.jpg" --out "$APP/apple-icon.png" >/dev/null
 sips -s format png -Z 64  "$SRC/최재혁_픽토그램.jpg" --out "$APP/icon.png" >/dev/null
 

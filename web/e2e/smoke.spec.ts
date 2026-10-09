@@ -102,3 +102,44 @@ test('static seo files are served', async ({ request }) => {
     expect(r.status(), p).toBe(200);
   }
 });
+
+test('page loads without console errors', async ({ page }) => {
+  const errors: string[] = [];
+  page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); });
+  page.on('pageerror', (e) => errors.push(e.message));
+  await page.goto('/');
+  await page.locator('section#contact').scrollIntoViewIfNeeded();
+  expect(errors).toEqual([]);
+});
+
+test('stats cards put the term before the value and hero uses webp pictogram', async ({ page }) => {
+  await page.goto('/');
+  const firstTags = await page.locator('section#stats dl > div').evaluateAll((cards) => cards.map((c) => c.firstElementChild?.tagName));
+  expect(firstTags).toEqual(['DT', 'DT', 'DT', 'DT', 'DT']);
+  await expect(page.locator('section#hero img')).toHaveAttribute('src', /\/img\/pictogram\.webp$/);
+});
+
+test('timeline dots are direct children of list items', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.locator('section#timeline li > span')).toHaveCount(6 + 2 + 6);
+});
+
+test('lecture tabs follow the ARIA tab pattern and react to arrow keys', async ({ page }) => {
+  await page.goto('/');
+  const selected = page.getByRole('tab', { selected: true });
+  const controls = await selected.getAttribute('aria-controls');
+  expect(controls).toBeTruthy();
+  await expect(page.locator(`#${controls}[role="tabpanel"]`)).toHaveCount(1);
+  await selected.focus();
+  await page.keyboard.press('ArrowRight');
+  await expect(page.getByRole('tab', { selected: true })).toHaveText(/학생 대상/);
+  await expect(page.locator('section#lectures tbody tr')).toHaveCount(4);
+});
+
+test('intro dialog closes when the backdrop is clicked', async ({ page }) => {
+  await page.goto('/');
+  await page.getByTestId('open-video').click();
+  await expect(page.locator('dialog[open]')).toHaveCount(1);
+  await page.mouse.click(5, 5);
+  await expect(page.locator('dialog[open]')).toHaveCount(0);
+});

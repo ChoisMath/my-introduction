@@ -53,6 +53,15 @@ export function checkParity(ko: Content, en: Content): string[] {
   problems.push(...diffIds('profile.books', ko.profile.books.map((b) => b.id), en.profile.books.map((b) => b.id)));
   problems.push(...diffIds('profile.pillars', ko.profile.pillars.map((p) => p.id), en.profile.pillars.map((p) => p.id)));
   problems.push(...diffIds('projects', ko.projects.map((p) => p.id), en.projects.map((p) => p.id)));
+  if (ko.profile.links.sites.length !== en.profile.links.sites.length) problems.push('profile.links.sites length differs');
+  for (const kp of ko.profile.pillars) {
+    const ep = en.profile.pillars.find((p) => p.id === kp.id);
+    if (ep && ep.items.length !== kp.items.length) problems.push(`profile.pillars[${kp.id}].items length differs`);
+  }
+  for (const kp of ko.projects) {
+    const ep = en.projects.find((p) => p.id === kp.id);
+    if (ep && ep.stack.length !== kp.stack.length) problems.push(`projects[${kp.id}].stack length differs`);
+  }
   if (ko.profile.since !== en.profile.since) problems.push('profile.since differs');
   return problems;
 }

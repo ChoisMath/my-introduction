@@ -1,13 +1,12 @@
 {
   "name": "최재혁",
-  "nameLatin": "Choi Jae-hyuk",
   "tagline": "수학교사 · 만드는 사람",
   "intro": "2012년부터 대구의 중·고등학교에서 수학을 가르쳐 왔습니다. GeoGebra로 시작한 공학적 도구 수업은 Python과 인공지능 수학으로 이어졌고, 지금은 수업과 학교 업무의 문제를 직접 웹 서비스로 만들어 풀고 있습니다. 배운 것은 교사 연수와 학생 강의로 다시 전달합니다.",
   "affiliation": "포산고등학교",
   "role": "수학교사",
   "since": "2012-03",
   "photo": "/img/photo.webp",
-  "pictogram": "/img/pictogram.png",
+  "pictogram": "/img/pictogram.webp",
   "education": [
     {
       "id": "edu-ba",

@@ -43,7 +43,6 @@ const timelineArray = z.array(timelineItemSchema);
 
 export const profileSchema = z.object({
   name: z.string().min(1),
-  nameLatin: z.string().min(1),
   tagline: z.string().min(1),
   intro: z.string().min(1),
   affiliation: z.string().min(1),

@@ -9,3 +9,13 @@ describe('deploy workflow', () => {
     expect(yml).toMatch(/schedule:\s*\n\s*-\s*cron:\s*['"]0 0 1 3 \*['"]/);
   });
 });
+
+describe('deploy workflow matches local verification', () => {
+  const yml = readFileSync(path.resolve(__dirname, '../../.github/workflows/deploy.yml'), 'utf-8');
+  it('runs the same npm run check as local', () => {
+    expect(yml).toContain('run: npm run check');
+  });
+  it('does not cancel an in-progress Pages deployment', () => {
+    expect(yml).toMatch(/cancel-in-progress:\s*false/);
+  });
+});
