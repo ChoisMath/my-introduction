@@ -19,3 +19,4 @@ web/test-results/
 web/playwright-report/
 video/.remotion/
 .superpowers/
+video/public/fonts/

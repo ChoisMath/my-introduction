@@ -1,4 +1,5 @@
-import { contentSchema, type Content, type Locale, type Profile } from './schema';
+import { contentSchema, tokensSchema, type Content, type Locale, type Profile } from './schema';
+import rawTokens from './tokens.json';
 import profileKo from './ko/profile.json';
 import projectsKo from './ko/projects.json';
 import uiKo from './ko/ui.json';
@@ -10,6 +11,7 @@ export * from './schema';
 export { computeStats, type Stats } from './stats';
 
 export const locales = ['ko', 'en'] as const;
+export const tokens = tokensSchema.parse(rawTokens);
 
 const raw: Record<Locale, unknown> = {
   ko: { profile: profileKo, projects: projectsKo, ui: uiKo },
