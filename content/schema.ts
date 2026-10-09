@@ -116,3 +116,14 @@ export type Tokens = z.infer<typeof tokensSchema>;
 
 export const contentSchema = z.object({ profile: profileSchema, projects: projectsSchema, ui: uiSchema });
 export type Content = z.infer<typeof contentSchema>;
+
+// 영상 내레이션 대본. 키는 씬 이름이고, timeline/projects 는 항목 id → 문장.
+export const narrationSchema = z.object({
+  opening: z.string().min(1),
+  tagline: z.string().min(1),
+  timeline: z.record(z.string(), z.string().min(1)),
+  pillars: z.string().min(1),
+  projects: z.record(z.string(), z.string().min(1)),
+  ending: z.string().min(1),
+});
+export type Narration = z.infer<typeof narrationSchema>;

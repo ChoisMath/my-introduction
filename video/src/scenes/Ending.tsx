@@ -1,10 +1,12 @@
 import { AbsoluteFill, Img, spring, staticFile, useCurrentFrame, useVideoConfig } from 'remotion';
 import type { Content } from '@me/content';
+import type { Plan } from '../plan';
+import { Clip } from '../components/Clip';
 import { Grid } from '../components/Grid';
 import { SANS, theme } from '../theme';
 import { MONO } from '../fonts';
 
-export function Ending({ content }: { content: Content }) {
+export function Ending({ content, plan }: { content: Content; plan: Plan }) {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const s = spring({ frame, fps, config: { damping: 16 } });
@@ -21,6 +23,7 @@ export function Ending({ content }: { content: Content }) {
           <div style={{ fontFamily: MONO, fontSize: 30, color: theme.color.muted }}>{profile.links.email}</div>
         </div>
       </div>
+      <Clip plan={plan} id="ending" from={Math.round(0.8 * fps)} />
     </AbsoluteFill>
   );
 }

@@ -15,9 +15,11 @@ cwebp -quiet -q 90 -resize 512 0 "$SRC/최재혁_픽토그램.jpg" -o "$OUT/pict
 sips -s format png -Z 180 "$SRC/최재혁_픽토그램.jpg" --out "$APP/apple-icon.png" >/dev/null
 sips -s format png -Z 64  "$SRC/최재혁_픽토그램.jpg" --out "$APP/icon.png" >/dev/null
 
-cwebp -quiet -q 85 -resize 600 0 "$SRC/지오지브라_중학교_수학_이미지.png"   -o "$OUT/books/geogebra-middle.webp"
-cwebp -quiet -q 85 -resize 600 0 "$SRC/지오지브라_고등학교_수학_이미지.png" -o "$OUT/books/geogebra-high.webp"
-cwebp -quiet -q 85 -resize 600 0 "$SRC/에이전틱AI학교교육활용법_이미지.png"  -o "$OUT/books/agentic-ai.webp"
+# 표지 원본은 png 또는 jpeg 어느 쪽이든 받는다.
+cover() { local base=$1 out=$2 src=""; for ext in png jpg jpeg; do [ -f "$SRC/$base.$ext" ] && src="$SRC/$base.$ext"; done; [ -n "$src" ] || { echo "cover missing: $base"; exit 1; }; cwebp -quiet -q 85 -resize 600 0 "$src" -o "$OUT/books/$out.webp"; }
+cover "지오지브라_중학교_수학_이미지" geogebra-middle
+cover "지오지브라_고등학교_수학_이미지" geogebra-high
+cover "에이전틱AI학교교육활용법_이미지" agentic-ai
 
 # 목업: 실물 png/jpg 가 있으면 webp 로, 없으면 자리표시 svg 를 그대로 복사
 for id in choisnote choisclass posanmeal selfstudy mathcoach; do

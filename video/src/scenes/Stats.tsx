@@ -1,21 +1,21 @@
 // 숫자 4개 카운트업(2×2)
 import { AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig } from 'remotion';
 import { computeStats, type Content } from '@me/content';
+import type { Plan } from '../plan';
 import { Grid } from '../components/Grid';
-import { Caption } from '../components/Caption';
 import { SANS, theme } from '../theme';
 import { MONO } from '../fonts';
 
 const KEYS = ['years', 'lectures', 'books', 'services'] as const;
 
-export function Stats({ content }: { content: Content }) {
+export function Stats({ content }: { content: Content; plan?: Plan }) {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const stats = computeStats(content);
   return (
     <AbsoluteFill style={{ background: theme.color.bg, fontFamily: SANS }}>
       <Grid progress={1} />
-      <div style={{ position: 'absolute', inset: '140px 200px 200px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32 }}>
+      <div style={{ position: 'absolute', inset: '140px 200px 140px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32 }}>
         {KEYS.map((k, i) => {
           const s = spring({ frame: frame - i * 0.3 * fps, fps, config: { damping: 14 } });
           const target = k === 'lectures' ? 0 : stats[k];
@@ -28,7 +28,6 @@ export function Stats({ content }: { content: Content }) {
           );
         })}
       </div>
-      <Caption text={content.ui.sections.stats} />
     </AbsoluteFill>
   );
 }

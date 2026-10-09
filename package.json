@@ -2,8 +2,14 @@
   "name": "my-introduction",
   "private": true,
   "type": "module",
-  "workspaces": ["content", "web", "video"],
-  "engines": { "node": ">=24 <25" },
+  "workspaces": [
+    "content",
+    "web",
+    "video"
+  ],
+  "engines": {
+    "node": ">=24 <25"
+  },
   "scripts": {
     "test": "vitest run",
     "content:validate": "tsx scripts/validate-content.ts",
@@ -14,7 +20,8 @@
     "video:studio": "npm run studio -w video",
     "render": "bash scripts/render-video.sh",
     "e2e": "npm run e2e -w web",
-    "check": "npm run content:validate && npm run test && npm run lint -w web && npm run typecheck -w web && npm run typecheck -w video"
+    "check": "npm run content:validate && npm run test && npm run lint -w web && npm run typecheck -w web && npm run typecheck -w video",
+    "narrate": "tsx scripts/narrate.ts"
   },
   "devDependencies": {
     "tsx": "4.23.15",

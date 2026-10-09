@@ -1,16 +1,22 @@
-// 이름이 좌상단으로 작아지고 소개문이 타이핑된다
+// 이름이 좌상단으로 작아지고, 소개문이 내레이션 길이에 맞춰 타자기처럼 쳐진다
 import { AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig } from 'remotion';
 import type { Content } from '@me/content';
+import type { Plan } from '../plan';
 import { Grid } from '../components/Grid';
+import { Clip } from '../components/Clip';
 import { SANS, theme } from '../theme';
 import { MONO } from '../fonts';
 
-export function Tagline({ content }: { content: Content; caption?: boolean }) {
+const LEAD = 0.5;
+
+export function Tagline({ content, plan }: { content: Content; plan: Plan }) {
   const frame = useCurrentFrame();
   const { fps, durationInFrames } = useVideoConfig();
   const move = spring({ frame, fps, config: { damping: 18 } });
   const intro = content.profile.intro;
-  const shown = Math.floor(interpolate(frame, [0.5 * fps, durationInFrames - 1.5 * fps], [0, intro.length], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' }));
+  const narrated = plan.manifest.tagline?.duration;
+  const typingEnd = narrated ? (LEAD + narrated) * fps : durationInFrames - 1.5 * fps;
+  const shown = Math.floor(interpolate(frame, [LEAD * fps, typingEnd], [0, intro.length], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' }));
   const cursorOn = Math.floor(frame / (fps / 2)) % 2 === 0;
   return (
     <AbsoluteFill style={{ background: theme.color.bg }}>
@@ -23,6 +29,7 @@ export function Tagline({ content }: { content: Content; caption?: boolean }) {
         {intro.slice(0, shown)}
         <span style={{ opacity: cursorOn ? 1 : 0, color: theme.color.accent }}>▍</span>
       </div>
+      <Clip plan={plan} id="tagline" from={Math.round(LEAD * fps)} />
     </AbsoluteFill>
   );
 }

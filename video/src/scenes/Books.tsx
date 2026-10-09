@@ -1,11 +1,11 @@
 // 밝게 복귀, 표지 3권 부채꼴, 아래로 연수 기관 티커
 import { AbsoluteFill, Img, interpolate, spring, staticFile, useCurrentFrame, useVideoConfig } from 'remotion';
 import type { Content } from '@me/content';
+import type { Plan } from '../plan';
 import { Grid } from '../components/Grid';
-import { Caption } from '../components/Caption';
 import { SANS, theme } from '../theme';
 
-export function Books({ content }: { content: Content }) {
+export function Books({ content }: { content: Content; plan?: Plan }) {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const lighten = interpolate(frame, [0, fps], [0, 1], { extrapolateRight: 'clamp' });
@@ -28,8 +28,7 @@ export function Books({ content }: { content: Content }) {
           );
         })}
       </div>
-      <div style={{ position: 'absolute', top: 820, left: tickerX, whiteSpace: 'nowrap', fontSize: 34, color: theme.color.accent, fontWeight: 600 }}>{orgs}</div>
-      <Caption text={`${content.ui.sections.books} · ${content.ui.sections.lectures}`} />
+      <div style={{ position: 'absolute', top: 900, left: tickerX, whiteSpace: 'nowrap', fontSize: 34, color: theme.color.accent, fontWeight: 600 }}>{orgs}</div>
     </AbsoluteFill>
   );
 }
