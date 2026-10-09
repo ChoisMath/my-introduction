@@ -16,3 +16,10 @@ test('language toggle keeps the section hash', async ({ page }) => {
   await page.getByTestId('lang-toggle').click();
   await expect(page).toHaveURL(/\/#projects$/);
 });
+
+test('hero shows name and stats shows 5 numbers', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.locator('section#hero h1')).toHaveText('최재혁');
+  await expect(page.locator('section#stats [data-count]')).toHaveCount(5);
+  await expect(page.locator('section#timeline li')).toHaveCount(6 + 2 + 6);
+});

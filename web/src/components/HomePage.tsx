@@ -1,13 +1,18 @@
-import { getContent, type Locale } from '@me/content';
+import { computeStats, getContent, type Locale } from '@me/content';
 import { Section } from './Section';
+import { Hero } from './sections/Hero';
+import { Stats } from './sections/Stats';
+import { Timeline } from './sections/Timeline';
 
 export function HomePage({ locale }: { locale: Locale }) {
-  const { ui } = getContent(locale);
+  const content = getContent(locale);
+  const { profile, ui } = content;
+  const stats = computeStats(content);
   return (
     <>
-      <Section id="hero"><p>hero</p></Section>
-      <Section id="stats" title={ui.sections.stats}><p>stats</p></Section>
-      <Section id="timeline" title={ui.sections.timeline}><p>timeline</p></Section>
+      <Hero profile={profile} ui={ui} />
+      <Stats stats={stats} ui={ui} />
+      <Timeline profile={profile} ui={ui} />
       <Section id="pillars" title={ui.sections.pillars}><p>pillars</p></Section>
       <Section id="projects" title={ui.sections.projects} dark><p>projects</p></Section>
       <Section id="books" title={ui.sections.books}><p>books</p></Section>
