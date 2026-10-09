@@ -1,58 +1,58 @@
 {
   "opening": {
     "text": "Hello. I'm Jae-hyuk Choi, a mathematics teacher at Posan High School.",
-    "duration": 5.381
+    "duration": 5.767
   },
   "tagline": {
     "text": "I have taught mathematics at middle and high schools in Daegu since twenty twelve. What began as GeoGebra-based lessons grew into Python and AI mathematics, and today I solve classroom and school-office problems by building web services myself. What I learn, I pass on through teacher training and student lectures.",
-    "duration": 20.686
+    "duration": 21.252
   },
   "timeline.car-2012": {
     "text": "In twenty twelve, I began my teaching career at Siji Middle School.",
-    "duration": 4.828
+    "duration": 5.078
   },
   "timeline.car-2014": {
     "text": "From twenty fourteen, I taught at Daegu Seobu High School.",
-    "duration": 4.711
+    "duration": 4.903
   },
   "timeline.car-2019": {
     "text": "From twenty nineteen, I was head of curriculum at Daegu Science High School, where I launched and taught an Artificial Intelligence course.",
-    "duration": 9.53
+    "duration": 10.07
   },
   "timeline.car-2025": {
     "text": "In twenty twenty-five, I was seconded to Kyungpook National University to complete the IBEC programme.",
-    "duration": 7.129
+    "duration": 8.674
   },
   "timeline.car-2026": {
     "text": "Since twenty twenty-six, I have been teaching IB Mathematics and AI Mathematics at Posan High School.",
-    "duration": 7.051
+    "duration": 8.291
   },
   "pillars": {
     "text": "My work has three parts: teaching mathematics, training and lecturing on AI convergence education, and building education services.",
-    "duration": 9.26
+    "duration": 10.701
   },
   "projects.choisnote": {
     "text": "ChoisNote.",
-    "duration": 0.876
+    "duration": 1.592
   },
   "projects.choisclass": {
     "text": "ChoisClass.",
-    "duration": 1.038
+    "duration": 1.506
   },
   "projects.posanmeal": {
     "text": "PosanMeal.",
-    "duration": 0.718
+    "duration": 1.289
   },
   "projects.selfstudy": {
     "text": "Self-study Attendance.",
-    "duration": 1.722
+    "duration": 2.57
   },
   "projects.mathcoach": {
     "text": "MathCoach.",
-    "duration": 0.801
+    "duration": 1.403
   },
   "ending": {
     "text": "If you're curious about using AI tools in school education, feel free to get in touch.",
-    "duration": 7.159
+    "duration": 5.94
   }
 }
