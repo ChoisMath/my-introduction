@@ -10,7 +10,7 @@
   "pictogram": "/img/pictogram.png",
   "education": [
     { "id": "edu-ba", "period": "– Aug 2011", "title": "B.Ed. in Mathematics Education, Hongik University", "kind": "edu" },
-    { "id": "edu-ma", "period": "Sep 2021 – Feb 2024", "title": "M.Ed. in AI Convergence Education, Kyungpook National University", "kind": "edu", "highlight": true }
+    { "id": "edu-ma", "period": "Sep 2021 – Feb 2024", "title": "M.Ed. in AI Convergence Education, KNU", "kind": "edu", "highlight": true }
   ],
   "career": [
     { "id": "car-2012", "period": "Mar 2012 – Feb 2014", "title": "Teacher, Siji Middle School", "detail": "Gifted-class mathematics", "kind": "career" },
