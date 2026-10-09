@@ -42,6 +42,12 @@ export function Timeline({ profile, ui }: { profile: Profile; ui: Ui }) {
           {profile.groups.map((g, i) => <Item key={g.id} item={g} index={i} />)}
         </ol>
       </div>
+      <div className="mt-10">
+        <h3 className="mb-3 text-lg font-bold">{ui.sections.materials}</h3>
+        <ol className="grid gap-x-8 gap-y-4 sm:grid-cols-2 lg:grid-cols-3">
+          {profile.materials.map((m, i) => <Item key={m.id} item={m} index={i} />)}
+        </ol>
+      </div>
     </Section>
   );
 }

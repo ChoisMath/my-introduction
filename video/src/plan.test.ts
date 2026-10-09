@@ -8,15 +8,13 @@ describe('buildPlan', () => {
     expect(plan.projectIds).toHaveLength(5);
     expect(plan.scenes[0]?.from).toBe(0);
   });
-  it('en: no narration, so every career entry is a node and the manifest is empty', () => {
-    const plan = buildPlan('en');
-    expect(plan.careerIds).toHaveLength(6);
-    expect(Object.keys(plan.manifest)).toHaveLength(0);
+  it('en: narrated, so the timeline nodes match ko', () => {
+    expect(buildPlan('en').careerIds).toEqual(buildPlan('ko').careerIds);
   });
   it('clipSrc names the wav for a manifest key and is null when the clip is missing', () => {
     const ko = buildPlan('ko');
     expect(ko.clip('opening')).toMatch(/^narration\/ko\/opening\.wav$/);
     expect(ko.clip('timeline.car-2013')).toBeNull();
-    expect(buildPlan('en').clip('opening')).toBeNull();
+    expect(buildPlan('en').clip('timeline.car-2013')).toBeNull();
   });
 });

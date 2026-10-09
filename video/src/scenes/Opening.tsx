@@ -3,7 +3,7 @@ import { AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig } fr
 import type { Content } from '@me/content';
 import type { Plan } from '../plan';
 import { Grid } from '../components/Grid';
-import { Curve } from '../components/Curve';
+import { Curve, CURVE, CURVE_TOP } from '../components/Curve';
 import { Clip } from '../components/Clip';
 import { SANS, theme } from '../theme';
 import { MONO } from '../fonts';
@@ -18,7 +18,7 @@ export function Opening({ content, plan, showName = true }: { content: Content; 
   return (
     <AbsoluteFill style={{ background: theme.color.bg }}>
       <Grid progress={grid} />
-      <Curve progress={curve} />
+      <Curve progress={curve} d={showName ? CURVE : CURVE_TOP} />
       {showName ? <AbsoluteFill style={{ justifyContent: 'center', alignItems: 'center' }}>
         <div style={{ width: 28 * dot, height: 28 * dot, borderRadius: 999, background: theme.color.accent, marginBottom: 24 }} />
         <div style={{ fontFamily: SANS, fontSize: 160, fontWeight: 800, color: theme.color.fg, opacity: name, transform: `translateY(${(1 - name) * 40}px)`, letterSpacing: -4 }}>

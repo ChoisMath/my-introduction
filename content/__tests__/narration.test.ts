@@ -3,9 +3,11 @@ import { getContent, getNarration, narrationKeys } from '../index';
 
 describe('narration script', () => {
   const n = getNarration('ko');
-  it('exists for ko and is null for en', () => {
+  it('exists for ko and en with the same clip keys', () => {
     expect(n).not.toBeNull();
-    expect(getNarration('en')).toBeNull();
+    const en = getNarration('en');
+    expect(en).not.toBeNull();
+    expect(narrationKeys(en!).map((k) => k.key)).toEqual(narrationKeys(n!).map((k) => k.key));
   });
   it('refers only to real career and project ids', () => {
     const { profile, projects } = getContent('ko');

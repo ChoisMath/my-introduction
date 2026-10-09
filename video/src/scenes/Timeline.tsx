@@ -10,12 +10,15 @@ import { MONO } from '../fonts';
 import { yearOf } from '../format';
 import { timelineSchedule } from '../timeline';
 
-const X0 = 160; const X1 = 1760; const Y = 600;
+const X0 = 160; const X1 = 1760;
+// minimal(웹 히어로 루프)에서는 글자가 놓이는 가운데를 피해 축을 위쪽 띠로 올린다.
+const AXIS_Y = 600; const AXIS_Y_MINIMAL = 240;
 
 // minimal: 웹 히어로 루프용 — 축과 점만 그리고 글자·배지·내레이션은 뺀다.
 export function Timeline({ content, plan, minimal = false }: { content: Content; plan?: Plan; minimal?: boolean }) {
   const frame = useCurrentFrame();
   const { fps, durationInFrames } = useVideoConfig();
+  const Y = minimal ? AXIS_Y_MINIMAL : AXIS_Y;
   const { career, education, awards } = content.profile;
   const nodes = plan ? career.filter((c) => plan.careerIds.includes(c.id)) : career;
   const schedule = plan ? timelineSchedule(plan.manifest, plan.careerIds, fps) : null;

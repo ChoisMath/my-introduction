@@ -14,7 +14,7 @@ export function HomePage({ locale }: { locale: Locale }) {
   const stats = computeStats(content);
   return (
     <>
-      <Hero profile={profile} ui={ui} />
+      <Hero profile={profile} ui={ui} locale={locale} />
       <Stats stats={stats} ui={ui} />
       <Timeline profile={profile} ui={ui} />
       <Pillars profile={profile} ui={ui} />

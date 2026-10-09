@@ -11,7 +11,7 @@ export function OgImage({ locale }: { locale: Locale }) {
       <div style={{ flex: 1 }}>
         <div style={{ fontFamily: MONO, fontSize: 24, color: theme.color.accent }}>{profile.affiliation} · {profile.role}</div>
         <div style={{ fontSize: 96, fontWeight: 800, color: theme.color.fg, marginTop: 8 }}>{profile.name}</div>
-        <div style={{ fontSize: 40, color: theme.color.muted, marginTop: 8 }}>{profile.tagline}</div>
+        <div style={{ fontSize: 30, lineHeight: 1.35, color: theme.color.muted, marginTop: 8, wordBreak: 'keep-all' }}>{profile.tagline}</div>
         <div style={{ fontFamily: MONO, fontSize: 28, color: theme.color.accent, marginTop: 40 }}>me.chois.pro</div>
       </div>
       <Img src={staticFile(profile.pictogram.replace(/^\//, ''))} style={{ width: 400, height: 400, borderRadius: 32 }} />

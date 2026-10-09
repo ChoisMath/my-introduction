@@ -1,5 +1,6 @@
 import { contentSchema, narrationSchema, tokensSchema, type Content, type Locale, type Narration, type Profile } from './schema';
 import narrationKo from './ko/narration.json';
+import narrationEn from './en/narration.json';
 import rawTokens from './tokens.json';
 import profileKo from './ko/profile.json';
 import projectsKo from './ko/projects.json';
@@ -14,9 +15,11 @@ export { computeStats, type Stats } from './stats';
 export const locales = ['ko', 'en'] as const;
 export const tokens = tokensSchema.parse(rawTokens);
 
-// 내레이션은 한국어판만 있다. 영어판은 null 이며 영상은 자막 없이 기본 길이로 렌더된다.
+const narrations: Record<Locale, unknown> = { ko: narrationKo, en: narrationEn };
+
+// 대본이 없는 로케일은 null 이며 영상은 내레이션 없이 기본 길이로 렌더된다.
 export function getNarration(locale: Locale): Narration | null {
-  return locale === 'ko' ? narrationSchema.parse(narrationKo) : null;
+  return narrationSchema.parse(narrations[locale]);
 }
 
 // 내레이션 클립 키: 'opening' | 'tagline' | 'timeline.car-2012' | 'projects.choisnote' | ...

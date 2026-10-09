@@ -1,5 +1,6 @@
 import { getContent, getNarration, type Locale } from '@me/content';
 import manifestKo from '../public/narration/ko/manifest.json';
+import manifestEn from '../public/narration/en/manifest.json';
 import { buildScenes, type Manifest, type Scene } from './timeline';
 
 export type Plan = {
@@ -12,7 +13,7 @@ export type Plan = {
   clip: (key: string) => string | null;
 };
 
-const manifests: Record<Locale, Manifest> = { ko: manifestKo as Manifest, en: {} };
+const manifests: Record<Locale, Manifest> = { ko: manifestKo as Manifest, en: manifestEn as Manifest };
 
 export function buildPlan(locale: Locale): Plan {
   const content = getContent(locale);

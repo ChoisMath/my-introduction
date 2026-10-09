@@ -20,15 +20,6 @@ export function Books({ profile, ui }: { profile: Profile; ui: Ui }) {
           </li>
         ))}
       </ul>
-      <h3 className="mt-10 mb-3 text-lg font-bold">{ui.sections.materials}</h3>
-      <ul className="space-y-2">
-        {profile.materials.map((m) => (
-          <li key={m.id} className="flex flex-wrap gap-x-3 text-sm">
-            <span className="font-mono text-xs text-muted">{m.period}</span>
-            <span>{m.title}</span>
-          </li>
-        ))}
-      </ul>
     </Section>
   );
 }

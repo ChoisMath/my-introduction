@@ -22,7 +22,7 @@ test('hero shows name and stats shows 5 numbers', async ({ page }) => {
   await expect(page.locator('section#hero h1')).toHaveText('최재혁');
   await expect(page.locator('section#hero svg[aria-hidden]')).toHaveCount(1);
   await expect(page.locator('section#stats [data-count]')).toHaveCount(5);
-  await expect(page.locator('section#timeline li')).toHaveCount(6 + 2 + 6 + 13);
+  await expect(page.locator('section#timeline li')).toHaveCount(6 + 2 + 6 + 13 + 3);
   await expect(page.locator('section#stats [data-count="many"]')).toHaveText('다수');
 });
 
@@ -80,12 +80,14 @@ test.describe('prefers-reduced-motion', () => {
   });
 });
 
-test('desktop loads the hero loop and the intro dialog opens', async ({ page }) => {
-  await page.goto('/');
-  await expect(page.getByTestId('hero-video')).toHaveCount(1);
-  await page.getByTestId('open-video').click();
-  await expect(page.locator('dialog[open] video')).toHaveAttribute('src', '/video/intro-ko.mp4');
-});
+for (const [path, locale] of [['/', 'ko'], ['/en/', 'en']] as const) {
+  test(`${path} loads the hero loop and opens the ${locale} intro`, async ({ page }) => {
+    await page.goto(path);
+    await expect(page.getByTestId('hero-video')).toHaveCount(1);
+    await page.getByTestId('open-video').click();
+    await expect(page.locator('dialog[open] video')).toHaveAttribute('src', `/video/intro-${locale}.mp4`);
+  });
+}
 
 test.describe('mobile hero', () => {
   test.use({ viewport: { width: 375, height: 812 } });
@@ -98,7 +100,7 @@ test.describe('mobile hero', () => {
 });
 
 test('static seo files are served', async ({ request }) => {
-  for (const p of ['/robots.txt', '/sitemap.xml', '/CNAME', '/img/og.png', '/video/intro-ko.mp4']) {
+  for (const p of ['/robots.txt', '/sitemap.xml', '/CNAME', '/img/og.png', '/video/intro-ko.mp4', '/video/intro-en.mp4']) {
     const r = await request.get(p);
     expect(r.status(), p).toBe(200);
   }
@@ -122,7 +124,7 @@ test('stats cards put the term before the value and hero uses webp pictogram', a
 
 test('timeline dots are direct children of list items', async ({ page }) => {
   await page.goto('/');
-  await expect(page.locator('section#timeline li > span')).toHaveCount(6 + 2 + 6 + 13);
+  await expect(page.locator('section#timeline li > span')).toHaveCount(6 + 2 + 6 + 13 + 3);
 });
 
 test('lecture tabs follow the ARIA tab pattern and react to arrow keys', async ({ page }) => {

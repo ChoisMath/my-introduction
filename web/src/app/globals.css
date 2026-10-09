@@ -14,6 +14,21 @@ html { scroll-behavior: smooth; }
 /* 한글 어절이 중간에서 꺾이지 않도록 (글로벌 반응형 규칙 §2) */
 body { background: var(--color-bg); color: var(--color-fg); word-break: keep-all; overflow-wrap: normal; }
 
+/* 히어로 타자 효과 커서. 글자가 아니라 블록이라 textContent 를 더럽히지 않고,
+   absolute 라 줄 폭·줄바꿈 기회에 영향을 주지 않는다(static 위치 = 마지막 입력 글자 바로 뒤). */
+.hero-caret { position: absolute; display: inline-block; width: 0.08em; height: 0.85em; translate: 0.04em 0.1em; background: var(--color-accent); animation: hero-caret-blink 0.9s steps(1) infinite; }
+@keyframes hero-caret-blink { 50% { opacity: 0; } }
+
+/* 히어로 배경 그래프. 가로 화면은 글자 위 띠에 두지만, 세로 화면은 글자가 위까지 차올라
+   SVG 곡선은 숨기고 영상·포스터는 cover 대신 contain 으로 아래(픽토그램 뒤)에 붙인다. */
+.hero-video { object-fit: cover; }
+.hero-poster { background-size: cover; background-position: center; }
+@media (max-aspect-ratio: 1/1) {
+  .hero-curve { display: none; }
+  .hero-video { object-fit: contain; object-position: center bottom; }
+  .hero-poster { background-size: contain; background-position: center bottom; }
+}
+
 /* 좌표평면 격자. 히어로와 엔딩 배경. */
 .grid-paper {
   background-image:

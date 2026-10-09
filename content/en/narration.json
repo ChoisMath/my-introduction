@@ -1,0 +1,20 @@
+{
+  "opening": "Hello. I'm Jae-hyuk Choi, a mathematics teacher at Posan High School.",
+  "tagline": "I have taught mathematics at middle and high schools in Daegu since twenty twelve. What began as GeoGebra-based lessons grew into Python and AI mathematics, and today I solve classroom and school-office problems by building web services myself. What I learn, I pass on through teacher training and student lectures.",
+  "timeline": {
+    "car-2012": "In twenty twelve, I began my teaching career at Siji Middle School.",
+    "car-2014": "From twenty fourteen, I taught at Daegu Seobu High School.",
+    "car-2019": "From twenty nineteen, I was head of curriculum at Daegu Science High School, where I launched and taught an Artificial Intelligence course.",
+    "car-2025": "In twenty twenty-five, I was seconded to Kyungpook National University to complete the IBEC programme.",
+    "car-2026": "Since twenty twenty-six, I have been teaching IB Mathematics and AI Mathematics at Posan High School."
+  },
+  "pillars": "My work has three parts: teaching mathematics, training and lecturing on AI convergence education, and building education services.",
+  "projects": {
+    "choisnote": "ChoisNote.",
+    "choisclass": "ChoisClass.",
+    "posanmeal": "PosanMeal.",
+    "selfstudy": "Self-study Attendance.",
+    "mathcoach": "MathCoach."
+  },
+  "ending": "If you're curious about using AI tools in school education, feel free to get in touch."
+}
