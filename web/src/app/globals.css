@@ -1,0 +1,27 @@
+@import "tailwindcss";
+@import "./tokens.css";
+
+:root {
+  --nav-h: 3rem;
+  color-scheme: light;
+}
+
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
+body { background: var(--color-bg); color: var(--color-fg); }
+
+/* 좌표평면 격자. 히어로와 엔딩 배경. */
+.grid-paper {
+  background-image:
+    linear-gradient(to right, var(--color-grid) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--color-grid) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* 표: 모든 셀 줄바꿈 금지, 헤더 고정, 불투명 배경 (글로벌 반응형 규칙) */
+.data-table { @apply w-full border-collapse text-sm; }
+.data-table th, .data-table td { @apply whitespace-nowrap px-3 py-2 text-left align-top border-b border-line; }
+.data-table thead th { @apply sticky top-0 z-[2] bg-bg font-semibold; }
