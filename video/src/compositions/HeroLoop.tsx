@@ -10,8 +10,8 @@ export function HeroLoop({ locale }: { locale: Locale }) {
   const content = getContent(locale);
   return (
     <AbsoluteFill style={{ background: theme.color.bg }}>
-      <Sequence from={0} durationInFrames={6 * FPS} name="opening"><Opening content={content} /></Sequence>
-      <Sequence from={6 * FPS} durationInFrames={HERO_LOOP_DURATION - 6 * FPS} name="timeline"><Timeline content={content} caption={false} /></Sequence>
+      <Sequence from={0} durationInFrames={6 * FPS} name="opening"><Opening content={content} showName={false} /></Sequence>
+      <Sequence from={6 * FPS} durationInFrames={HERO_LOOP_DURATION - 6 * FPS} name="timeline"><Timeline content={content} caption={false} minimal /></Sequence>
     </AbsoluteFill>
   );
 }

@@ -9,7 +9,8 @@ import { MONO } from '../fonts';
 
 const X0 = 160; const X1 = 1760; const Y = 600;
 
-export function Timeline({ content, caption = true }: { content: Content; caption?: boolean }) {
+// minimal: 웹 히어로 루프용 — 축과 점만 그리고 글자·배지는 뺀다.
+export function Timeline({ content, caption = true, minimal = false }: { content: Content; caption?: boolean; minimal?: boolean }) {
   const frame = useCurrentFrame();
   const { fps, durationInFrames } = useVideoConfig();
   const { career, education, awards } = content.profile;
@@ -31,15 +32,15 @@ export function Timeline({ content, caption = true }: { content: Content; captio
         return (
           <div key={c.id} style={{ position: 'absolute', left: x, top: Y, transform: 'translate(-50%, -50%)', opacity: s }}>
             <div style={{ width: 28, height: 28, borderRadius: 999, background: theme.color.bg, border: `6px solid ${theme.color.accent}`, transform: `scale(${s})` }} />
-            <div style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', top: up ? -150 : 50, width: 300, textAlign: 'center' }}>
+            {minimal ? null : <div style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', top: up ? -150 : 50, width: 300, textAlign: 'center' }}>
               <div style={{ fontFamily: MONO, fontSize: 24, color: theme.color.muted, whiteSpace: 'nowrap' }}>{c.period.split(' ')[0]}</div>
               <div style={{ fontSize: 30, fontWeight: 700, color: theme.color.fg, lineHeight: 1.25, wordBreak: 'keep-all' }}>{c.title}</div>
-            </div>
+            </div>}
           </div>
         );
       })}
       <div style={{ position: 'absolute', left: 0, right: 0, top: 860, display: 'flex', justifyContent: 'center', gap: 24 }}>
-        {highlights.map((h, i) => {
+        {minimal ? null : highlights.map((h, i) => {
           const s = spring({ frame: frame - (badgeStart + badgeGap * i), fps, config: { damping: 12 } });
           return <div key={h.id} style={{ opacity: s, transform: `translateY(${(1 - s) * 40}px)` }}><Badge text={`${h.period} ${h.title}`} /></div>;
         })}
