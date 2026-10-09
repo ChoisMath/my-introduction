@@ -22,7 +22,8 @@ test('hero shows name and stats shows 5 numbers', async ({ page }) => {
   await expect(page.locator('section#hero h1')).toHaveText('최재혁');
   await expect(page.locator('section#hero svg[aria-hidden]')).toHaveCount(1);
   await expect(page.locator('section#stats [data-count]')).toHaveCount(5);
-  await expect(page.locator('section#timeline li')).toHaveCount(6 + 2 + 6);
+  await expect(page.locator('section#timeline li')).toHaveCount(6 + 2 + 6 + 13);
+  await expect(page.locator('section#stats [data-count="many"]')).toHaveText('다수');
 });
 
 test('projects shows 5 cards and books shows 3 covers', async ({ page }) => {
@@ -36,7 +37,7 @@ test('projects shows 5 cards and books shows 3 covers', async ({ page }) => {
 
 test('lectures tabs switch rows', async ({ page }) => {
   await page.goto('/');
-  await expect(page.locator('section#lectures tbody tr')).toHaveCount(9);
+  await expect(page.locator('section#lectures tbody tr')).toHaveCount(6);
   await page.getByRole('tab', { name: /학생 대상/ }).click();
   await expect(page.locator('section#lectures tbody tr')).toHaveCount(4);
 });
@@ -121,7 +122,7 @@ test('stats cards put the term before the value and hero uses webp pictogram', a
 
 test('timeline dots are direct children of list items', async ({ page }) => {
   await page.goto('/');
-  await expect(page.locator('section#timeline li > span')).toHaveCount(6 + 2 + 6);
+  await expect(page.locator('section#timeline li > span')).toHaveCount(6 + 2 + 6 + 13);
 });
 
 test('lecture tabs follow the ARIA tab pattern and react to arrow keys', async ({ page }) => {

@@ -116,10 +116,17 @@
       "kind": "group"
     },
     {
-      "id": "grp-2020",
-      "period": "2020 – 2022",
-      "title": "Chair, AI Mathematics Curriculum Development Research Group",
-      "org": "Daegu Metropolitan Office of Education",
+      "id": "grp-2021-fest",
+      "period": "2021",
+      "title": "Programme developer, 13th Daegu Math Festival",
+      "detail": "Marble-run contest built with Desmos",
+      "kind": "group"
+    },
+    {
+      "id": "grp-2021-pasukkun",
+      "period": "2021",
+      "title": "Chair, Pasukkun research group (math teachers using Python)",
+      "org": "Daegu curriculum development teacher research groups",
       "kind": "group"
     },
     {
@@ -130,10 +137,24 @@
       "kind": "group"
     },
     {
+      "id": "grp-2022-aimath",
+      "period": "2022",
+      "title": "Chair, AI Mathematics Curriculum Development Teacher Research Group",
+      "org": "Daegu curriculum development teacher research groups",
+      "kind": "group",
+      "highlight": true
+    },
+    {
       "id": "grp-2022-pilot",
-      "period": "Jun – Dec 2022",
+      "period": "2022",
       "title": "Led the AI Convergence Education pilot class",
       "detail": "Grade 10 mathematics, earth science and informatics; drones and image classification",
+      "kind": "group"
+    },
+    {
+      "id": "grp-2022-fest",
+      "period": "2022",
+      "title": "Student Activities team lead, 14th Daegu Math Festival",
       "kind": "group"
     },
     {
@@ -144,16 +165,33 @@
       "kind": "group"
     },
     {
-      "id": "grp-fest",
-      "period": "2021 · 2022 · 2024",
-      "title": "Programme developer and team lead, Daegu Math Festival",
-      "detail": "13th, 14th and 16th festivals — led the Math Inquiry Contest team (2022) and the Math Experience Planning team (2024)",
+      "id": "grp-2024-fest",
+      "period": "2024",
+      "title": "Operations team lead, 16th Daegu Math Festival",
       "kind": "group"
     },
     {
-      "id": "grp-2026",
+      "id": "grp-2025-ktcs",
+      "period": "2025",
+      "title": "Member, KTCS Vibe-Coding research group",
+      "kind": "group"
+    },
+    {
+      "id": "grp-2026-camp",
       "period": "2026",
-      "title": "Chair, Mathematics Immersion Camp Research Group",
+      "title": "Chair, Mathematics Immersion Camp research group",
+      "kind": "group"
+    },
+    {
+      "id": "grp-2026-consult",
+      "period": "2026",
+      "title": "Consultant, Daegu AI Mathematics Education Support Group",
+      "kind": "group"
+    },
+    {
+      "id": "grp-2026-dgist",
+      "period": "2026",
+      "title": "Instructor, gifted class, DGIST Convergence Education Institute",
       "kind": "group"
     }
   ],
@@ -179,67 +217,47 @@
   ],
   "lecturesTeacher": [
     {
-      "id": "lt-2024-02",
-      "period": "Feb 2024",
-      "title": "Case presentation on AI convergence education",
-      "org": "KNU AIEDAP project workshop",
+      "id": "lt-aiedap",
+      "period": "2023 – present",
+      "title": "Instructor, AIEDAP Master Teacher training",
+      "org": "Promotion, induction and general-teacher courses; regional showcase (SNU Siheung, Osong, Gyeongju)",
       "kind": "lecture-teacher"
     },
     {
-      "id": "lt-2024-06",
-      "period": "Jun 2024",
-      "title": "AI convergence education and using ChatGPT",
-      "org": "Daegu Secondary Chemistry Research Society",
-      "kind": "lecture-teacher"
-    },
-    {
-      "id": "lt-2024-07a",
-      "period": "Jul 2024",
+      "id": "lt-classroom",
+      "period": "2024 – 2025",
       "title": "Lead instructor, Classroom Revolution Leading Teacher training",
-      "org": "Gyeongbuk team 1",
+      "org": "KERIS · Yeongnam region",
       "kind": "lecture-teacher"
     },
     {
-      "id": "lt-2024-07b",
-      "period": "Jul 2024",
-      "title": "Lead instructor (secondary), AIEDAP Master Teacher promotion training",
-      "org": "Seoul National University, Siheung campus",
-      "kind": "lecture-teacher"
-    },
-    {
-      "id": "lt-2024-08",
-      "period": "Aug 2024",
-      "title": "Instructor, AIEDAP secondary pre-service teacher workshop",
-      "org": "Gyeongju",
-      "kind": "lecture-teacher"
-    },
-    {
-      "id": "lt-2025-06",
-      "period": "Jun 2025 –",
-      "title": "Instructor, 2025 Classroom Revolution Leading Teacher training",
-      "org": "KERIS",
-      "kind": "lecture-teacher"
-    },
-    {
-      "id": "lt-2025-consult",
-      "period": "Aug 2025 – Feb 2026",
-      "title": "Lead instructor and coordinator, School Visit Consulting (20 sessions)",
-      "org": "Geumo High, Haemaru Middle, Gumi Indeok Middle and others",
+      "id": "lt-consult",
+      "period": "2025 – 2026",
+      "title": "Lead instructor and coordinator, School Visit Consulting",
+      "org": "Geumo High, Haemaru Middle, Gumi Indeok Middle and others — about 20 sessions",
       "detail": "Digital literacy · data-driven field research · curriculum evaluation and feedback",
       "kind": "lecture-teacher"
     },
     {
-      "id": "lt-2025-10",
-      "period": "Oct 2025",
-      "title": "Instructor, 2025 AIEDAP Master Teacher induction training (secondary)",
-      "org": "Osong",
+      "id": "lt-office",
+      "period": "2025 – present",
+      "title": "Instructor, education-office in-service courses for math teachers",
+      "org": "Daegu Education Training Institute and others",
       "kind": "lecture-teacher"
     },
     {
-      "id": "lt-2025-11",
-      "period": "Nov 2025",
-      "title": "Instructor, 2025 secondary mathematics teaching competency in-service course",
-      "org": "Daegu Education Training Institute",
+      "id": "lt-school",
+      "period": "2022 – present",
+      "title": "Invited instructor for school and research-society teacher trainings",
+      "org": "Dozens of schools and societies across Daegu and Gyeongbuk",
+      "detail": "AI convergence education · generative AI · Apps Script · AI digital textbooks · student records",
+      "kind": "lecture-teacher"
+    },
+    {
+      "id": "lt-univ",
+      "period": "2024 – 2025",
+      "title": "University workshop and graduate-school case presentations",
+      "org": "KNU AIEDAP project workshop, Graduate School of AI Convergence Education",
       "kind": "lecture-teacher"
     }
   ],
@@ -255,8 +273,8 @@
       "id": "ls-ml",
       "period": "2022 – present",
       "title": "Lecture series: the mathematics behind AI",
-      "org": "Seonghwa Girls' High, Pohang Jecheol High",
-      "detail": "2024: \"The mathematics of machine learning — PCA\"",
+      "org": "Seonghwa Girls' High, Pohang Jecheol High, Sinmyeong High, Saeron Middle and others",
+      "detail": "PCA and LDA explorations, learning with generative AI",
       "kind": "lecture-student"
     },
     {
@@ -269,8 +287,7 @@
     {
       "id": "ls-dgist",
       "period": "2026",
-      "title": "Vibe-coding class for 9th graders, DGIST",
-      "detail": "2 sessions × 150 min",
+      "title": "Gifted class at DGIST and a vibe-coding class for 9th graders",
       "kind": "lecture-student"
     }
   ],

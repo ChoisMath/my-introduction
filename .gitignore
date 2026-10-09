@@ -21,3 +21,4 @@ video/.remotion/
 .superpowers/
 video/public/fonts/
 *.tsbuildinfo
+video/narration/ref/

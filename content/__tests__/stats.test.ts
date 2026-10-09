@@ -12,7 +12,6 @@ describe('computeStats', () => {
   });
   it('derives other numbers from the arrays', () => {
     const s = computeStats(ko, new Date('2026-10-09'));
-    expect(s.lectures).toBe(ko.profile.lecturesTeacher.length + ko.profile.lecturesStudent.length);
     expect(s.books).toBe(3);
     expect(s.services).toBe(5);
     expect(s.awards).toBe(ko.profile.awards.filter((a) => a.kind === 'award').length);

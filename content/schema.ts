@@ -89,9 +89,10 @@ export const uiSchema = z.object({
     projects: z.string(), books: z.string(), lectures: z.string(), contact: z.string(),
   }),
   hero: z.object({ watchVideo: z.string(), playVideo: z.string(), closeVideo: z.string(), scrollHint: z.string() }),
-  stats: z.object({ years: z.string(), lectures: z.string(), books: z.string(), services: z.string(), awards: z.string() }),
+  // 강의·연수 횟수는 숫자 대신 "다수" 같은 표현으로 보여준다.
+  stats: z.object({ years: z.string(), lectures: z.string(), lecturesValue: z.string(), books: z.string(), services: z.string(), awards: z.string() }),
   sections: z.object({
-    stats: z.string(), timeline: z.string(), education: z.string(), awards: z.string(), pillars: z.string(),
+    stats: z.string(), timeline: z.string(), education: z.string(), awards: z.string(), groups: z.string(), pillars: z.string(),
     projects: z.string(), books: z.string(), materials: z.string(), lectures: z.string(), contact: z.string(),
   }),
   projects: z.object({ visit: z.string(), watch: z.string(), stack: z.string() }),

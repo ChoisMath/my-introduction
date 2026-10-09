@@ -1,13 +1,63 @@
 {
   "siteTitle": "최재혁 — 수학교사 · 만드는 사람",
   "siteDescription": "포산고등학교 수학교사 최재혁의 소개. AI 융합교육 연수·강의, 직접 만든 교육용 서비스, 저서와 경력.",
-  "nav": { "hero": "소개", "stats": "숫자", "timeline": "경력", "pillars": "하는 일", "projects": "만든 서비스", "books": "저서", "lectures": "강의", "contact": "연락" },
-  "hero": { "watchVideo": "소개 영상 보기", "playVideo": "영상 재생", "closeVideo": "닫기", "scrollHint": "아래로" },
-  "stats": { "years": "교직 년차", "lectures": "강의·연수", "books": "저서(공저)", "services": "운영 서비스", "awards": "표창·수상" },
-  "sections": { "stats": "숫자로 보는 나", "timeline": "걸어온 길", "education": "학력", "awards": "자격·수상", "pillars": "하는 일", "projects": "만든 서비스", "books": "저서", "materials": "출제·자료 개발", "lectures": "강의·연수 이력", "contact": "연락·링크" },
-  "projects": { "visit": "사이트", "watch": "소개 영상", "stack": "스택" },
-  "lectures": { "teacher": "교사 대상", "student": "학생 대상", "period": "시기", "title": "내용", "org": "기관·장소" },
-  "contact": { "email": "이메일", "github": "GitHub", "sites": "운영 사이트" },
-  "lang": { "switchTo": "EN", "switchLabel": "Switch to English" },
+  "nav": {
+    "hero": "소개",
+    "stats": "숫자",
+    "timeline": "경력",
+    "pillars": "하는 일",
+    "projects": "만든 서비스",
+    "books": "저서",
+    "lectures": "강의",
+    "contact": "연락"
+  },
+  "hero": {
+    "watchVideo": "소개 영상 보기",
+    "playVideo": "영상 재생",
+    "closeVideo": "닫기",
+    "scrollHint": "아래로"
+  },
+  "stats": {
+    "years": "교직 년차",
+    "lectures": "강의·연수",
+    "books": "저서(공저)",
+    "services": "운영 서비스",
+    "awards": "표창·수상",
+    "lecturesValue": "다수"
+  },
+  "sections": {
+    "stats": "숫자로 보는 나",
+    "timeline": "걸어온 길",
+    "education": "학력",
+    "awards": "자격·수상",
+    "pillars": "하는 일",
+    "projects": "만든 서비스",
+    "books": "저서",
+    "materials": "출제·자료 개발",
+    "lectures": "강의·연수 이력",
+    "contact": "연락·링크",
+    "groups": "연구회·활동"
+  },
+  "projects": {
+    "visit": "사이트",
+    "watch": "소개 영상",
+    "stack": "스택"
+  },
+  "lectures": {
+    "teacher": "교사 대상",
+    "student": "학생 대상",
+    "period": "시기",
+    "title": "내용",
+    "org": "기관·장소"
+  },
+  "contact": {
+    "email": "이메일",
+    "github": "GitHub",
+    "sites": "운영 사이트"
+  },
+  "lang": {
+    "switchTo": "EN",
+    "switchLabel": "Switch to English"
+  },
   "footer": "© 2026 최재혁. 이 페이지는 Next.js 와 Remotion 으로 직접 만들었습니다."
 }

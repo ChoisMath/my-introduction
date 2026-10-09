@@ -11,7 +11,9 @@ export function Stats({ stats, ui }: { stats: StatsData; ui: Ui }) {
         {KEYS.map((k) => (
           <div key={k} className="flex flex-col-reverse rounded-[var(--radius-card)] border border-line p-4">
             <dt className="mt-1 text-sm whitespace-nowrap text-muted">{ui.stats[k]}</dt>
-            <dd className="font-mono text-4xl font-bold text-accent"><CountUp value={stats[k]} /></dd>
+            <dd className="font-mono text-4xl font-bold text-accent">
+              {k === 'lectures' ? <span data-count="many">{ui.stats.lecturesValue}</span> : <CountUp value={stats[k]} />}
+            </dd>
           </div>
         ))}
       </dl>

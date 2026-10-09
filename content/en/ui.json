@@ -22,7 +22,8 @@
     "lectures": "Lectures & trainings",
     "books": "Books (co-authored)",
     "services": "Services in production",
-    "awards": "Commendations & awards"
+    "awards": "Commendations & awards",
+    "lecturesValue": "Many"
   },
   "sections": {
     "stats": "By the numbers",
@@ -34,7 +35,8 @@
     "books": "Books",
     "materials": "Items & materials",
     "lectures": "Lectures & trainings",
-    "contact": "Contact & links"
+    "contact": "Contact & links",
+    "groups": "Research groups & roles"
   },
   "projects": {
     "visit": "Site",
