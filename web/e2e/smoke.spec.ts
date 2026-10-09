@@ -78,3 +78,27 @@ test.describe('prefers-reduced-motion', () => {
     await expect(page.locator('section#stats [data-count]').first()).not.toHaveText('0');
   });
 });
+
+test('desktop loads the hero loop and the intro dialog opens', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.getByTestId('hero-video')).toHaveCount(1);
+  await page.getByTestId('open-video').click();
+  await expect(page.locator('dialog[open] video')).toHaveAttribute('src', '/video/intro-ko.mp4');
+});
+
+test.describe('mobile hero', () => {
+  test.use({ viewport: { width: 375, height: 812 } });
+  test('shows the poster button instead of loading the video', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.getByTestId('hero-video')).toHaveCount(0);
+    await page.getByRole('button', { name: /영상 재생/ }).click();
+    await expect(page.getByTestId('hero-video')).toHaveCount(1);
+  });
+});
+
+test('static seo files are served', async ({ request }) => {
+  for (const p of ['/robots.txt', '/sitemap.xml', '/CNAME', '/img/og.png', '/video/intro-ko.mp4']) {
+    const r = await request.get(p);
+    expect(r.status(), p).toBe(200);
+  }
+});
