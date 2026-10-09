@@ -9,72 +9,351 @@
   "photo": "/img/photo.webp",
   "pictogram": "/img/pictogram.png",
   "education": [
-    { "id": "edu-ba", "period": "~ 2011.08", "title": "홍익대학교 사범대학 수학교육과 졸업", "detail": "교육학사", "kind": "edu" },
-    { "id": "edu-ma", "period": "2021.09 ~ 2024.02", "title": "경북대학교 교육대학원 AI융합교육전공 졸업", "detail": "교육학석사", "kind": "edu", "highlight": true }
+    {
+      "id": "edu-ba",
+      "period": "~ 2011.08",
+      "title": "홍익대학교 사범대학 수학교육과 졸업",
+      "detail": "교육학사",
+      "kind": "edu"
+    },
+    {
+      "id": "edu-ma",
+      "period": "2021.09 ~ 2024.02",
+      "title": "경북대학교 교육대학원 AI융합교육전공 졸업",
+      "detail": "교육학석사",
+      "kind": "edu",
+      "highlight": true
+    }
   ],
   "career": [
-    { "id": "car-2012", "period": "2012.03 ~ 2014.02", "title": "시지중학교 교사", "detail": "영재학급 수학 담당", "kind": "career" },
-    { "id": "car-2013", "period": "2013 ~ 2015", "title": "대구동부교육지원청 영재교육원 강사", "detail": "수학 수업·영재 선발", "kind": "career" },
-    { "id": "car-2014", "period": "2014.03 ~ 2019.02", "title": "대구서부고등학교 교사", "detail": "2018 보직교사", "kind": "career" },
-    { "id": "car-2019", "period": "2019.03 ~ 2025.02", "title": "대구과학고등학교(영재학교) 교사", "detail": "교육과정부장 · 「인공지능」 교과 개설·담당(2022~2024)", "kind": "career" },
-    { "id": "car-2025", "period": "2025.03 ~ 2026.02", "title": "경북대학교 파견교사", "detail": "IBEC 과정", "kind": "career" },
-    { "id": "car-2026", "period": "2026.03 ~ 현재", "title": "포산고등학교 교사", "detail": "IB Math AA · 인공지능수학 공동교육과정", "kind": "career" }
+    {
+      "id": "car-2012",
+      "period": "2012.03 ~ 2014.02",
+      "title": "시지중학교 교사",
+      "detail": "영재학급 수학 담당",
+      "kind": "career"
+    },
+    {
+      "id": "car-2013",
+      "period": "2013 ~ 2015",
+      "title": "대구동부교육지원청 영재교육원 강사",
+      "detail": "수학 수업·영재 선발",
+      "kind": "career"
+    },
+    {
+      "id": "car-2014",
+      "period": "2014.03 ~ 2019.02",
+      "title": "대구서부고등학교 교사",
+      "detail": "2018 보직교사",
+      "kind": "career"
+    },
+    {
+      "id": "car-2019",
+      "period": "2019.03 ~ 2025.02",
+      "title": "대구과학고등학교(영재학교) 교사",
+      "detail": "교육과정부장 · 「인공지능」 교과 개설·담당(2022~2024)",
+      "kind": "career"
+    },
+    {
+      "id": "car-2025",
+      "period": "2025.03 ~ 2026.02",
+      "title": "경북대학교 파견교사",
+      "detail": "IBEC 과정",
+      "kind": "career"
+    },
+    {
+      "id": "car-2026",
+      "period": "2026.03 ~ 현재",
+      "title": "포산고등학교 교사",
+      "detail": "IB Math AA · 인공지능수학 공동교육과정",
+      "kind": "career"
+    }
   ],
   "awards": [
-    { "id": "awd-2019", "period": "2019", "title": "전국학생통계활용대회 지도교사상(장려)", "kind": "award" },
-    { "id": "awd-2020", "period": "2020", "title": "전국학생통계활용대회 지도교사상(은상)", "kind": "award" },
-    { "id": "cert-2023-12", "period": "2023.12", "title": "AIEDAP 마스터교원", "org": "교육부 AI·디지털 교육 역량 강화 사업(대구경북권역)", "kind": "cert", "highlight": true },
-    { "id": "awd-2024-05", "period": "2024.05", "title": "스승의 날 유공교원 표창", "org": "대구광역시교육감", "kind": "award" },
-    { "id": "cert-2024-09", "period": "2024.09", "title": "대구 AI 디지털 융합 교육 혁신 플랫폼 객원연구원", "kind": "cert" },
-    { "id": "awd-2024-12", "period": "2024.12", "title": "교원 디지털 역량 강화 유공교원 표창", "org": "부총리 겸 교육부장관", "kind": "award", "highlight": true }
+    {
+      "id": "awd-2019",
+      "period": "2019",
+      "title": "전국학생통계활용대회 지도교사상(장려)",
+      "kind": "award"
+    },
+    {
+      "id": "awd-2020",
+      "period": "2020",
+      "title": "전국학생통계활용대회 지도교사상(은상)",
+      "kind": "award"
+    },
+    {
+      "id": "cert-2023-12",
+      "period": "2023.12",
+      "title": "AIEDAP 마스터교원",
+      "org": "교육부 AI·디지털 교육 역량 강화 사업(대구경북권역)",
+      "kind": "cert",
+      "highlight": true
+    },
+    {
+      "id": "awd-2024-05",
+      "period": "2024.05",
+      "title": "스승의 날 유공교원 표창",
+      "org": "대구광역시교육감",
+      "kind": "award"
+    },
+    {
+      "id": "cert-2024-09",
+      "period": "2024.09",
+      "title": "대구 AI 디지털 융합 교육 혁신 플랫폼 객원연구원",
+      "kind": "cert"
+    },
+    {
+      "id": "awd-2024-12",
+      "period": "2024.12",
+      "title": "교원 디지털 역량 강화 유공교원 표창",
+      "org": "부총리 겸 교육부장관",
+      "kind": "award",
+      "highlight": true
+    }
   ],
   "groups": [
-    { "id": "grp-2014", "period": "2014 ~ 2018", "title": "대구 중등수학연구회 공학용 도구 활용팀 회원", "kind": "group" },
-    { "id": "grp-2020", "period": "2020 ~ 2022", "title": "인공지능 수학 교육과정 개발 연구회 회장", "org": "대구광역시교육청 융합교육과", "kind": "group" },
-    { "id": "grp-2021-jump", "period": "2021 ~ 2023", "title": "인공지능 활용 수학 점핑학교 운영 참가교사", "detail": "칸아카데미 활용 · 교사-학생 멘토링", "kind": "group" },
-    { "id": "grp-2022-pilot", "period": "2022.06 ~ 12", "title": "인공지능(AI) 융합교육 시범학급 운영", "detail": "대구과학고 고1 수학·지구과학·정보 융합, 드론·이미지 분류", "kind": "group" },
-    { "id": "grp-2022-share", "period": "2022 ~ 2024", "title": "수학나눔학교 운영", "org": "대구광역시교육청 융합교육과", "kind": "group" },
-    { "id": "grp-fest", "period": "2021 · 2022 · 2024", "title": "대구수학페스티벌 프로그램 개발·운영", "detail": "제13·14·16회 — 2022 수학탐구대회팀 팀장, 2024 수학체험기획팀 팀장", "kind": "group" },
-    { "id": "grp-2026", "period": "2026", "title": "수학과 교육과정 수학 몰입캠프 연구회 회장", "kind": "group" }
+    {
+      "id": "grp-2014",
+      "period": "2014 ~ 2018",
+      "title": "대구 중등수학연구회 공학용 도구 활용팀 회원",
+      "kind": "group"
+    },
+    {
+      "id": "grp-2020",
+      "period": "2020 ~ 2022",
+      "title": "인공지능 수학 교육과정 개발 연구회 회장",
+      "org": "대구광역시교육청 융합교육과",
+      "kind": "group"
+    },
+    {
+      "id": "grp-2021-jump",
+      "period": "2021 ~ 2023",
+      "title": "인공지능 활용 수학 점핑학교 운영 참가교사",
+      "detail": "칸아카데미 활용 · 교사-학생 멘토링",
+      "kind": "group"
+    },
+    {
+      "id": "grp-2022-pilot",
+      "period": "2022.06 ~ 12",
+      "title": "인공지능(AI) 융합교육 시범학급 운영",
+      "detail": "대구과학고 고1 수학·지구과학·정보 융합, 드론·이미지 분류",
+      "kind": "group"
+    },
+    {
+      "id": "grp-2022-share",
+      "period": "2022 ~ 2024",
+      "title": "수학나눔학교 운영",
+      "org": "대구광역시교육청 융합교육과",
+      "kind": "group"
+    },
+    {
+      "id": "grp-fest",
+      "period": "2021 · 2022 · 2024",
+      "title": "대구수학페스티벌 프로그램 개발·운영",
+      "detail": "제13·14·16회 — 2022 수학탐구대회팀 팀장, 2024 수학체험기획팀 팀장",
+      "kind": "group"
+    },
+    {
+      "id": "grp-2026",
+      "period": "2026",
+      "title": "수학과 교육과정 수학 몰입캠프 연구회 회장",
+      "kind": "group"
+    }
   ],
   "materials": [
-    { "id": "mat-2017-ebs", "period": "2017 ~ 2018", "title": "대구광역시교육청 중등 수학과 EBS 연계문항 자료집 개발팀", "kind": "material" },
-    { "id": "mat-2017-exam", "period": "2017.11", "title": "대구광역시 모의고사 수리영역(가) 출제위원", "kind": "material" },
-    { "id": "mat-2024-aidt", "period": "2024", "title": "고등학교 『수학1』 AI 디지털교과서 현장적합성 검토지원단", "kind": "material" }
+    {
+      "id": "mat-2017-ebs",
+      "period": "2017 ~ 2018",
+      "title": "대구광역시교육청 중등 수학과 EBS 연계문항 자료집 개발팀",
+      "kind": "material"
+    },
+    {
+      "id": "mat-2017-exam",
+      "period": "2017.11",
+      "title": "대구광역시 모의고사 수리영역(가) 출제위원",
+      "kind": "material"
+    },
+    {
+      "id": "mat-2024-aidt",
+      "period": "2024",
+      "title": "고등학교 『수학1』 AI 디지털교과서 현장적합성 검토지원단",
+      "kind": "material"
+    }
   ],
   "lecturesTeacher": [
-    { "id": "lt-2024-02", "period": "2024.02", "title": "AI 융합교육 사례 발표", "org": "경북대학교 AIEDAP 사업팀 워크숍", "kind": "lecture-teacher" },
-    { "id": "lt-2024-06", "period": "2024.06", "title": "AI 융합교육 사례 및 ChatGPT 활용법", "org": "대구 중등화학연구회 총회", "kind": "lecture-teacher" },
-    { "id": "lt-2024-07a", "period": "2024.07", "title": "교실혁명 선도교사 양성 연수 주강사", "org": "경북1팀", "kind": "lecture-teacher" },
-    { "id": "lt-2024-07b", "period": "2024.07", "title": "AIEDAP 마스터교원 승급 연수 주강사(중등)", "org": "서울대학교 시흥캠퍼스", "kind": "lecture-teacher" },
-    { "id": "lt-2024-08", "period": "2024.08", "title": "AIEDAP 권역통합 중등 예비교원 워크숍 강사", "org": "경주 교원드림센터", "kind": "lecture-teacher" },
-    { "id": "lt-2025-06", "period": "2025.06 ~", "title": "2025 교실혁명 선도교사 양성 연수 강사", "org": "한국교육학술정보원", "kind": "lecture-teacher" },
-    { "id": "lt-2025-consult", "period": "2025.08 ~ 2026.02", "title": "찾아가는 학교 컨설팅 주강사·코디네이터 (20회)", "org": "금오고, 해마루중, 구미인덕중 등", "detail": "디지털 문해력 · 데이터 기반 현장 연구 · 학교 교육과정 평가·환류", "kind": "lecture-teacher" },
-    { "id": "lt-2025-10", "period": "2025.10", "title": "2025 AIEDAP 마스터교원 신규연수 중등 1차 강사", "org": "오송", "kind": "lecture-teacher" },
-    { "id": "lt-2025-11", "period": "2025.11", "title": "2025 중등 수학교과 지도역량 강화 직무연수(2기) 강사", "org": "대구광역시교육연수원", "kind": "lecture-teacher" }
+    {
+      "id": "lt-2024-02",
+      "period": "2024.02",
+      "title": "AI 융합교육 사례 발표",
+      "org": "경북대학교 AIEDAP 사업팀 워크숍",
+      "kind": "lecture-teacher"
+    },
+    {
+      "id": "lt-2024-06",
+      "period": "2024.06",
+      "title": "AI 융합교육 사례 및 ChatGPT 활용법",
+      "org": "대구 중등화학연구회 총회",
+      "kind": "lecture-teacher"
+    },
+    {
+      "id": "lt-2024-07a",
+      "period": "2024.07",
+      "title": "교실혁명 선도교사 양성 연수 주강사",
+      "org": "경북1팀",
+      "kind": "lecture-teacher"
+    },
+    {
+      "id": "lt-2024-07b",
+      "period": "2024.07",
+      "title": "AIEDAP 마스터교원 승급 연수 주강사(중등)",
+      "org": "서울대학교 시흥캠퍼스",
+      "kind": "lecture-teacher"
+    },
+    {
+      "id": "lt-2024-08",
+      "period": "2024.08",
+      "title": "AIEDAP 권역통합 중등 예비교원 워크숍 강사",
+      "org": "경주 교원드림센터",
+      "kind": "lecture-teacher"
+    },
+    {
+      "id": "lt-2025-06",
+      "period": "2025.06 ~",
+      "title": "2025 교실혁명 선도교사 양성 연수 강사",
+      "org": "한국교육학술정보원",
+      "kind": "lecture-teacher"
+    },
+    {
+      "id": "lt-2025-consult",
+      "period": "2025.08 ~ 2026.02",
+      "title": "찾아가는 학교 컨설팅 주강사·코디네이터 (20회)",
+      "org": "금오고, 해마루중, 구미인덕중 등",
+      "detail": "디지털 문해력 · 데이터 기반 현장 연구 · 학교 교육과정 평가·환류",
+      "kind": "lecture-teacher"
+    },
+    {
+      "id": "lt-2025-10",
+      "period": "2025.10",
+      "title": "2025 AIEDAP 마스터교원 신규연수 중등 1차 강사",
+      "org": "오송",
+      "kind": "lecture-teacher"
+    },
+    {
+      "id": "lt-2025-11",
+      "period": "2025.11",
+      "title": "2025 중등 수학교과 지도역량 강화 직무연수(2기) 강사",
+      "org": "대구광역시교육연수원",
+      "kind": "lecture-teacher"
+    }
   ],
   "lecturesStudent": [
-    { "id": "ls-small", "period": "2022 ~ 현재", "title": "「인공지능 수학」 「고급수학」 소인수 과목 수업", "org": "칠성고, 호산고, 달성고, 대구온라인학교 등", "kind": "lecture-student" },
-    { "id": "ls-ml", "period": "2022 ~ 현재", "title": "「인공지능의 수학적 원리」 특강", "org": "성화여고, 포항제철고", "detail": "2024 「머신러닝의 수학적 원리: PCA」", "kind": "lecture-student" },
-    { "id": "ls-rne", "period": "2022 ~ 2023", "title": "한국과학창의재단 R&E 지도", "detail": "발표대회 수상", "kind": "lecture-student" },
-    { "id": "ls-dgist", "period": "2026", "title": "DGIST 중3 바이브 코딩 수업", "detail": "2회 × 150분", "kind": "lecture-student" }
+    {
+      "id": "ls-small",
+      "period": "2022 ~ 현재",
+      "title": "「인공지능 수학」 「고급수학」 소인수 과목 수업",
+      "org": "칠성고, 호산고, 달성고, 대구온라인학교 등",
+      "kind": "lecture-student"
+    },
+    {
+      "id": "ls-ml",
+      "period": "2022 ~ 현재",
+      "title": "「인공지능의 수학적 원리」 특강",
+      "org": "성화여고, 포항제철고",
+      "detail": "2024 「머신러닝의 수학적 원리: PCA」",
+      "kind": "lecture-student"
+    },
+    {
+      "id": "ls-rne",
+      "period": "2022 ~ 2023",
+      "title": "한국과학창의재단 R&E 지도",
+      "detail": "발표대회 수상",
+      "kind": "lecture-student"
+    },
+    {
+      "id": "ls-dgist",
+      "period": "2026",
+      "title": "DGIST 중3 바이브 코딩 수업",
+      "detail": "2회 × 150분",
+      "kind": "lecture-student"
+    }
   ],
   "books": [
-    { "id": "book-geogebra-middle", "title": "지오지브라 중학교 수학", "role": "공저", "year": 2017, "isbn": "9791187541202", "url": "https://product.kyobobook.co.kr/detail/S000001903386", "cover": "/img/books/geogebra-middle.webp" },
-    { "id": "book-geogebra-high", "title": "지오지브라 고등학교 수학", "role": "공저", "year": 2017, "isbn": "9791187541196", "url": "https://product.kyobobook.co.kr/detail/S000001903385", "cover": "/img/books/geogebra-high.webp" },
-    { "id": "book-agentic-ai", "title": "에이전틱 AI 학교 교육 활용법", "role": "공저 (홍진우·류진현·유상은·최재혁)", "year": 2026, "isbn": "9791193059975", "publisher": "앤써북", "url": "https://product.kyobobook.co.kr/detail/S000221379920", "cover": "/img/books/agentic-ai.webp" }
+    {
+      "id": "book-geogebra-middle",
+      "title": "지오지브라 중학교 수학",
+      "role": "공저",
+      "year": 2017,
+      "isbn": "9791187541202",
+      "url": "https://product.kyobobook.co.kr/detail/S000001903386",
+      "cover": "/img/books/geogebra-middle.webp",
+      "publisher": "지오아카데미"
+    },
+    {
+      "id": "book-geogebra-high",
+      "title": "지오지브라 고등학교 수학",
+      "role": "공저",
+      "year": 2017,
+      "isbn": "9791187541196",
+      "url": "https://product.kyobobook.co.kr/detail/S000001903385",
+      "cover": "/img/books/geogebra-high.webp",
+      "publisher": "지오아카데미"
+    },
+    {
+      "id": "book-agentic-ai",
+      "title": "에이전틱 AI 학교 교육 활용법",
+      "role": "공저 (홍진우·류진현·유상은·최재혁)",
+      "year": 2026,
+      "isbn": "9791193059975",
+      "publisher": "앤써북",
+      "url": "https://product.kyobobook.co.kr/detail/S000221379920",
+      "cover": "/img/books/agentic-ai.webp"
+    }
   ],
   "pillars": [
-    { "id": "teach", "title": "수학 수업", "summary": "학생마다 다른 속도를 공학적 도구로 맞춥니다.", "items": ["IB Math AA · 미적분 · 인공지능수학", "GeoGebra · Desmos · Python 으로 개별화 수업", "R&E · 통계활용대회 지도"] },
-    { "id": "train", "title": "AI 융합교육 연수·강의", "summary": "배운 것을 교사와 학생에게 바로 쓸 수 있는 형태로 전달합니다.", "items": ["AIEDAP 마스터교원 · 승급·신규연수 강사", "교실혁명 선도교사 양성 연수 강사", "찾아가는 학교 컨설팅 20회"] },
-    { "id": "build", "title": "교육용 서비스 개발", "summary": "학교에서 부딪힌 문제를 직접 웹 서비스로 만들어 운영합니다.", "items": ["교무수첩 · 수업 플랫폼 · 급식 · 출결 앱", "Next.js · Rails · Railway 로 실배포", "학생과 함께하는 바이브 코딩"] }
+    {
+      "id": "teach",
+      "title": "수학 수업",
+      "summary": "학생마다 다른 속도를 공학적 도구로 맞춥니다.",
+      "items": [
+        "IB Math AA · 미적분 · 인공지능수학",
+        "GeoGebra · Desmos · Python 으로 개별화 수업",
+        "R&E · 통계활용대회 지도"
+      ]
+    },
+    {
+      "id": "train",
+      "title": "AI 융합교육 연수·강의",
+      "summary": "배운 것을 교사와 학생에게 바로 쓸 수 있는 형태로 전달합니다.",
+      "items": [
+        "AIEDAP 마스터교원 · 승급·신규연수 강사",
+        "교실혁명 선도교사 양성 연수 강사",
+        "찾아가는 학교 컨설팅 20회"
+      ]
+    },
+    {
+      "id": "build",
+      "title": "교육용 서비스 개발",
+      "summary": "학교에서 부딪힌 문제를 직접 웹 서비스로 만들어 운영합니다.",
+      "items": [
+        "교무수첩 · 수업 플랫폼 · 급식 · 출결 앱",
+        "Next.js · Rails · Railway 로 실배포",
+        "학생과 함께하는 바이브 코딩"
+      ]
+    }
   ],
   "links": {
     "email": "complete860127@gmail.com",
     "github": "https://github.com/ChoisMath",
     "sites": [
-      { "label": "ChoisNote", "url": "https://chois.pro" },
-      { "label": "ChoisClass", "url": "https://class.chois.ai.kr" }
+      {
+        "label": "ChoisNote",
+        "url": "https://chois.pro"
+      },
+      {
+        "label": "ChoisClass",
+        "url": "https://class.chois.pro"
+      }
     ]
   }
 }

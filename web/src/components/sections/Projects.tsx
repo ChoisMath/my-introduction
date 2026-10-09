@@ -13,7 +13,7 @@ export function Projects({ projects, ui }: { projects: Project[]; ui: Ui }) {
           <li key={p.id} className="h-full">
           <Reveal delay={i * 0.06} className="h-full">
           <article className="flex h-full flex-col overflow-hidden rounded-[var(--radius-card)] bg-dark-surface" data-testid="project-card">
-            <Image src={p.mockup} alt={`${p.name} mockup`} width={1200} height={750} className="aspect-[16/10] w-full object-cover" />
+            <Image src={p.mockup} alt={`${p.name} mockup`} width={1200} height={750} className="aspect-video w-full object-cover" />
             <div className="flex flex-1 flex-col gap-2 p-4">
               <h3 className="text-lg font-bold">{p.name}</h3>
               <p className="text-sm text-dark-muted">{p.tagline}</p>

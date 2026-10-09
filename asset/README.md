@@ -5,7 +5,7 @@
 | 최재혁_증명사진.jpg | 타임라인·연락 섹션 사진 | 있음 (공개용 사진으로 교체 가능) |
 | 최재혁_픽토그램.jpg | 히어로 보조 그래픽·파비콘·OG | 있음 |
 | 지오지브라_중학교_수학_이미지.png 외 표지 2장 | 저서 섹션 | 있음 |
-| projects/{id}.png (또는 jpg) | 서비스 목업 | **없음 — 자리표시 svg 사용 중** |
+| projects/{id}.png | 서비스 목업 5개 (PosanMeal·selfstudy·ChoisNote 는 각 demo-video 썸네일, MathCoach·ChoisClass 는 사이트 캡처) | 있음 |
 
 실물 목업을 넣으려면 `asset/projects/<id>.png` 로 저장하고 `npm run assets` 를 실행한 뒤,
 `content/ko/projects.json` 과 `content/en/projects.json` 의 `mockup` 을 `/img/projects/<id>.webp` 로 바꾼다.
