@@ -1,11 +1,12 @@
 import { computeStats, getContent, type Locale } from '@me/content';
-import { Section } from './Section';
 import { Hero } from './sections/Hero';
 import { Stats } from './sections/Stats';
 import { Timeline } from './sections/Timeline';
 import { Pillars } from './sections/Pillars';
 import { Projects } from './sections/Projects';
 import { Books } from './sections/Books';
+import { Lectures } from './sections/Lectures';
+import { Contact } from './sections/Contact';
 
 export function HomePage({ locale }: { locale: Locale }) {
   const content = getContent(locale);
@@ -19,8 +20,8 @@ export function HomePage({ locale }: { locale: Locale }) {
       <Pillars profile={profile} ui={ui} />
       <Projects projects={content.projects} ui={ui} />
       <Books profile={profile} ui={ui} />
-      <Section id="lectures" title={ui.sections.lectures}><p>lectures</p></Section>
-      <Section id="contact" title={ui.sections.contact}><p>contact</p></Section>
+      <Lectures profile={profile} ui={ui} />
+      <Contact profile={profile} ui={ui} />
     </>
   );
 }

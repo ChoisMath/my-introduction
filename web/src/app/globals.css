@@ -11,7 +11,8 @@ html { scroll-behavior: smooth; }
   html { scroll-behavior: auto; }
 }
 
-body { background: var(--color-bg); color: var(--color-fg); }
+/* 한글 어절이 중간에서 꺾이지 않도록 (글로벌 반응형 규칙 §2) */
+body { background: var(--color-bg); color: var(--color-fg); word-break: keep-all; overflow-wrap: normal; }
 
 /* 좌표평면 격자. 히어로와 엔딩 배경. */
 .grid-paper {
@@ -25,3 +26,5 @@ body { background: var(--color-bg); color: var(--color-fg); }
 .data-table { @apply w-full border-collapse text-sm; }
 .data-table th, .data-table td { @apply whitespace-nowrap px-3 py-2 text-left align-top border-b border-line; }
 .data-table thead th { @apply sticky top-0 z-[2] bg-bg font-semibold; }
+.data-table .sticky-col { @apply sticky left-0 z-[3] bg-bg; }
+.data-table thead th.sticky-col { @apply z-[4]; }

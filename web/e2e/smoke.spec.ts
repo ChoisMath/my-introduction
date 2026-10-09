@@ -29,3 +29,32 @@ test('projects shows 5 cards and books shows 3 covers', async ({ page }) => {
   await expect(page.getByTestId('project-card')).toHaveCount(5);
   await expect(page.locator('section#books img')).toHaveCount(3);
 });
+
+test('lectures tabs switch rows', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.locator('section#lectures tbody tr')).toHaveCount(9);
+  await page.getByRole('tab', { name: /학생 대상/ }).click();
+  await expect(page.locator('section#lectures tbody tr')).toHaveCount(4);
+});
+
+test('every image on the page actually loads', async ({ page }) => {
+  await page.goto('/');
+  const broken = await page.locator('img').evaluateAll((imgs) =>
+    imgs.filter((img) => !(img instanceof HTMLImageElement) || !img.complete || img.naturalWidth === 0).map((img) => (img as HTMLImageElement).src),
+  );
+  expect(broken).toEqual([]);
+});
+
+test.describe('mobile 375px', () => {
+  test.use({ viewport: { width: 375, height: 812 } });
+  for (const path of ['/', '/en/']) {
+    test(`${path} has no horizontal scroll`, async ({ page }) => {
+      await page.goto(path);
+      for (const id of ['hero', 'projects', 'lectures', 'contact']) {
+        await page.locator(`section#${id}`).scrollIntoViewIfNeeded();
+      }
+      const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+      expect(overflow).toBeLessThanOrEqual(0);
+    });
+  }
+});
