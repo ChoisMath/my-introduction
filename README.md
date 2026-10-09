@@ -25,7 +25,7 @@ npm run build:web && npm run e2e   # 정적 빌드 후 Playwright 스모크
 - 콘텐츠를 바꾸면 `content/ko/*.json` 과 `content/en/*.json` 을 함께 고친다. id 가 어긋나면 `npm run content:validate` 가 실패한다.
 - 색·폰트는 `content/tokens.json` 만 수정한다. `web/src/app/tokens.css` 는 빌드 때 생성된다.
 - Remotion 은 SD 카드에 내려받은 Chrome Headless Shell 로는 루트 로드가 멈추므로 `remotion.config.ts` 가 Playwright 의 Chromium 을 사용한다.
-- 배경음악을 넣으려면 `video/public/audio/bgm.mp3` 를 두고 `npm run render` 를 다시 실행한다.
+- 배경음악 `video/public/audio/bgm.mp3` 는 CC0 트랙(출처·저작자는 `video/public/audio/README.md`). 바꾸려면 같은 경로에 두고 `npm run render`.
 
 ## 배포
 
