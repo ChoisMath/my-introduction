@@ -23,3 +23,9 @@ test('hero shows name and stats shows 5 numbers', async ({ page }) => {
   await expect(page.locator('section#stats [data-count]')).toHaveCount(5);
   await expect(page.locator('section#timeline li')).toHaveCount(6 + 2 + 6);
 });
+
+test('projects shows 5 cards and books shows 3 covers', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.getByTestId('project-card')).toHaveCount(5);
+  await expect(page.locator('section#books img')).toHaveCount(3);
+});
