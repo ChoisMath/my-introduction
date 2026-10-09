@@ -1,0 +1,7 @@
+[
+  { "id": "choisnote", "name": "ChoisNote", "tagline": "교사용 스마트 교무수첩·협업 플랫폼", "description": "일정·학급·상담·AI 생기부·Google 연동. PWA와 Android 앱으로 제공.", "stack": ["Rails 8", "Hotwire", "Tailwind", "PostgreSQL", "Railway"], "url": "https://chois.pro", "mockup": "/img/projects/choisnote.svg" },
+  { "id": "choisclass", "name": "ChoisClass", "tagline": "태블릿 필기 기반 수학 수업 플랫폼", "description": "실시간 필기 공유와 인터랙티브 HTML 도구 페이지.", "stack": ["React", "Fastify", "Socket.IO", "Excalidraw"], "url": "https://class.chois.ai.kr", "urlNote": "교사·학생 전용", "mockup": "/img/projects/choisclass.svg" },
+  { "id": "posanmeal", "name": "PosanMeal", "tagline": "학교 급식 신청·확인 앱", "stack": ["Next.js", "Prisma", "Railway"], "url": "https://meal.posan.kr", "urlNote": "교직원·학생 전용", "mockup": "/img/projects/posanmeal.svg" },
+  { "id": "selfstudy", "name": "자율학습 출석부", "tagline": "자율학습(오후·야간) 출결 관리 앱", "stack": ["Next.js", "Prisma", "Railway"], "url": "https://self.posan.kr", "urlNote": "교직원·학생 전용", "mockup": "/img/projects/selfstudy.svg" },
+  { "id": "mathcoach", "name": "MathCoach", "tagline": "AI 수학 코칭 도구", "description": "문제 은행과 OCR 로 학생 풀이를 읽고 피드백.", "stack": ["Firebase", "Genkit", "Gemini"], "mockup": "/img/projects/mathcoach.svg" }
+]
