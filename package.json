@@ -5,7 +5,8 @@
   "workspaces": [
     "content",
     "web",
-    "video"
+    "video",
+    "card"
   ],
   "engines": {
     "node": ">=24 <25"
@@ -21,7 +22,8 @@
     "render": "bash scripts/render-video.sh",
     "e2e": "npm run e2e -w web",
     "check": "npm run content:validate && npm run test && npm run lint -w web && npm run typecheck -w web && npm run typecheck -w video",
-    "narrate": "tsx scripts/narrate.ts"
+    "narrate": "tsx scripts/narrate.ts",
+    "card": "npm run build -w card"
   },
   "devDependencies": {
     "tsx": "4.23.15",

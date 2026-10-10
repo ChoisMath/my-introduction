@@ -2,7 +2,7 @@
 
 ## 개요
 - 목적: 최재혁(포산고 수학교사) 소개 페이지 `me.chois.pro` 와 Remotion 모션그래픽 소개 영상. 웹·영상이 `content/` 의 JSON 을 단일 소스로 공유한다.
-- 스택: npm workspaces 모노레포 (Node 24) — `content`(zod 4 스키마 + JSON) / `web`(Next.js 16 App Router, `output: 'export'`, React 19, Tailwind 4, motion 14) / `video`(Remotion 4). 테스트 vitest 5 + Playwright.
+- 스택: npm workspaces 모노레포 (Node 24) — `content`(zod 4 스키마 + JSON) / `web`(Next.js 16 App Router, `output: 'export'`, React 19, Tailwind 4, motion 14) / `video`(Remotion 4) / `card`(명함 인쇄 PDF, Playwright Chromium). 테스트 vitest 5 + Playwright.
 - 배포: `main` push → GitHub Actions → GitHub Pages (`web/out`). 커스텀 도메인 `web/public/CNAME` = `me.chois.pro`. **DB·서버·Prisma 없음**(정적 사이트). 영상·이미지 산출물은 CI 가 만들지 않고 커밋한다.
 - 설계/계획 문서: `docs/superpowers/specs/2026-10-09-my-introduction-design.md`, `docs/superpowers/plans/2026-10-09-my-introduction.md`, 약력 초안 `docs/content/profile-draft.md`.
 
@@ -43,13 +43,19 @@
 │   ├── scripts/copy-font.mjs      # postinstall: Pretendard woff2 → public/fonts (gitignore)
 │   ├── public/ img/ (web/public/img 복사본), audio/bgm.mp3, narration/ko/*.wav + manifest.json
 │   └── narration/ref/             # 참조 음성 (gitignore)
+├── card/                          # @me/card — 명함 인쇄용 PDF/PNG 생성 (HTML → Playwright Chromium)
+│   ├── build.mjs                  # 교표 svg + QR(me.chois.pro) → template 렌더 → print/ 산출
+│   ├── template.mjs               # CARD(문구·연락처·색·86×52mm trim/bleed 2/safe 3) + renderCardHtml
+│   ├── print/                     # 커밋 산출물: business-card.pdf, business-card-cropmarks.pdf, front.png, back.png
+│   ├── .work/                     # 중간 HTML (gitignore)
+│   └── README.md                  # 사용법·인쇄 메모
 ├── scripts/                       # 루트 npm 스크립트 구현 (+ __tests__ 2개)
 │   ├── validate-content.ts        # ko/en id 패리티 검사
 │   ├── gen-tokens-css.ts          # tokens.json → web/src/app/tokens.css (@theme)
 │   ├── prepare-assets.sh          # asset/ → web/public/img (+ video/public/img rsync)
 │   ├── render-video.sh            # Remotion 렌더 → web/public/video, og.png, 포스터
 │   └── narrate.ts                 # narration.json → Qwen3-TTS wav + manifest
-├── asset/                         # 원본 이미지 (증명사진·픽토그램·표지 3·목업 5) — asset/README.md
+├── asset/                         # 원본 이미지 (증명사진·픽토그램·표지 3·목업 5·포산고 교표 svg) — asset/README.md
 ├── docs/                          # 설계·계획·약력 초안
 ├── vitest.config.ts, tsconfig.base.json, package.json
 ```
@@ -72,6 +78,8 @@ Remotion 컴포지션 (`video/src/Root.tsx`, 1920×1080 30fps):
 | `Intro-ko` / `Intro-en` | `compositions/Intro.tsx` | `buildPlan(locale)` 씬 합 (ko 약 82초) | props `{locale, bgm}`; 8개 씬 Sequence + BGM 페이드 |
 | `HeroLoop` | `compositions/HeroLoop.tsx` | `HERO_LOOP_DURATION` = 20초 | Opening(6s, 이름 없음) + Timeline(14s, minimal) + 흰 베일 루프 |
 | `OgImage` | `compositions/OgImage.tsx` | Still 1200×630 | 공유 이미지 |
+
+명함 (`card/`, `npm run card`): `template.mjs` HTML 을 Playwright Chromium 으로 렌더 → `card/print/business-card.pdf`(2쪽 앞/뒤, 재단 여백 포함 90×56mm 인쇄 입고용), `business-card-cropmarks.pdf`(재단선·안전선 가이드), `front.png`/`back.png`(300dpi 미리보기). 모든 산출물은 커밋.
 
 ## 데이터 모델 (content 워크스페이스 — `content/schema.ts`)
 Prisma 대신 zod 스키마로 검증되는 JSON. `getContent(locale)` 이 파싱·캐시, `npm run content:validate` 가 ko/en id 패리티를 검사.
@@ -122,7 +130,7 @@ Prisma 대신 zod 스키마로 검증되는 JSON. `getContent(locale)` 이 파�
 | `TTS_MODEL` | Qwen3-TTS 모델 | `mlx-community/Qwen3-TTS-12Hz-1.7B-Base-bf16` |
 
 - 로컬 도구: `cwebp`(brew webp), `sips`, `ffmpeg`/`ffprobe`, Playwright Chromium(`npx playwright install chromium`), mlx-audio venv.
-- 주요 패키지: next 16.4 / react 19.2 / motion 14 / tailwindcss 4.3 / remotion 4.0.534 / zod 4.6 / vitest 5 / @playwright/test 1.64 / pretendard, @fontsource-variable/jetbrains-mono.
+- 주요 패키지: next 16.4 / react 19.2 / motion 14 / tailwindcss 4.3 / remotion 4.0.534 / zod 4.6 / vitest 5 / @playwright/test 1.64 / pretendard, @fontsource-variable/jetbrains-mono. `card` 는 playwright 1.64 / qrcode 1.5 / pretendard 1.3.
 - 외부 자원: 배경음악 CC0 "Calm Ambient 3" (cynicmusic) — `video/public/audio/README.md`.
 
 ## 명령 (루트 `package.json`)
@@ -135,6 +143,7 @@ Prisma 대신 zod 스키마로 검증되는 JSON. `getContent(locale)` 이 파�
 | `npm run narrate` | 대본 → wav + manifest (변경된 키만 재생성) |
 | `npm run render` | Intro-ko·HeroLoop(mp4/webm)·OgImage 렌더 + 포스터(2s 프레임) → web/public, 용량 상한 검사 |
 | `npm run video:studio` | Remotion 스튜디오 |
+| `npm run card` | `card/build.mjs` — 명함 PDF 2종 + PNG 2장 → `card/print/` (Playwright Chromium 필요) |
 
 ## 주의사항 / 특이 패턴
 - **콘텐츠 단일 소스**: `content/ko/*.json` 과 `content/en/*.json` 을 항상 함께 수정. id·배열 길이·`since` 가 어긋나면 `content:validate` 가 실패해 CI 가 멈춘다.
@@ -147,6 +156,7 @@ Prisma 대신 zod 스키마로 검증되는 JSON. `getContent(locale)` 이 파�
 - **영상 씬 길이는 내레이션 길이로 결정**: `timeline.ts buildScenes` 가 `manifest.json` 클립 길이로 계산. 대본(`ko/narration.json`)을 바꾸면 반드시 `narrate → render` 순서. 타임라인 노드는 대본에 있는 경력만(car-2013 제외). en 은 manifest 가 비어 기본 길이로 렌더.
 - **Remotion 브라우저**: SD 카드의 Chrome Headless Shell 은 멈추므로 `remotion.config.ts` 가 Playwright 캐시의 Chromium 을 쓴다.
 - **참조 음성·폰트·tokens.css·렌더 중간물은 gitignore** (`video/narration/ref/`, `video/public/fonts/`, `video/out/`, `web/out/`). 반면 `web/public/video/*`, `web/public/img/*`, `video/public/narration/ko/*.wav` 는 **커밋 대상**(CI 가 만들지 않음).
+- **명함(`card/`)**: 문구·연락처·색 수정은 `card/template.mjs` 의 `CARD` 에서만 하고 `npm run card` 로 재생성. PDF 는 **RGB**(CMYK 변환은 인쇄소에 맡김). 폰트는 Pretendard static woff2(400–800)를 써서 Chromium 이 Type 3 대신 TrueType 으로 임베드한다 — variable 폰트로 바꾸지 말 것. 레이아웃 단위는 전부 mm. 교표 원본 `.ai` 는 PDF 호환 없이 저장돼 저장소에 없고 아웃라인 svg(`asset/포산고등학교교표.svg`)만 있다.
 - **렌더 용량 상한**: intro-ko.mp4 20MB, hero-loop.{mp4,webm} 5MB — 초과 시 `render-video.sh` 가 실패, crf 를 올릴 것.
 - **연차("N년차")는 빌드 시각 기준**(`computeStats`, 3월 임용 기준) → deploy.yml 이 매년 3/1 cron 으로 재빌드.
 - **반응형 규칙 적용 지점**: 표는 `.data-table`(globals.css, sticky header/col + nowrap), body `word-break: keep-all`, 히어로 높이 `100dvh - var(--nav-h)`, 터치 타겟 `min-h-11`.
