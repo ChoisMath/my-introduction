@@ -1,5 +1,5 @@
 import path from 'node:path';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { ADMIN_PATH, MANIFEST_PATH, VolumeError, isServablePath, isUploadablePath, resolveIn, volumeRoot } from './volume';
 
 describe('volume paths', () => {
@@ -37,5 +37,13 @@ describe('volumeRoot', () => {
   it('resolves a relative path', () => {
     process.env.RAILWAY_VOLUME_MOUNT_PATH = './.local-volume';
     expect(path.isAbsolute(volumeRoot())).toBe(true);
+  });
+  it('rejects a relative path in production', () => {
+    process.env.RAILWAY_VOLUME_MOUNT_PATH = './.local-volume';
+    vi.stubEnv('NODE_ENV', 'production');
+    expect(() => volumeRoot()).toThrow(VolumeError);
+    process.env.RAILWAY_VOLUME_MOUNT_PATH = '/data';
+    expect(volumeRoot()).toBe('/data');
+    vi.unstubAllEnvs();
   });
 });

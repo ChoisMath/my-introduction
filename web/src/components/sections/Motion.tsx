@@ -11,7 +11,7 @@ export function Motion({ items, ui, locale }: { items: MotionCardData[]; ui: Ui;
       <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3">
         {items.map((m) => (
           <li key={m.id}>
-            <MotionCard item={m} label={locale === 'en' ? m.en : m.name} />
+            <MotionCard item={m} label={locale === 'en' ? m.en : m.name} subtitle={locale === 'en' ? null : undefined} />
           </li>
         ))}
       </ul>

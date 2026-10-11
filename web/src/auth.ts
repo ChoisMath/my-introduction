@@ -8,6 +8,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   session: { strategy: 'jwt' },
   trustHost: true,
   callbacks: {
-    signIn: ({ user }) => isAdminEmail(user.email, process.env.ADMIN_EMAILS),
+    signIn: ({ user, profile }) => profile?.email_verified !== false && isAdminEmail(user.email, process.env.ADMIN_EMAILS),
   },
 });

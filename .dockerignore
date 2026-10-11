@@ -11,3 +11,4 @@ web/test-results
 web/playwright-report
 video/*
 !video/package.json
+**/.env*

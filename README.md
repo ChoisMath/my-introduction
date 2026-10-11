@@ -19,7 +19,7 @@ npm run dev                 # 웹 개발 서버
 npm run video:studio        # Remotion 스튜디오
 npm run render              # 영상 렌더 → web/public/video, web/public/img/og.png
 npm run check               # 콘텐츠 검증 + 단위 테스트 + lint + 타입 검사
-npm run build:web && npm run e2e   # 정적 빌드 후 Playwright 스모크
+npm run build:web && npm run e2e   # standalone 빌드 후 Playwright e2e
 ```
 
 - 콘텐츠를 바꾸면 `content/ko/*.json` 과 `content/en/*.json` 을 함께 고친다. id 가 어긋나면 `npm run content:validate` 가 실패한다.
@@ -40,4 +40,4 @@ npm run build:web && npm run e2e   # 정적 빌드 후 Playwright 스모크
 3. `MEDIA_PUSH_URL=https://me.chois.pro MEDIA_UPLOAD_TOKEN=… npm run media:push` — 바뀐 파일만 업로드. 재배포 없이 바로 반영.
 
 ### 로컬 실행
-`web/.env.local` 에 `.env.example` 값을 채우고 `npm run dev`. 영상은 `.local-volume/` 을 Volume 으로 쓴다. `npm start`(standalone)는 server.js 폴더로 chdir 하므로 `RAILWAY_VOLUME_MOUNT_PATH` 를 반드시 절대경로로 지정한다.
+`web/.env.local` 에 루트 `.env.example` 값을 채우고 `npm run dev`. 영상은 `.local-volume/` 을 Volume 으로 쓴다. `npm start`(standalone)는 server.js 폴더로 chdir 하므로 `RAILWAY_VOLUME_MOUNT_PATH` 를 반드시 절대경로로 지정한다.

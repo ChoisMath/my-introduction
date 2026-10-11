@@ -38,6 +38,8 @@ describe('serveMedia', () => {
     const r = await serveMedia(root, rel, req({ range: 'bytes=5000-' }));
     expect(r.status).toBe(416);
     expect(r.headers.get('content-range')).toBe('bytes */1000');
+    expect(r.headers.get('cache-control')).toBeNull();
+    expect(r.headers.get('etag')).toBeNull();
   });
   it('answers HEAD without a body', async () => {
     const r = await serveMedia(root, rel, req({}, 'HEAD'));

@@ -11,6 +11,11 @@ describe('ci workflow', () => {
     expect(yml).toContain('run: npm run build:web');
     expect(yml).toContain('run: npm run e2e');
   });
+  it('builds the production docker image without pushing', () => {
+    expect(yml).toMatch(/\n  docker:\n/);
+    expect(yml).toContain('run: docker build -t me-chois .');
+    expect(yml).not.toContain('docker push');
+  });
   it('no longer deploys to GitHub Pages', () => {
     expect(existsSync(path.join(root, '.github/workflows/deploy.yml'))).toBe(false);
     expect(yml).not.toContain('deploy-pages');

@@ -27,6 +27,7 @@ async function put(rel: string) {
   console.info(`uploaded ${rel}`);
 }
 
+if (!existsSync(path.join(OUT, ADMIN))) throw new Error(`${ADMIN} missing — run npm run motion:import first`);
 const local = mediaManifestSchema.parse(JSON.parse(await readFile(path.join(OUT, MANIFEST), 'utf8')));
 const remoteRes = await fetch(`${BASE}/api/media/manifest`, { headers: auth });
 if (!remoteRes.ok) throw new Error(`manifest fetch failed: ${remoteRes.status}`);
@@ -34,7 +35,6 @@ const remote = mediaManifestSchema.parse(await remoteRes.json());
 const changed = diffManifest(local, remote);
 console.info(`${changed.length} changed of ${Object.keys(local).length}`);
 for (const rel of changed) await put(rel);
-if (!existsSync(path.join(OUT, ADMIN))) throw new Error(`${ADMIN} missing — run npm run motion:import first`);
 await put(ADMIN);
 await put(MANIFEST);
 console.info('done');

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { Suspense } from 'react';
 import { MOTION_GROUPS, getContent } from '@me/content';
 import { MotionGallery } from '@/components/motion-gallery/MotionGallery';
 import { getRenderedMotions } from '@/lib/media';
@@ -13,8 +14,7 @@ export const metadata: Metadata = {
   alternates: { canonical: '/motion/' },
 };
 
-export default async function MotionPage({ searchParams }: { searchParams: Promise<{ g?: string }> }) {
-  const { g } = await searchParams;
+export default async function MotionPage() {
   const items = await getRenderedMotions();
   return (
     <section className="px-2 py-8 sm:px-3 md:px-4 lg:px-6">
@@ -22,7 +22,9 @@ export default async function MotionPage({ searchParams }: { searchParams: Promi
         <h1 className="mb-2 text-2xl font-bold tracking-tight sm:text-3xl">{ui.sections.motion}</h1>
         <p className="mb-4 text-muted">{ui.motion.intro}</p>
         {items.length > 0 ? (
-          <MotionGallery items={items} groups={MOTION_GROUPS} allLabel={ui.motion.all} initialGroup={g ?? null} />
+          <Suspense>
+            <MotionGallery items={items} groups={MOTION_GROUPS} allLabel={ui.motion.all} />
+          </Suspense>
         ) : (
           <p data-testid="motion-empty" className="text-muted">{ui.motion.empty}</p>
         )}

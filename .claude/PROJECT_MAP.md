@@ -41,7 +41,7 @@
 │   ├── src/auth.ts                # NextAuth v5 (Google, ADMIN_EMAILS 화이트리스트)
 │   ├── src/lib/  locale, metadata, sections, volume, media, media-serve, media-upload, range, motion-admin, admin-emails, admin-session (+ *.test.ts)
 │   ├── e2e/ smoke, platform, motion, admin, security .spec.ts  # Playwright (standalone 서버 포트 3100, e2e/.volume 픽스처)
-│   └── public/  CNAME, robots.txt, sitemap.xml, .nojekyll, img/, video/
+│   └── public/  robots.txt, sitemap.xml, img/, video/
 ├── video/                         # Remotion
 │   ├── remotion.config.ts         # Playwright Chromium 사용, @me/content alias
 │   ├── src/Root.tsx               # 컴포지션 등록
@@ -148,7 +148,7 @@ Prisma 대신 zod 스키마로 검증되는 JSON. `getContent(locale)` 이 파�
 
 ## 외부 의존성
 - 외부 서비스: Railway(호스팅·Volume), Google OAuth(관리자 로그인, next-auth 5.0.0-beta.32). DB 없음.
-- 서버 환경변수: `RAILWAY_VOLUME_MOUNT_PATH`(절대경로), `PORT`(Railway 자동), `AUTH_SECRET`, `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET`, `ADMIN_EMAILS`(쉼표 구분), `MEDIA_UPLOAD_TOKEN`. 예시는 `web/.env.example`.
+- 서버 환경변수: `RAILWAY_VOLUME_MOUNT_PATH`(절대경로), `PORT`(Railway 자동), `AUTH_SECRET`, `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET`, `ADMIN_EMAILS`(쉼표 구분), `MEDIA_UPLOAD_TOKEN`. 예시는 루트 `.env.example`.
 - 스크립트 전용: `MOTION_SRC`(motion 폴더, motion:import), `MEDIA_PUSH_URL`(+`MEDIA_UPLOAD_TOKEN`, media:push).
 - `scripts/narrate.ts` 만 선택적으로 사용:
 
@@ -196,9 +196,9 @@ Prisma 대신 zod 스키마로 검증되는 JSON. `getContent(locale)` 이 파�
 - **렌더 용량 상한**: intro-ko.mp4 20MB, hero-loop.{mp4,webm} 5MB — 초과 시 `render-video.sh` 가 실패, crf 를 올릴 것. intro-ko.mp4 길이 = 스팅 10s + 본편.
 - **스팅(video/sting) 수정 규칙**: 텍스트를 바꾸려면 `vars/*.json` 과 `index.html` 의 variable default 를 **함께** 수정. 큐 시각을 바꾸면 영상·오디오가 같이 움직이므로 `#cues` JSON 만 수정하고 `npm run render:sting` 재실행(사운드트랙이 큐에서 재합성됨). 스팅과 본편은 인코딩 파라미터가 달라 concat demuxer 로 못 붙이고 `prepend_sting` 이 필터로 재인코딩한다.
 - **HyperFrames 렌더 브라우저**: `~/.cache/hyperframes` 의 chrome-headless-shell 을 쓴다(Remotion 의 Playwright Chromium 과 별개). `npx hyperframes lint` 의 sub-composition 분할 경고는 "단일 HTML" 요구사항 때문에 의도적으로 무시.
-- **연차("N년차")는 빌드 시각 기준**(`computeStats`, 3월 임용 기준) → 매년 3/1 에 Railway 수동 재배포 필요(deploy.yml cron 폐지).
+- **연차("N년차")는 요청 시각 기준**(`computeStats`, 3월 임용 기준) → 홈이 force-dynamic 이라 요청마다 계산되므로 재배포 없이 자동 갱신된다.
 - **반응형 규칙 적용 지점**: 표는 `.data-table`(globals.css, sticky header/col + nowrap), body `word-break: keep-all`, 히어로 높이 `100dvh - var(--nav-h)`, 터치 타겟 `min-h-11`.
-- 테스트: vitest 10개(content 4, scripts 2, web/lib 1, video 4 — `vitest.config.ts` include 참고), Playwright 5 파일(smoke, platform, motion, admin, security — 38개). `check` 는 e2e 를 돌리지 않고 CI 워크플로가 build 후 따로 실행.
+- 테스트: vitest 22개 파일(`vitest.config.ts` include 참고), Playwright 5 파일(smoke, platform, motion, admin, security — 38개). `check` 는 e2e 를 돌리지 않고 CI 워크플로가 build 후 따로 실행.
 - 문서 불일치 메모: `video/public/audio/README.md` 는 BGM 볼륨 0.6 이라 적혀 있으나 실제 `Intro.tsx` `BGM_LEVEL` 은 0.22.
 
 ---

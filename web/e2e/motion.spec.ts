@@ -21,6 +21,10 @@ test('gallery filters by group and keeps it in the url', async ({ page }) => {
   await expect(page).toHaveURL(/\?g=/);
   await page.reload();
   await expect(page.getByTestId('motion-card')).toHaveCount(1);
+  await page.getByTestId('motion-card').click();
+  await expect(page).toHaveURL(/\/motion\/\d{2}-/);
+  await page.goBack();
+  await expect(page.getByTestId('motion-card')).toHaveCount(1);
   await page.getByRole('button', { name: /^전체/ }).click();
   await expect(page.getByTestId('motion-card')).toHaveCount(2);
 });

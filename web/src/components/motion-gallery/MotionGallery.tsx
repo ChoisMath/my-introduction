@@ -1,16 +1,17 @@
 'use client';
-import { useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import type { MotionCardData } from '@/lib/media';
 import { MotionCard } from './MotionCard';
 
-type Props = { items: MotionCardData[]; groups: readonly string[]; allLabel: string; initialGroup: string | null };
+type Props = { items: MotionCardData[]; groups: readonly string[]; allLabel: string };
 
-export function MotionGallery({ items, groups, allLabel, initialGroup }: Props) {
+export function MotionGallery({ items, groups, allLabel }: Props) {
   const present = groups.filter((g) => items.some((m) => m.group === g));
-  const [group, setGroup] = useState<string | null>(initialGroup && present.includes(initialGroup) ? initialGroup : null);
+  // 상세에서 뒤로 오면 RSC 페이로드가 낡을 수 있어 URL 이 유일한 진실 공급원이다.
+  const requested = useSearchParams().get('g');
+  const group = requested && present.includes(requested) ? requested : null;
   const shown = group ? items.filter((m) => m.group === group) : items;
   const choose = (g: string | null) => {
-    setGroup(g);
     history.replaceState(null, '', g ? `?g=${encodeURIComponent(g)}` : location.pathname);
   };
   return (

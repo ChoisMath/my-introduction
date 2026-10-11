@@ -23,15 +23,15 @@ export async function serveMedia(root: string, rel: string, req: Request): Promi
   const headers = new Headers({
     'Content-Type': CONTENT_TYPES[path.extname(file)] ?? 'application/octet-stream',
     'Accept-Ranges': 'bytes',
-    // URL 에 ?v=<sha> 가 붙어 내용이 바뀌면 주소도 바뀐다.
-    'Cache-Control': 'public, max-age=31536000, immutable',
-    ETag: `"${size}-${Math.trunc(info.mtimeMs)}"`,
   });
   const range = parseRange(req.headers.get('range'), size);
   if (range === 'unsatisfiable') {
     headers.set('Content-Range', `bytes */${size}`);
     return new Response(null, { status: 416, headers });
   }
+  // URL 에 ?v=<sha> 가 붙어 내용이 바뀌면 주소도 바뀐다. 416 에 immutable 을 붙이면 오류가 캐시된다.
+  headers.set('Cache-Control', 'public, max-age=31536000, immutable');
+  headers.set('ETag', `"${size}-${Math.trunc(info.mtimeMs)}"`);
   const { start, end } = range ?? { start: 0, end: Math.max(0, size - 1) };
   const length = size === 0 ? 0 : end - start + 1;
   headers.set('Content-Length', String(length));

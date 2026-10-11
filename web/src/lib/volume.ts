@@ -11,6 +11,8 @@ const SERVABLE = /^media\/motion\/\d{2}-[a-z0-9-]+\/(video\.mp4|preview\.mp4|pos
 export function volumeRoot(): string {
   const root = process.env.RAILWAY_VOLUME_MOUNT_PATH;
   if (!root) throw new VolumeError('RAILWAY_VOLUME_MOUNT_PATH is not set');
+  // standalone 서버는 server.js 폴더로 chdir 하므로 상대경로는 엉뚱한 곳을 가리킨다.
+  if (process.env.NODE_ENV === 'production' && !path.isAbsolute(root)) throw new VolumeError('RAILWAY_VOLUME_MOUNT_PATH must be absolute in production');
   return path.resolve(root);
 }
 

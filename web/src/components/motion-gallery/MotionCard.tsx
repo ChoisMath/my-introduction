@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { useRef } from 'react';
 import type { MotionCardData } from '@/lib/media';
 
-export function MotionCard({ item, label, href }: { item: MotionCardData; label: string; href?: string }) {
+export function MotionCard({ item, label, href, subtitle }: { item: MotionCardData; label: string; href?: string; subtitle?: string | null }) {
   const video = useRef<HTMLVideoElement>(null);
   // 터치 기기는 호버가 없으므로 미리보기를 받지 않고 탭하면 바로 상세로 간다.
   const play = () => {
@@ -39,7 +39,11 @@ export function MotionCard({ item, label, href }: { item: MotionCardData; label:
         <span className="font-mono text-xs text-muted">{String(item.no).padStart(2, '0')}</span>
         <span className="min-w-0 overflow-hidden text-sm font-bold text-ellipsis whitespace-nowrap" title={label}>{label}</span>
       </div>
-      <p className="overflow-hidden px-2 pb-2 text-xs text-ellipsis whitespace-nowrap text-muted" title={item.use}>{item.use}</p>
+      {subtitle === null ? (
+        <div className="pb-2" />
+      ) : (
+        <p className="overflow-hidden px-2 pb-2 text-xs text-ellipsis whitespace-nowrap text-muted" title={subtitle ?? item.use}>{subtitle ?? item.use}</p>
+      )}
     </Link>
   );
 }
