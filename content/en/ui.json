@@ -7,6 +7,7 @@
     "timeline": "Career",
     "pillars": "Work",
     "projects": "Projects",
+    "motion": "Motion",
     "books": "Books",
     "lectures": "Lectures",
     "contact": "Contact"
@@ -32,6 +33,7 @@
     "awards": "Credentials & awards",
     "pillars": "What I do",
     "projects": "Things I built",
+    "motion": "Vibe-coding motion graphics",
     "books": "Books",
     "materials": "Items & materials",
     "lectures": "Lectures & trainings",
@@ -42,6 +44,16 @@
     "visit": "Site",
     "watch": "Video",
     "stack": "Stack"
+  },
+  "motion": {
+    "intro": "10-second intros I made with HyperFrames — from vibe-coding basics to agentic AI",
+    "viewAll": "See all",
+    "empty": "Videos are on the way.",
+    "all": "All",
+    "admin": "Admin",
+    "back": "Back to list",
+    "prev": "Previous",
+    "next": "Next"
   },
   "lectures": {
     "teacher": "For teachers",

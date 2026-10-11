@@ -7,6 +7,7 @@
     "timeline": "경력",
     "pillars": "하는 일",
     "projects": "만든 서비스",
+    "motion": "모션",
     "books": "저서",
     "lectures": "강의",
     "contact": "연락"
@@ -32,6 +33,7 @@
     "awards": "자격·수상",
     "pillars": "하는 일",
     "projects": "만든 서비스",
+    "motion": "바이브코딩 모션그래픽",
     "books": "저서",
     "materials": "출제·자료 개발",
     "lectures": "강의·연수 이력",
@@ -42,6 +44,16 @@
     "visit": "사이트",
     "watch": "소개 영상",
     "stack": "스택"
+  },
+  "motion": {
+    "intro": "기초 바이브코딩부터 에이전틱 AI까지 — HyperFrames 로 직접 만든 10초 인트로",
+    "viewAll": "전체 보기",
+    "empty": "영상을 준비하고 있습니다.",
+    "all": "전체",
+    "admin": "관리자",
+    "back": "목록으로",
+    "prev": "이전",
+    "next": "다음"
   },
   "lectures": {
     "teacher": "교사 대상",

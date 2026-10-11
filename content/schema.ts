@@ -86,16 +86,17 @@ export const uiSchema = z.object({
   siteDescription: z.string().min(1),
   nav: z.object({
     hero: z.string(), stats: z.string(), timeline: z.string(), pillars: z.string(),
-    projects: z.string(), books: z.string(), lectures: z.string(), contact: z.string(),
+    projects: z.string(), motion: z.string(), books: z.string(), lectures: z.string(), contact: z.string(),
   }),
   hero: z.object({ watchVideo: z.string(), playVideo: z.string(), closeVideo: z.string(), scrollHint: z.string() }),
   // 강의·연수 횟수는 숫자 대신 "다수" 같은 표현으로 보여준다.
   stats: z.object({ years: z.string(), lectures: z.string(), lecturesValue: z.string(), books: z.string(), services: z.string(), awards: z.string() }),
   sections: z.object({
     stats: z.string(), timeline: z.string(), education: z.string(), awards: z.string(), groups: z.string(), pillars: z.string(),
-    projects: z.string(), books: z.string(), materials: z.string(), lectures: z.string(), contact: z.string(),
+    projects: z.string(), motion: z.string(), books: z.string(), materials: z.string(), lectures: z.string(), contact: z.string(),
   }),
   projects: z.object({ visit: z.string(), watch: z.string(), stack: z.string() }),
+  motion: z.object({ intro: z.string(), viewAll: z.string(), empty: z.string(), all: z.string(), admin: z.string(), back: z.string(), prev: z.string(), next: z.string() }),
   lectures: z.object({ teacher: z.string(), student: z.string(), period: z.string(), title: z.string(), org: z.string() }),
   contact: z.object({ email: z.string(), github: z.string(), sites: z.string() }),
   lang: z.object({ switchTo: z.string(), switchLabel: z.string() }),
