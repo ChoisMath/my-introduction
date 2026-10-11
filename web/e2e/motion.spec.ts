@@ -48,6 +48,13 @@ test.describe('mobile 375px', () => {
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
     expect(overflow).toBeLessThanOrEqual(0);
   });
+  for (const p of ['/motion/01-pixel/', '/#motion']) {
+    test(`${p} has no horizontal page scroll`, async ({ page }) => {
+      await page.goto(p);
+      const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+      expect(overflow).toBeLessThanOrEqual(0);
+    });
+  }
 });
 
 test('admin pages require sign-in', async ({ page }) => {

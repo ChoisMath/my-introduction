@@ -32,7 +32,7 @@ export function MotionCard({ item, label, href }: { item: MotionCardData; label:
         {/* eslint-disable-next-line @next/next/no-img-element -- Volume 에서 스트리밍하는 버전 URL 이라 next/image 대상이 아니다 */}
         <img src={item.poster} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
         {item.preview ? (
-          <video ref={video} muted loop playsInline preload="none" aria-hidden className="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity group-hover:opacity-100" />
+          <video ref={video} muted loop playsInline preload="none" aria-hidden className="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100" />
         ) : null}
       </div>
       <div className="flex items-baseline gap-2 px-2 pt-2">

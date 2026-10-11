@@ -5,7 +5,7 @@
 ## 구조
 
 - `content/` — 약력·서비스·UI 문구(ko/en JSON)와 디자인 토큰. 웹과 영상이 함께 읽는 단일 소스.
-- `web/` — Next.js 16 정적 사이트 (`/` 한국어, `/en/` 영어).
+- `web/` — Next.js 16 standalone 서버 (`/` 한국어, `/en/` 영어, `/motion` 모션 갤러리·관리자).
 - `video/` — Remotion 소개 영상(82초)·히어로 루프(20초)·OG 이미지.
 - `asset/` — 원본 이미지. 교체 방법은 `asset/README.md`.
 
@@ -28,6 +28,16 @@ npm run build:web && npm run e2e   # 정적 빌드 후 Playwright 스모크
 - 내레이션: `content/ko/narration.json` 대본 → `npm run narrate` 가 Qwen3-TTS(mlx-audio, `/Volumes/Chois_SD2/venvs/mlx-audio`)로 `video/public/narration/ko/*.wav` 와 `manifest.json`(클립 길이)을 만든다. 참조 음성 `video/narration/ref/chois.{wav,txt}`(Voicebox "Chois" 프로필)는 git 에 올리지 않는다. 씬 길이는 manifest 의 클립 길이로 계산되므로 대본을 바꾸면 narrate → render 순서로 돌린다.
 - 배경음악 `video/public/audio/bgm.mp3` 는 CC0 트랙(출처·저작자는 `video/public/audio/README.md`). 바꾸려면 같은 경로에 두고 `npm run render`.
 
-## 배포
+## 배포 (Railway)
 
-`main` push → GitHub Actions(`.github/workflows/deploy.yml`) → GitHub Pages. 커스텀 도메인은 `web/public/CNAME`(`me.chois.pro`)이며 name.com DNS 에 `me CNAME choismath.github.io.` 가 필요하다. 영상·이미지 산출물은 CI 에서 만들지 않고 커밋한다.
+- `main` push → GitHub Actions CI 통과 → Railway 가 `Dockerfile` 로 빌드·배포. 헬스체크 `/api/health`.
+- Volume `/data` (1 GB): `media/motion/<id>/{video.mp4,preview.mp4,poster.webp}`, `media/motion/manifest.json`, `private/motion-admin.json`.
+- 환경변수: `AUTH_SECRET`, `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET`, `ADMIN_EMAILS`, `MEDIA_UPLOAD_TOKEN` (`RAILWAY_VOLUME_MOUNT_PATH`·`PORT` 는 Railway 자동).
+
+### 모션 영상 올리기
+1. (motion 폴더에서 렌더 후) `npm run motion:import` — 공개 데이터 갱신(커밋), 관리자 데이터는 `.media-out/` 에만.
+2. `npm run media:prepare` — 웹용 인코딩·포스터·manifest.
+3. `MEDIA_PUSH_URL=https://me.chois.pro MEDIA_UPLOAD_TOKEN=… npm run media:push` — 바뀐 파일만 업로드. 재배포 없이 바로 반영.
+
+### 로컬 실행
+`web/.env.local` 에 `.env.example` 값을 채우고 `npm run dev`. 영상은 `.local-volume/` 을 Volume 으로 쓴다. `npm start`(standalone)는 server.js 폴더로 chdir 하므로 `RAILWAY_VOLUME_MOUNT_PATH` 를 반드시 절대경로로 지정한다.
