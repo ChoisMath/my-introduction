@@ -1,0 +1,13 @@
+**/node_modules
+**/.next
+.git
+.media-out
+.local-volume
+asset
+docs
+web/out
+web/e2e
+web/test-results
+web/playwright-report
+video/*
+!video/package.json

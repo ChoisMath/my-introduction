@@ -20,6 +20,7 @@
     "build:web": "npm run build -w web",
     "video:studio": "npm run studio -w video",
     "render": "bash scripts/render-video.sh",
+    "start": "npm run start -w web",
     "e2e": "npm run e2e -w web",
     "check": "npm run content:validate && npm run test && npm run lint -w web && npm run typecheck -w web && npm run typecheck -w video",
     "narrate": "tsx scripts/narrate.ts",

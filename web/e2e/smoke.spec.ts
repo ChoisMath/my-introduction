@@ -100,7 +100,7 @@ test.describe('mobile hero', () => {
 });
 
 test('static seo files are served', async ({ request }) => {
-  for (const p of ['/robots.txt', '/sitemap.xml', '/CNAME', '/img/og.png', '/video/intro-ko.mp4', '/video/intro-en.mp4']) {
+  for (const p of ['/robots.txt', '/sitemap.xml', '/img/og.png', '/video/intro-ko.mp4', '/video/intro-en.mp4']) {
     const r = await request.get(p);
     expect(r.status(), p).toBe(200);
   }
