@@ -2,7 +2,7 @@
 
 ## 개요
 - 목적: 최재혁(포산고 수학교사) 소개 페이지 `me.chois.pro` 와 Remotion 모션그래픽 소개 영상. 웹·영상이 `content/` 의 JSON 을 단일 소스로 공유한다.
-- 스택: npm workspaces 모노레포 (Node 24) — `content`(zod 4 스키마 + JSON) / `web`(Next.js 16 App Router, `output: 'export'`, React 19, Tailwind 4, motion 14) / `video`(Remotion 4). 테스트 vitest 5 + Playwright.
+- 스택: npm workspaces 모노레포 (Node 24) — `content`(zod 4 스키마 + JSON) / `web`(Next.js 16 App Router, `output: 'export'`, React 19, Tailwind 4, motion 14) / `video`(Remotion 4). 소개 영상 맨 앞 10초 스팅은 별도 `video/sting/`(HyperFrames, HTML+GSAP — 워크스페이스 아님, 자체 package.json). 테스트 vitest 5 + Playwright.
 - 배포: `main` push → GitHub Actions → GitHub Pages (`web/out`). 커스텀 도메인 `web/public/CNAME` = `me.chois.pro`. **DB·서버·Prisma 없음**(정적 사이트). 영상·이미지 산출물은 CI 가 만들지 않고 커밋한다.
 - 설계/계획 문서: `docs/superpowers/specs/2026-10-09-my-introduction-design.md`, `docs/superpowers/plans/2026-10-09-my-introduction.md`, 약력 초안 `docs/content/profile-draft.md`.
 
@@ -42,12 +42,22 @@
 │   ├── src/components/ Grid, Curve, Badge, Clip, MockupCard
 │   ├── scripts/copy-font.mjs      # postinstall: Pretendard woff2 → public/fonts (gitignore)
 │   ├── public/ img/ (web/public/img 복사본), audio/bgm.mp3, narration/ko/*.wav + manifest.json
-│   └── narration/ref/             # 참조 음성 (gitignore)
+│   ├── narration/ref/             # 참조 음성 (gitignore)
+│   └── sting/                     # HyperFrames 10초 네오브루탈리즘 스팅 (Remotion 과 별개 프로젝트)
+│       ├── index.html             # 단일 컴포지션 1920×1080 30fps 10s. data-composition-variables + #cues JSON
+│       ├── audio/ build-soundtrack.mjs, verify-cues.mjs, soundtrack-{ko,en}.wav (코드 합성, 커밋)
+│       ├── vars/ ko.json, en.json # 렌더 시 --variables-file 로 넘기는 로케일 텍스트
+│       ├── fonts/ Black Han Sans(korean/latin)·Archivo Black woff2 (OFL, @fontsource 복사, 커밋)
+│       ├── assets/pictogram.png   # web/public/img/pictogram.png 복사본
+│       ├── BRIEF.md, SHOTLIST.md  # 프롬프트→프로젝트 조정 내역 / 샷 리스트·사운드 큐 시트
+│       ├── package.json (hyperframes@0.8.145 핀), hyperframes.json, meta.json, CLAUDE.md, AGENTS.md
+│       └── node_modules/, snapshots/, renders/   # gitignore
 ├── scripts/                       # 루트 npm 스크립트 구현 (+ __tests__ 2개)
 │   ├── validate-content.ts        # ko/en id 패리티 검사
 │   ├── gen-tokens-css.ts          # tokens.json → web/src/app/tokens.css (@theme)
 │   ├── prepare-assets.sh          # asset/ → web/public/img (+ video/public/img rsync)
-│   ├── render-video.sh            # Remotion 렌더 → web/public/video, og.png, 포스터
+│   ├── render-video.sh            # 스팅 렌더 → Remotion 본편 렌더 → 스팅 이어붙임 → web/public/video, og.png, 포스터
+│   ├── render-sting.sh            # 사운드트랙 합성·큐 검증 → hyperframes render → video/out/sting-{ko,en}.mp4
 │   └── narrate.ts                 # narration.json → Qwen3-TTS wav + manifest
 ├── asset/                         # 원본 이미지 (증명사진·픽토그램·표지 3·목업 5) — asset/README.md
 ├── docs/                          # 설계·계획·약력 초안
@@ -63,7 +73,7 @@
 | `/en/` | `web/src/app/(en)/en/page.tsx` | 영어 홈. `LangToggle` 이 현재 `#hash` 를 유지한 채 전환 |
 | `#hero #stats #timeline #pillars #projects #books #lectures #contact` | `web/src/lib/sections.ts` `SECTION_IDS` | Nav 앵커·e2e 검증 기준 |
 
-정적 파일: `/video/intro-ko.mp4`(소개 영상, VideoDialog), `/video/hero-loop.{mp4,webm}` + `/video/hero-poster.jpg`(히어로 배경), `/img/og.png`(OG 1200×630), `/img/{photo,pictogram}.webp`, `/img/books/*.webp`, `/img/projects/*.webp`.
+정적 파일: `/video/intro-{ko,en}.mp4`(소개 영상 = 10초 스팅 + Remotion 본편, VideoDialog), `/video/hero-loop.{mp4,webm}` + `/video/hero-poster.jpg`(히어로 배경), `/img/og.png`(OG 1200×630), `/img/{photo,pictogram}.webp`, `/img/books/*.webp`, `/img/projects/*.webp`.
 
 Remotion 컴포지션 (`video/src/Root.tsx`, 1920×1080 30fps):
 
@@ -72,6 +82,8 @@ Remotion 컴포지션 (`video/src/Root.tsx`, 1920×1080 30fps):
 | `Intro-ko` / `Intro-en` | `compositions/Intro.tsx` | `buildPlan(locale)` 씬 합 (ko 약 82초) | props `{locale, bgm}`; 8개 씬 Sequence + BGM 페이드 |
 | `HeroLoop` | `compositions/HeroLoop.tsx` | `HERO_LOOP_DURATION` = 20초 | Opening(6s, 이름 없음) + Timeline(14s, minimal) + 흰 베일 루프 |
 | `OgImage` | `compositions/OgImage.tsx` | Still 1200×630 | 공유 이미지 |
+
+HyperFrames 스팅 (`video/sting/index.html`, 1920×1080 30fps 10s): 변수 `name/role/url/card1–4/formula/tape/run/soundtrack` 를 `<html data-composition-variables>` 에 선언하고 `vars/{ko,en}.json` 으로 덮어씀(en 은 `soundtrack` 변수로 wav 도 교체). `<script id="cues" type="application/json">` 이 영상·오디오 큐의 단일 소스(126 BPM 16분음표 격자, 초 단위) — `audio/build-soundtrack.mjs` 가 이 블록을 regex 로 읽어 외부 음원 없이 음악·효과음을 합성해 `audio/soundtrack-{ko,en}.wav`(48kHz 16bit 스테레오)를 만들고, `audio/verify-cues.mjs` 가 각 큐 ±1프레임 온셋을 검증한다.
 
 ## 데이터 모델 (content 워크스페이스 — `content/schema.ts`)
 Prisma 대신 zod 스키마로 검증되는 JSON. `getContent(locale)` 이 파싱·캐시, `npm run content:validate` 가 ko/en id 패리티를 검사.
@@ -122,7 +134,7 @@ Prisma 대신 zod 스키마로 검증되는 JSON. `getContent(locale)` 이 파�
 | `TTS_MODEL` | Qwen3-TTS 모델 | `mlx-community/Qwen3-TTS-12Hz-1.7B-Base-bf16` |
 
 - 로컬 도구: `cwebp`(brew webp), `sips`, `ffmpeg`/`ffprobe`, Playwright Chromium(`npx playwright install chromium`), mlx-audio venv.
-- 주요 패키지: next 16.4 / react 19.2 / motion 14 / tailwindcss 4.3 / remotion 4.0.534 / zod 4.6 / vitest 5 / @playwright/test 1.64 / pretendard, @fontsource-variable/jetbrains-mono.
+- 주요 패키지: next 16.4 / react 19.2 / motion 14 / tailwindcss 4.3 / remotion 4.0.534 / zod 4.6 / vitest 5 / @playwright/test 1.64 / pretendard, @fontsource-variable/jetbrains-mono. `video/sting/package.json`(별도): hyperframes 0.8.145 핀, devDeps `@fontsource/black-han-sans`, `@fontsource/archivo-black`.
 - 외부 자원: 배경음악 CC0 "Calm Ambient 3" (cynicmusic) — `video/public/audio/README.md`.
 
 ## 명령 (루트 `package.json`)
@@ -133,7 +145,8 @@ Prisma 대신 zod 스키마로 검증되는 JSON. `getContent(locale)` 이 파�
 | `npm run e2e` | `web/out` 을 serve(3100) 로 띄워 Playwright 스모크 — 빌드 선행 필요 |
 | `npm run assets` | asset/ → web/public/img, video/public/img, 파비콘 |
 | `npm run narrate` | 대본 → wav + manifest (변경된 키만 재생성) |
-| `npm run render` | Intro-ko·HeroLoop(mp4/webm)·OgImage 렌더 + 포스터(2s 프레임) → web/public, 용량 상한 검사 |
+| `npm run render` | `render:sting` → Intro-{ko,en} 을 `out/intro-*-body.mp4` 로 렌더 → `prepend_sting`(ffmpeg concat 필터 재인코딩, crf 23, aac 160k)으로 `out/intro-{ko,en}.mp4` → HeroLoop(mp4/webm)·OgImage·포스터(2s 프레임) → web/public, 용량 상한 검사. `SKIP_STING=1` 이면 기존 `out/sting-*.mp4` 재사용 |
+| `npm run render:sting` | `video/sting` 사운드트랙 합성+큐 검증 후 `npx hyperframes render` → `video/out/sting-{ko,en}.mp4` |
 | `npm run video:studio` | Remotion 스튜디오 |
 
 ## 주의사항 / 특이 패턴
@@ -146,12 +159,14 @@ Prisma 대신 zod 스키마로 검증되는 JSON. `getContent(locale)` 이 파�
 - **HeroVideo**: 서버 렌더는 항상 포스터 버튼 → 데스크톱(≥640px, reduced-motion 아님)만 하이드레이션 후 영상. 모바일은 탭 후 로드(데이터 절약).
 - **영상 씬 길이는 내레이션 길이로 결정**: `timeline.ts buildScenes` 가 `manifest.json` 클립 길이로 계산. 대본(`ko/narration.json`)을 바꾸면 반드시 `narrate → render` 순서. 타임라인 노드는 대본에 있는 경력만(car-2013 제외). en 은 manifest 가 비어 기본 길이로 렌더.
 - **Remotion 브라우저**: SD 카드의 Chrome Headless Shell 은 멈추므로 `remotion.config.ts` 가 Playwright 캐시의 Chromium 을 쓴다.
-- **참조 음성·폰트·tokens.css·렌더 중간물은 gitignore** (`video/narration/ref/`, `video/public/fonts/`, `video/out/`, `web/out/`). 반면 `web/public/video/*`, `web/public/img/*`, `video/public/narration/ko/*.wav` 는 **커밋 대상**(CI 가 만들지 않음).
-- **렌더 용량 상한**: intro-ko.mp4 20MB, hero-loop.{mp4,webm} 5MB — 초과 시 `render-video.sh` 가 실패, crf 를 올릴 것.
+- **참조 음성·폰트·tokens.css·렌더 중간물은 gitignore** (`video/narration/ref/`, `video/public/fonts/`, `video/out/`, `web/out/`, `video/sting/{node_modules,snapshots,renders}/`). 반면 `web/public/video/*`, `web/public/img/*`, `video/public/narration/ko/*.wav`, `video/sting/fonts/*.woff2`, `video/sting/audio/soundtrack-*.wav` 는 **커밋 대상**(CI 가 만들지 않음).
+- **렌더 용량 상한**: intro-ko.mp4 20MB, hero-loop.{mp4,webm} 5MB — 초과 시 `render-video.sh` 가 실패, crf 를 올릴 것. intro-ko.mp4 길이 = 스팅 10s + 본편.
+- **스팅(video/sting) 수정 규칙**: 텍스트를 바꾸려면 `vars/*.json` 과 `index.html` 의 variable default 를 **함께** 수정. 큐 시각을 바꾸면 영상·오디오가 같이 움직이므로 `#cues` JSON 만 수정하고 `npm run render:sting` 재실행(사운드트랙이 큐에서 재합성됨). 스팅과 본편은 인코딩 파라미터가 달라 concat demuxer 로 못 붙이고 `prepend_sting` 이 필터로 재인코딩한다.
+- **HyperFrames 렌더 브라우저**: `~/.cache/hyperframes` 의 chrome-headless-shell 을 쓴다(Remotion 의 Playwright Chromium 과 별개). `npx hyperframes lint` 의 sub-composition 분할 경고는 "단일 HTML" 요구사항 때문에 의도적으로 무시.
 - **연차("N년차")는 빌드 시각 기준**(`computeStats`, 3월 임용 기준) → deploy.yml 이 매년 3/1 cron 으로 재빌드.
 - **반응형 규칙 적용 지점**: 표는 `.data-table`(globals.css, sticky header/col + nowrap), body `word-break: keep-all`, 히어로 높이 `100dvh - var(--nav-h)`, 터치 타겟 `min-h-11`.
 - 테스트: vitest 10개(content 4, scripts 2, web/lib 1, video 4 — `vitest.config.ts` include 참고), Playwright 스모크 1 파일(`web/e2e/smoke.spec.ts`). CI `check` 는 e2e 를 돌리지 않는다.
 - 문서 불일치 메모: `video/public/audio/README.md` 는 BGM 볼륨 0.6 이라 적혀 있으나 실제 `Intro.tsx` `BGM_LEVEL` 은 0.22.
 
 ---
-마지막 업데이트: 2026-10-09
+마지막 업데이트: 2026-10-11

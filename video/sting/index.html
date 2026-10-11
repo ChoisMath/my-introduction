@@ -1,0 +1,880 @@
+<!doctype html>
+<html lang="ko" data-composition-variables='[
+    {"id": "name", "type": "string", "label": "Name", "default": "최재혁"},
+    {"id": "role", "type": "string", "label": "Role", "default": "수학교사 · 만드는 사람"},
+    {"id": "url", "type": "string", "label": "URL", "default": "me.chois.pro"},
+    {"id": "card1", "type": "string", "label": "Card 1", "default": "수학 수업"},
+    {"id": "card2", "type": "string", "label": "Card 2", "default": "AI 융합교육"},
+    {"id": "card3", "type": "string", "label": "Card 3", "default": "서비스 개발"},
+    {"id": "card4", "type": "string", "label": "Card 4", "default": "저서"},
+    {"id": "formula", "type": "string", "label": "Formula", "default": "f(x) = 수업 + 연수 + 개발"},
+    {"id": "tape", "type": "string", "label": "Tape text", "default": "작업 중 · WORK IN PROGRESS"},
+    {"id": "run", "type": "string", "label": "Run button", "default": "실행"},
+    {"id": "runAccent", "type": "string", "label": "Run accent", "default": "▶ RUN"},
+    {"id": "soundtrack", "type": "string", "label": "Soundtrack", "default": "audio/soundtrack-ko.wav"}
+  ]'
+>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1920, height=1080">
+    <title>Sting — 최재혁</title>
+    <style>
+      @font-face {
+        font-family: "Black Han Sans";
+        src: url("fonts/black-han-sans-korean-400-normal.woff2") format("woff2");
+        unicode-range: U+AC00-D7A3, U+1100-11FF, U+3130-318F, U+A960-A97F, U+D7B0-D7FF;
+      }
+      @font-face {
+        font-family: "Black Han Sans";
+        src: url("fonts/black-han-sans-latin-400-normal.woff2") format("woff2");
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F,
+          U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+      }
+      @font-face {
+        font-family: "Archivo Black";
+        src: url("fonts/archivo-black-latin-400-normal.woff2") format("woff2");
+      }
+
+      :root {
+        --lemon: #ffe14d;
+        --tomato: #ff5a3c;
+        --cobalt: #2f5bff;
+        --mint: #5cf2a6;
+        --pink: #ff66c4;
+        --ink: #000000;
+        --paper: #f4f1ea;
+        --concrete: #b9b6af;
+        --b-navy: #1d3c77;
+        --b-sky: #7dd3fc;
+        --b-cream: #fff1c9;
+        --b-orange: #f0a24a;
+        --b-ink: #0f172a;
+        --border: 6px;
+        --shadow: 14px;
+        --ko: "Black Han Sans", "Apple SD Gothic Neo", sans-serif;
+        --en: "Archivo Black", "Black Han Sans", sans-serif;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: var(--concrete);
+      }
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        font-family: var(--ko);
+        color: var(--ink);
+      }
+      #shake {
+        position: absolute;
+        inset: 0;
+      }
+      canvas.wall {
+        position: absolute;
+        inset: 0;
+      }
+      #grid {
+        opacity: 0;
+      }
+      .clip {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+      }
+
+      .box {
+        position: absolute;
+        background: var(--paper);
+        border: var(--border) solid var(--ink);
+        box-shadow: var(--shadow) var(--shadow) 0 0 var(--ink);
+      }
+      .label-en {
+        font-family: var(--en);
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+        white-space: nowrap;
+      }
+      .nowrap {
+        white-space: nowrap;
+      }
+
+      /* ---------- S1: browser + cards ---------- */
+      #browser {
+        left: 140px;
+        top: 90px;
+        width: 1640px;
+        height: 900px;
+      }
+      #browser .titlebar {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        height: 76px;
+        padding: 0 22px;
+        border-bottom: var(--border) solid var(--ink);
+        background: var(--lemon);
+      }
+      .dot {
+        width: 30px;
+        height: 30px;
+        border: 5px solid var(--ink);
+        flex: none;
+      }
+      #urlbar {
+        display: flex;
+        align-items: center;
+        height: 50px;
+        margin-left: 14px;
+        padding: 0 18px;
+        width: 760px;
+        border: 5px solid var(--ink);
+        background: #fff;
+        font-family: var(--en);
+        font-size: 30px;
+        letter-spacing: 0.01em;
+        white-space: nowrap;
+      }
+      .caret {
+        display: inline-block;
+        width: 14px;
+        height: 34px;
+        margin-left: 4px;
+        background: var(--ink);
+        vertical-align: middle;
+      }
+      #browser .body {
+        position: relative;
+        height: 812px;
+        overflow: hidden;
+      }
+      .card {
+        position: absolute;
+        width: 700px;
+        height: 330px;
+        border: var(--border) solid var(--ink);
+        box-shadow: var(--shadow) var(--shadow) 0 0 var(--ink);
+        padding: 26px 34px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+      .card small {
+        font-family: var(--en);
+        font-size: 30px;
+        white-space: nowrap;
+      }
+      .card b {
+        font-weight: 400;
+        font-size: 108px;
+        line-height: 1;
+        white-space: nowrap;
+      }
+      #card1 {
+        left: 60px;
+        top: 50px;
+        background: var(--cobalt);
+        color: #fff;
+      }
+      #card2 {
+        left: 820px;
+        top: 50px;
+        background: var(--tomato);
+        color: #fff;
+      }
+      #card3 {
+        left: 60px;
+        top: 430px;
+        background: var(--mint);
+      }
+      #card4 {
+        left: 820px;
+        top: 430px;
+        background: var(--pink);
+      }
+      .sticker {
+        position: absolute;
+        font-family: var(--en);
+        white-space: nowrap;
+      }
+      #live {
+        left: 1600px;
+        top: 40px;
+        padding: 10px 28px;
+        font-size: 56px;
+        background: var(--tomato);
+        color: #fff;
+        border: var(--border) solid var(--ink);
+        box-shadow: 10px 10px 0 0 var(--ink);
+      }
+      #star1 {
+        left: 840px;
+        top: 110px;
+        width: 170px;
+        height: 170px;
+      }
+      #squiggle {
+        left: 1480px;
+        top: 500px;
+        width: 360px;
+        height: 120px;
+      }
+      #tape {
+        position: absolute;
+        left: -80px;
+        top: 560px;
+        width: 2200px;
+        height: 110px;
+        border-top: var(--border) solid var(--ink);
+        border-bottom: var(--border) solid var(--ink);
+        background: repeating-linear-gradient(
+          -45deg,
+          var(--lemon) 0 70px,
+          var(--ink) 70px 110px
+        );
+        overflow: hidden;
+      }
+      #tape span {
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 98px;
+        line-height: 98px;
+        padding-left: 60px;
+        font-family: var(--ko);
+        font-size: 60px;
+        color: var(--ink);
+        white-space: nowrap;
+        background: var(--lemon);
+        padding-right: 40px;
+        border-right: var(--border) solid var(--ink);
+      }
+      .cursor {
+        position: absolute;
+        width: 176px;
+        height: 208px;
+      }
+
+      /* ---------- S2: formula window ---------- */
+      #win {
+        left: 240px;
+        top: 230px;
+        width: 1140px;
+        height: 620px;
+      }
+      #win .wtitle {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 70px;
+        padding: 0 24px;
+        background: var(--ink);
+        color: var(--paper);
+        font-family: var(--en);
+        font-size: 32px;
+        white-space: nowrap;
+      }
+      #win .wtitle i {
+        display: inline-block;
+        width: 34px;
+        height: 34px;
+        margin-left: 12px;
+        background: var(--paper);
+        border: 5px solid var(--ink);
+        outline: 4px solid var(--paper);
+      }
+      #win .wbody {
+        padding: 46px 52px;
+      }
+      #win .flabel {
+        font-family: var(--en);
+        font-size: 30px;
+        margin-bottom: 18px;
+        white-space: nowrap;
+      }
+      #fbox {
+        display: flex;
+        align-items: center;
+        width: 1020px;
+        height: 150px;
+        padding: 0 28px;
+        border: var(--border) solid var(--ink);
+        background: #fff;
+        font-size: 70px;
+        white-space: nowrap;
+      }
+      #fbox .caret {
+        width: 18px;
+        height: 80px;
+      }
+      #fbox .ch {
+        opacity: 0;
+      }
+      #urlbar .ch {
+        opacity: 0;
+      }
+      .btn {
+        position: absolute;
+        width: 280px;
+        height: 110px;
+      }
+      .btn .bshadow {
+        position: absolute;
+        inset: 0;
+        background: var(--ink);
+        transform: translate(12px, 12px);
+      }
+      .btn .face {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+        border: var(--border) solid var(--ink);
+        background: var(--lemon);
+        font-size: 54px;
+        white-space: nowrap;
+      }
+      .btn .face em {
+        font-style: normal;
+        font-family: var(--en);
+        font-size: 30px;
+      }
+      #runbtn {
+        left: 740px;
+        top: 440px;
+      }
+      #chart {
+        left: 1440px;
+        top: 330px;
+        width: 380px;
+        height: 480px;
+        background: var(--mint);
+      }
+      #chart .bars {
+        position: absolute;
+        left: 40px;
+        bottom: 30px;
+        display: flex;
+        align-items: flex-end;
+        gap: 26px;
+        height: 380px;
+        border-bottom: var(--border) solid var(--ink);
+        width: 290px;
+      }
+      #chart .bar {
+        width: 72px;
+        border: var(--border) solid var(--ink);
+        border-bottom: none;
+      }
+      #chart .cl {
+        position: absolute;
+        left: 40px;
+        top: 20px;
+        font-family: var(--en);
+        font-size: 30px;
+        white-space: nowrap;
+      }
+      #arrow {
+        left: 1330px;
+        top: 200px;
+        width: 180px;
+        height: 180px;
+      }
+
+      /* ---------- S3: loading ---------- */
+      #loader {
+        left: 260px;
+        top: 330px;
+        width: 1400px;
+        height: 420px;
+        padding: 40px 50px;
+      }
+      #loader .lhead {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        height: 180px;
+      }
+      #loader .lhead .label-en {
+        font-size: 64px;
+      }
+      #pct {
+        font-size: 170px;
+        line-height: 1;
+        white-space: nowrap;
+      }
+      #track {
+        position: relative;
+        width: 1288px;
+        height: 110px;
+        border: var(--border) solid var(--ink);
+        background: #fff;
+        overflow: hidden;
+      }
+      #fill {
+        position: absolute;
+        inset: 0;
+        background: var(--cobalt);
+        background-image: repeating-linear-gradient(90deg, transparent 0 60px, rgba(0, 0, 0, 0.35) 60px 66px);
+      }
+      #err {
+        opacity: 0;
+        visibility: hidden;
+        left: 1360px;
+        top: 250px;
+        padding: 10px 30px;
+        font-size: 58px;
+        background: var(--tomato);
+        color: #fff;
+        border: var(--border) solid var(--ink);
+        box-shadow: 10px 10px 0 0 var(--ink);
+      }
+
+      /* ---------- S4: reveal ---------- */
+      #flash {
+        position: absolute;
+        inset: 0;
+        background: var(--lemon);
+      }
+      #logo {
+        left: 200px;
+        top: 220px;
+        width: 470px;
+        height: 470px;
+        padding: 0;
+        border-width: 8px;
+        box-shadow: 20px 20px 0 0 var(--ink);
+        background: var(--b-cream);
+        overflow: hidden;
+      }
+      #logo img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        image-rendering: pixelated;
+      }
+      #namebox {
+        left: 760px;
+        top: 220px;
+        height: 290px;
+        padding: 0 50px;
+        display: flex;
+        align-items: center;
+        box-shadow: 20px 20px 0 0 var(--ink);
+        border-width: 8px;
+      }
+      #namebox b {
+        font-weight: 400;
+        font-size: 220px;
+        line-height: 1;
+        white-space: nowrap;
+      }
+      #rolebox {
+        left: 760px;
+        top: 540px;
+        height: 130px;
+        padding: 0 40px;
+        display: flex;
+        align-items: center;
+        background: var(--ink);
+        color: var(--lemon);
+        box-shadow: 14px 14px 0 0 var(--b-navy);
+      }
+      #rolebox span {
+        font-size: 76px;
+        line-height: 1;
+        white-space: nowrap;
+      }
+      .bbtn {
+        position: absolute;
+        top: 720px;
+        width: 130px;
+        height: 130px;
+        border: var(--border) solid var(--ink);
+        box-shadow: 12px 12px 0 0 var(--ink);
+      }
+      #urlpill {
+        left: 760px;
+        top: 900px;
+        height: 100px;
+        padding: 0 34px;
+        display: flex;
+        align-items: center;
+        font-family: var(--en);
+        font-size: 56px;
+        white-space: nowrap;
+        background: #fff;
+      }
+      #star2 {
+        left: 540px;
+        top: 150px;
+        width: 190px;
+        height: 190px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-width="1920" data-height="1080" data-duration="10">
+      <div id="shake">
+        <canvas id="wall" class="wall" width="1920" height="1080"></canvas>
+        <canvas id="grid" class="wall" width="1920" height="1080"></canvas>
+
+        <!-- S1 -->
+        <section id="s1" class="clip" data-start="0" data-duration="2.619" data-track-index="1">
+          <div id="browser" class="box">
+            <div class="titlebar">
+              <span class="dot" style="background: var(--tomato)"></span>
+              <span class="dot" style="background: var(--lemon)"></span>
+              <span class="dot" style="background: var(--mint)"></span>
+              <div id="urlbar"><span id="urltext"></span><span class="caret" id="urlcaret"></span></div>
+            </div>
+            <div class="body">
+              <div class="card" id="card1" data-layout-allow-overflow="true"><small>01 · TEACH</small><b data-var-text="card1">수학 수업</b></div>
+              <div class="card" id="card2" data-layout-allow-overflow="true"><small>02 · TRAIN</small><b data-var-text="card2">AI 융합교육</b></div>
+              <div class="card" id="card3" data-layout-allow-overflow="true"><small>03 · BUILD</small><b data-var-text="card3">서비스 개발</b></div>
+              <div class="card" id="card4" data-layout-allow-overflow="true"><small>04 · BOOKS</small><b data-var-text="card4">저서</b></div>
+            </div>
+          </div>
+          <div id="live" class="sticker">LIVE</div>
+          <svg id="star1" class="sticker" viewBox="0 0 100 100">
+            <polygon points="60,16 72,42 100,46 80,66 85,94 60,80 35,94 40,66 20,46 48,42" fill="#000" />
+            <polygon points="50,6 62,32 90,36 70,56 75,84 50,70 25,84 30,56 10,36 38,32" fill="var(--lemon)" stroke="#000" stroke-width="6" stroke-linejoin="round" />
+          </svg>
+          <svg id="squiggle" class="sticker" viewBox="0 0 360 120">
+            <path d="M14 76 C 50 10, 90 10, 120 76 S 190 140, 220 76 S 300 10, 346 60" fill="none" stroke="#000" stroke-width="30" stroke-linecap="round" />
+            <path d="M14 76 C 50 10, 90 10, 120 76 S 190 140, 220 76 S 300 10, 346 60" fill="none" stroke="var(--pink)" stroke-width="16" stroke-linecap="round" />
+          </svg>
+          <div id="tape"><span id="tapetext"></span></div>
+          <div id="cursor1" class="cursor"></div>
+        </section>
+
+        <!-- S2 -->
+        <section id="s2" class="clip" data-start="2.619" data-duration="2.143" data-track-index="1">
+          <div id="win" class="box">
+            <div class="wtitle"><span>formula.exe</span><span><i></i><i></i><i></i></span></div>
+            <div class="wbody">
+              <div class="flabel">FORMULA · fx</div>
+              <div id="fbox"><span id="ftext"></span><span class="caret" id="fcaret"></span></div>
+            </div>
+            <div class="btn" id="runbtn">
+              <div class="bshadow"></div>
+              <div class="face"><span data-var-text="run">실행</span><em data-var-text="runAccent">▶ RUN</em></div>
+            </div>
+          </div>
+          <div id="chart" class="box" data-layout-allow-overflow="true">
+            <div class="cl">RESULT ↑</div>
+            <div class="bars">
+              <div class="bar" id="bar1" style="height: 140px; background: var(--tomato)"></div>
+              <div class="bar" id="bar2" style="height: 240px; background: var(--cobalt)"></div>
+              <div class="bar" id="bar3" style="height: 360px; background: var(--pink)"></div>
+            </div>
+          </div>
+          <svg id="arrow" class="sticker" viewBox="0 0 100 100">
+            <path d="M58 94 L58 44 L84 44 L50 8 L16 44 L42 44 L42 94 Z" fill="#000" />
+            <path d="M50 86 L50 36 L76 36 L42 0 L8 36 L34 36 L34 86 Z" fill="var(--lemon)" stroke="#000" stroke-width="6" stroke-linejoin="round" transform="translate(4 4)" />
+          </svg>
+          <div id="cursor2" class="cursor"></div>
+        </section>
+
+        <!-- S3 -->
+        <section id="s3" class="clip" data-start="4.762" data-duration="2.619" data-track-index="1">
+          <div id="loader" class="box">
+            <div class="lhead"><span class="label-en">Loading…</span><span id="pct">0%</span></div>
+            <div id="track"><div id="fill"></div></div>
+          </div>
+          <div id="err" class="sticker">! 99%</div>
+          <div id="cursor3" class="cursor"></div>
+        </section>
+
+        <!-- S4 -->
+        <section id="s4" class="clip" data-start="7.381" data-duration="2.619" data-track-index="1">
+          <div id="flash"></div>
+          <div id="logo" class="box"><img src="assets/pictogram.png" alt=""></div>
+          <div id="namebox" class="box"><b data-var-text="name">최재혁</b></div>
+          <div id="rolebox" class="box"><span data-var-text="role">수학교사 · 만드는 사람</span></div>
+          <div class="bbtn" id="bb1" style="left: 760px; background: var(--b-navy)"></div>
+          <div class="bbtn" id="bb2" style="left: 920px; background: var(--b-sky)"></div>
+          <div class="bbtn" id="bb3" style="left: 1080px; background: var(--b-cream)"></div>
+          <div class="bbtn" id="bb4" style="left: 1240px; background: var(--b-orange)"></div>
+          <div class="bbtn" id="bb5" style="left: 1400px; background: var(--b-ink)"></div>
+          <div id="urlpill" class="box"><span data-var-text="url">me.chois.pro</span><span class="caret" id="urlcaret2"></span></div>
+          <svg id="star2" class="sticker" viewBox="0 0 100 100">
+            <polygon points="60,16 72,42 100,46 80,66 85,94 60,80 35,94 40,66 20,46 48,42" fill="#000" />
+            <polygon points="50,6 62,32 90,36 70,56 75,84 50,70 25,84 30,56 10,36 38,32" fill="var(--pink)" stroke="#000" stroke-width="6" stroke-linejoin="round" />
+          </svg>
+        </section>
+      </div>
+
+      <audio id="soundtrack" src="audio/soundtrack-ko.wav" data-var-src="soundtrack" data-start="0" data-duration="10" data-track-index="4" data-volume="1"></audio>
+    </div>
+
+    <!-- 영상 큐와 오디오 큐(audio/build-soundtrack.mjs)가 함께 읽는 단일 소스. 단위: 초. 126 BPM 16분음표 격자. -->
+    <script id="cues" type="application/json">
+      {
+        "gridOn": 0.067,
+        "slamBrowser": 0.119,
+        "urlType": [0.357, 0.833],
+        "cursorIn": [0.595, 0.833],
+        "live": 0.893,
+        "cards": [0.952, 1.19, 1.429, 1.667],
+        "star": 1.905,
+        "squiggle": 2.024,
+        "tape": [2.143, 2.381],
+        "cut2": 2.619,
+        "winLand": 2.857,
+        "formulaType": [3.095, 4.048],
+        "runPress": 4.286,
+        "runRelease": 4.405,
+        "chartSlam": 4.405,
+        "bars": [4.464, 4.583, 4.702],
+        "cut3": 4.762,
+        "loaderLand": 4.881,
+        "progress": [4.94, 6.429],
+        "progressSteps": 13,
+        "stall": 6.429,
+        "buzzer": 6.667,
+        "cursorDown": [7.024, 7.262],
+        "click": 7.262,
+        "impact": 7.381,
+        "name": 7.5,
+        "role": 7.619,
+        "buttons": [7.738, 7.798, 7.857, 7.917, 7.976],
+        "url": 8.036,
+        "hold": 8.095,
+        "end": 10
+      }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      const CUES = JSON.parse(document.getElementById("cues").textContent);
+      const FRAME = 1 / 30;
+
+      function mulberry32(seed) {
+        return function () {
+          seed |= 0;
+          seed = (seed + 0x6d2b79f5) | 0;
+          let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+          t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+          return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+        };
+      }
+
+      // 콘크리트 벽: 시드 고정 얼룩. 시간과 무관한 정적 배경이라 초기화 때 한 번만 그린다.
+      function paintWall() {
+        const ctx = document.getElementById("wall").getContext("2d");
+        const rnd = mulberry32(20260409);
+        ctx.fillStyle = "#b9b6af";
+        ctx.fillRect(0, 0, 1920, 1080);
+        for (let i = 0; i < 26000; i++) {
+          const x = rnd() * 1920;
+          const y = rnd() * 1080;
+          const s = 1 + rnd() * 3;
+          const dark = rnd() < 0.55;
+          ctx.fillStyle = dark ? `rgba(40,38,34,${0.05 + rnd() * 0.12})` : `rgba(255,255,255,${0.06 + rnd() * 0.12})`;
+          ctx.fillRect(x, y, s, s);
+        }
+        for (let i = 0; i < 18; i++) {
+          const x = rnd() * 1920;
+          const y = rnd() * 1080;
+          ctx.fillStyle = `rgba(30,28,25,${0.05 + rnd() * 0.05})`;
+          ctx.fillRect(x, y, 80 + rnd() * 320, 40 + rnd() * 180);
+        }
+        const g = document.getElementById("grid").getContext("2d");
+        g.strokeStyle = "rgba(0,0,0,0.16)";
+        g.lineWidth = 2;
+        for (let x = 0; x <= 1920; x += 60) {
+          g.beginPath();
+          g.moveTo(x, 0);
+          g.lineTo(x, 1080);
+          g.stroke();
+        }
+        for (let y = 0; y <= 1080; y += 60) {
+          g.beginPath();
+          g.moveTo(0, y);
+          g.lineTo(1920, y);
+          g.stroke();
+        }
+        g.strokeStyle = "rgba(0,0,0,0.38)";
+        g.lineWidth = 3;
+        for (let x = 0; x <= 1920; x += 300) {
+          g.beginPath();
+          g.moveTo(x, 0);
+          g.lineTo(x, 1080);
+          g.stroke();
+        }
+        for (let y = 0; y <= 1080; y += 300) {
+          g.beginPath();
+          g.moveTo(0, y);
+          g.lineTo(1920, y);
+          g.stroke();
+        }
+      }
+
+      const HAND =
+        '<svg viewBox="0 0 120 140"><path transform="translate(10 10)" d="M38 128 L38 86 L22 70 C14 62 22 50 32 58 L38 64 L38 14 C38 2 60 2 60 14 L60 60 L66 60 L66 48 C66 38 84 38 84 48 L84 60 L90 60 L90 54 C90 44 106 44 106 54 L106 100 C106 116 94 128 78 128 Z" fill="#000"/><path d="M38 128 L38 86 L22 70 C14 62 22 50 32 58 L38 64 L38 14 C38 2 60 2 60 14 L60 60 L66 60 L66 48 C66 38 84 38 84 48 L84 60 L90 60 L90 54 C90 44 106 44 106 54 L106 100 C106 116 94 128 78 128 Z" fill="#fff" stroke="#000" stroke-width="8" stroke-linejoin="round"/></svg>';
+
+      function spanChars(el, text) {
+        el.textContent = "";
+        return Array.from(text).map((c) => {
+          const s = document.createElement("span");
+          s.className = "ch";
+          s.textContent = c === " " ? " " : c;
+          el.appendChild(s);
+          return s;
+        });
+      }
+
+      function build() {
+        const vars = window.__hyperframes && window.__hyperframes.getVariables ? window.__hyperframes.getVariables() : {};
+        const url = vars.url || "me.chois.pro";
+        const formula = vars.formula || "f(x) = 수업 + 연수 + 개발";
+        const tape = vars.tape || "작업 중 · WORK IN PROGRESS";
+
+        paintWall();
+        document.querySelectorAll(".cursor").forEach((c) => (c.innerHTML = HAND));
+        document.getElementById("tapetext").textContent = (tape + "  ·  ").repeat(5);
+        const urlChars = spanChars(document.getElementById("urltext"), url);
+        const fChars = spanChars(document.getElementById("ftext"), formula);
+
+        const tl = gsap.timeline({ paused: true, defaults: { overwrite: false } });
+
+        const shake = (t, amt) => {
+          tl.set("#shake", { x: amt, y: -amt * 0.6 }, t);
+          tl.set("#shake", { x: -amt * 0.5, y: amt * 0.4 }, t + FRAME);
+          tl.set("#shake", { x: 0, y: 0 }, t + 2 * FRAME);
+        };
+        // 슬램: 가속해서 들어와 제자리에 딱 멈춘 뒤 1~2프레임 찌그러짐.
+        const slam = (sel, land, from, dur = 0.12, amt = 10) => {
+          tl.fromTo(sel, { x: from.x || 0, y: from.y || 0 }, { x: 0, y: 0, duration: dur, ease: "power3.in", immediateRender: true }, land - dur);
+          tl.fromTo(sel, { scaleX: 1.03, scaleY: 0.94 }, { scaleX: 1, scaleY: 1, duration: 0.08, ease: "power2.out", immediateRender: false }, land);
+          if (amt) shake(land, amt);
+        };
+        // 스티커: 크게 떠 있다가 한 번에 붙으며 살짝 회전.
+        const slap = (sel, t, rot) => {
+          tl.fromTo(sel, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.04, ease: "steps(1)", immediateRender: true }, t - 0.04);
+          tl.fromTo(sel, { scale: 2.4, rotation: rot - 22 }, { scale: 1, rotation: rot, duration: 0.07, ease: "power4.in", immediateRender: true }, t - 0.07);
+          tl.fromTo(sel, { scale: 1.08 }, { scale: 1, duration: 0.06, ease: "power2.out", immediateRender: false }, t);
+        };
+        const blink = (sel, from, to, period = 0.25) => {
+          const n = Math.max(1, Math.round((to - from) / period));
+          for (let i = 0; i < n; i++) tl.set(sel, { opacity: i % 2 === 0 ? 1 : 0 }, from + i * period);
+        };
+        const typeChars = (chars, from, to) => {
+          const step = chars.length > 1 ? (to - from) / (chars.length - 1) : 0;
+          chars.forEach((s, i) => tl.set(s, { opacity: 1 }, from + i * step));
+          return chars.map((_, i) => from + i * step);
+        };
+
+        /* ---------- S1 ---------- */
+        tl.set("#grid", { opacity: 1 }, CUES.gridOn);
+        slam("#browser", CUES.slamBrowser, { y: -1200 }, CUES.slamBrowser, 14);
+        typeChars(urlChars, CUES.urlType[0], CUES.urlType[1]);
+        blink("#urlcaret", 0, 2.619, 0.25);
+        tl.fromTo("#cursor1", { x: 1700, y: 1000 }, { x: 1180, y: 640, duration: CUES.cursorIn[1] - CUES.cursorIn[0], ease: "power2.out" }, CUES.cursorIn[0]);
+        slap("#live", CUES.live, -8);
+        slam("#card1", CUES.cards[0], { x: -1200 }, 0.1, 10);
+        slam("#card2", CUES.cards[1], { y: -900 }, 0.1, 10);
+        slam("#card3", CUES.cards[2], { x: 1900 }, 0.1, 10);
+        slam("#card4", CUES.cards[3], { y: 900 }, 0.1, 10);
+        slap("#star1", CUES.star, -12);
+        slap("#squiggle", CUES.squiggle, 6);
+        tl.fromTo(
+          "#tape",
+          { scaleX: 0, rotation: -6, transformOrigin: "left center" },
+          { scaleX: 1, rotation: -6, duration: CUES.tape[1] - CUES.tape[0], ease: "power2.in" },
+          CUES.tape[0]
+        );
+        tl.fromTo("#tape", { y: -10 }, { y: 0, duration: 0.1, ease: "power4.out", immediateRender: false }, CUES.tape[1]);
+        shake(CUES.tape[1], 6);
+        // 커서가 테이프를 당기는 손처럼 따라감
+        tl.to("#cursor1", { x: 1740, y: 430, duration: CUES.tape[1] - CUES.tape[0], ease: "power2.in" }, CUES.tape[0]);
+
+        /* ---------- S2 ---------- */
+        const dragDur = CUES.winLand - CUES.cut2;
+        tl.fromTo("#win", { x: -1000, y: 560 }, { x: 0, y: 0, duration: dragDur, ease: "power2.inOut" }, CUES.cut2);
+        tl.fromTo("#win", { scaleY: 0.96 }, { scaleY: 1, duration: 0.08, ease: "power2.out", immediateRender: false }, CUES.winLand);
+        shake(CUES.winLand, 8);
+        tl.fromTo("#cursor2", { x: -200, y: 790 }, { x: 800, y: 230, duration: dragDur, ease: "power2.inOut" }, CUES.cut2);
+        blink("#fcaret", CUES.cut2, CUES.cut3, 0.25);
+        typeChars(fChars, CUES.formulaType[0], CUES.formulaType[1]);
+        tl.to("#cursor2", { x: 1110, y: 690, duration: CUES.runPress - CUES.formulaType[1] - 0.05, ease: "power2.inOut" }, CUES.formulaType[1] + 0.05);
+        tl.set("#runbtn .face", { x: 12, y: 12 }, CUES.runPress);
+        tl.set("#cursor2", { y: 702 }, CUES.runPress);
+        tl.set("#runbtn .face", { x: 0, y: 0 }, CUES.runRelease);
+        tl.set("#cursor2", { y: 690 }, CUES.runRelease);
+        slam("#chart", CUES.chartSlam, { x: 1200 }, 0.1, 8);
+        slam("#arrow", CUES.chartSlam + 0.04, { y: -600 }, 0.08, 0);
+        gsap.set("#arrow", { rotation: 18 });
+        ["#bar1", "#bar2", "#bar3"].forEach((b, i) => {
+          tl.fromTo(b, { scaleY: 0, transformOrigin: "bottom center" }, { scaleY: 1, duration: 0.07, ease: "power3.in" }, CUES.bars[i] - 0.07);
+          shake(CUES.bars[i], 3);
+        });
+
+        /* ---------- S3 ---------- */
+        slam("#loader", CUES.loaderLand, { y: -1100 }, CUES.loaderLand - CUES.cut3, 14);
+        const prog = { v: 0 };
+        const pctEl = document.getElementById("pct");
+        tl.fromTo("#fill", { scaleX: 0, transformOrigin: "left center" }, { scaleX: 0.99, duration: CUES.progress[1] - CUES.progress[0], ease: `steps(${CUES.progressSteps})` }, CUES.progress[0]);
+        tl.to(
+          prog,
+          {
+            v: 99,
+            duration: CUES.progress[1] - CUES.progress[0],
+            ease: `steps(${CUES.progressSteps})`,
+            onUpdate: () => (pctEl.textContent = Math.round(prog.v) + "%"),
+          },
+          CUES.progress[0]
+        );
+        tl.fromTo("#loader", { x: 0 }, { x: -8, duration: FRAME, ease: "none", immediateRender: false }, CUES.buzzer);
+        tl.to("#loader", { x: 8, duration: FRAME, ease: "none" }, CUES.buzzer + FRAME);
+        tl.to("#loader", { x: -5, duration: FRAME, ease: "none" }, CUES.buzzer + 2 * FRAME);
+        tl.to("#loader", { x: 0, duration: FRAME, ease: "none" }, CUES.buzzer + 3 * FRAME);
+        slap("#err", CUES.buzzer + 0.05, 6);
+        tl.fromTo("#cursor3", { x: 1500, y: -240 }, { x: 1180, y: 560, duration: CUES.cursorDown[1] - CUES.cursorDown[0], ease: "power3.in" }, CUES.cursorDown[0]);
+        tl.set("#cursor3", { y: 574 }, CUES.click);
+        tl.set("#cursor3", { y: 560 }, CUES.click + 2 * FRAME);
+        tl.set("#fill", { scaleX: 1, backgroundColor: "#5cf2a6" }, CUES.click);
+        tl.set(pctEl, { textContent: "100%" }, CUES.click);
+        tl.set("#err", { autoAlpha: 0 }, CUES.click);
+        shake(CUES.click, 4);
+
+        /* ---------- S4 ---------- */
+        tl.set("#flash", { autoAlpha: 0 }, CUES.impact + 2 * FRAME);
+        tl.fromTo("#logo", { scale: 1.6, rotation: -6 }, { scale: 1, rotation: 0, duration: 0.1, ease: "power4.in" }, CUES.impact);
+        shake(CUES.impact + 0.1, 18);
+        slam("#namebox", CUES.name, { x: 1400 }, 0.1, 12);
+        slam("#rolebox", CUES.role, { y: 700 }, 0.1, 8);
+        ["#bb1", "#bb2", "#bb3", "#bb4", "#bb5"].forEach((b, i) => {
+          tl.fromTo(b, { autoAlpha: 0, scale: 1.8 }, { autoAlpha: 1, scale: 1, duration: 0.06, ease: "power4.in" }, CUES.buttons[i] - 0.06);
+          tl.fromTo(b, { x: 12, y: 12 }, { x: 0, y: 0, duration: 0.06, ease: "steps(1)", immediateRender: false }, CUES.buttons[i]);
+        });
+        slap("#urlpill", CUES.url, 0);
+        slap("#star2", CUES.url + 0.06, 10);
+        blink("#urlcaret2", CUES.url, CUES.end + 0.5, 0.5);
+        // 홀드: 별 스티커만 ±2° 숨쉬기 (미세한 앰비언트 모션)
+        tl.to("#star2", { rotation: 12, duration: 0.8, ease: "sine.inOut", yoyo: true, repeat: 3 }, CUES.hold);
+
+        window.__timelines["main"] = tl;
+        tl.seek(0);
+      }
+
+      Promise.all([
+        document.fonts.load('80px "Black Han Sans"'),
+        document.fonts.load('80px "Archivo Black"'),
+        document.fonts.ready,
+      ]).then(build);
+    </script>
+  </body>
+</html>

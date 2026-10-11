@@ -1,14 +1,26 @@
 #!/usr/bin/env bash
-# Remotion 렌더 → web/public 으로 복사. 배경음악은 video/public/audio/bgm.mp3 가 있을 때만 넣는다.
+# Remotion 렌더 → 앞에 10초 스팅(video/sting) 을 이어 붙여 web/public 으로 복사.
+# 배경음악은 video/public/audio/bgm.mp3 가 있을 때만 넣는다. 스팅만 다시 만들려면 scripts/render-sting.sh.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT/video"
 mkdir -p out "$ROOT/web/public/video" "$ROOT/web/public/img"
 
+[ -f out/sting-ko.mp4 ] && [ -f out/sting-en.mp4 ] && [ "${SKIP_STING:-}" = 1 ] || bash "$ROOT/scripts/render-sting.sh"
+
+# 스팅(HyperFrames)과 본편(Remotion)은 인코딩 파라미터가 달라 concat demuxer 로 못 붙인다 → 필터로 재인코딩.
+prepend_sting() { local sting=$1 body=$2 out=$3
+  ffmpeg -y -loglevel error -i "$sting" -i "$body" \
+    -filter_complex "[0:v]fps=30,format=yuv420p,setsar=1[v0];[1:v]fps=30,format=yuv420p,setsar=1[v1];[0:a]aresample=48000,aformat=channel_layouts=stereo[a0];[1:a]aresample=48000,aformat=channel_layouts=stereo[a1];[v0][a0][v1][a1]concat=n=2:v=1:a=1[v][a]" \
+    -map "[v]" -map "[a]" -c:v libx264 -crf 23 -preset medium -pix_fmt yuv420p -c:a aac -b:a 160k -movflags +faststart "$out"
+}
+
 if [ -f public/audio/bgm.mp3 ]; then BGM='"audio/bgm.mp3"'; else BGM='null'; echo "no bgm.mp3 — rendering without music"; fi
 
-npx remotion render src/index.ts Intro-ko out/intro-ko.mp4 --codec h264 --crf 23 --props="{\"locale\":\"ko\",\"bgm\":$BGM}"
-npx remotion render src/index.ts Intro-en out/intro-en.mp4 --codec h264 --crf 23 --props="{\"locale\":\"en\",\"bgm\":$BGM}"
+npx remotion render src/index.ts Intro-ko out/intro-ko-body.mp4 --codec h264 --crf 23 --props="{\"locale\":\"ko\",\"bgm\":$BGM}"
+npx remotion render src/index.ts Intro-en out/intro-en-body.mp4 --codec h264 --crf 23 --props="{\"locale\":\"en\",\"bgm\":$BGM}"
+prepend_sting out/sting-ko.mp4 out/intro-ko-body.mp4 out/intro-ko.mp4
+prepend_sting out/sting-en.mp4 out/intro-en-body.mp4 out/intro-en.mp4
 npx remotion render src/index.ts HeroLoop out/hero-loop.mp4 --codec h264 --crf 28
 npx remotion render src/index.ts HeroLoop out/hero-loop.webm --codec vp8 --crf 34
 npx remotion still src/index.ts OgImage out/og.png

@@ -22,3 +22,10 @@ video/.remotion/
 video/public/fonts/
 *.tsbuildinfo
 video/narration/ref/
+
+video/sting/node_modules/
+video/sting/snapshots/
+video/sting/renders/
+video/sting/.hyperframes/
+video/sting/.thumbnails/
+video/sting/.waveform-cache/
