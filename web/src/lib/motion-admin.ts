@@ -11,6 +11,7 @@ export async function readMotionAdmin(root: string): Promise<MotionAdmin[] | nul
   try {
     mtimeMs = (await stat(file)).mtimeMs;
   } catch {
+    console.error('[motion-admin] admin data missing', file);
     return null;
   }
   const hit = cache.get(file);
