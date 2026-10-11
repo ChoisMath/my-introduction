@@ -269,3 +269,20 @@ private/motion-admin.json       # /media 로는 서빙되지 않음
 6. Auth.js + 관리자 화면
 7. CI·e2e·유출 검사
 8. Railway 배포 → 미디어 업로드 → 도메인 전환
+
+## 12. 계획 단계 결정 (2026-10-12, 구현 계획 작성 중 확정)
+
+설계 승인 후 구현 계획을 쓰며 바뀐 부분. 계획(`docs/superpowers/plans/2026-10-12-motion-chapter-railway.md`)은 이 절을 따른다.
+
+| 항목 | 설계 본문 | 확정 | 이유 |
+|---|---|---|---|
+| 페이지 갱신 | 홈 `revalidate = 86400`, 모션 `revalidate = 60` | 홈·모션 모두 `dynamic = 'force-dynamic'`, manifest 는 mtime 캐시 | Railway 빌드 시점엔 Volume 이 없어 ISR 이면 첫 방문자가 빈 목록을 본다. 요청마다 렌더해도 비용이 작고, push 가 즉시 반영된다(성공 기준 5: "1분 안에" → "즉시"). |
+| Railway 빌드 | `railway.json` 의 build/start 명령 | `Dockerfile`(멀티 스테이지) + `railway.json` 은 builder·헬스체크만 | Railpack 은 전체 워크스페이스(Remotion 포함)를 자동 설치한다. Dockerfile 로 `content`·`web` 만 설치하도록 고정. |
+| 슬래시 | `trailingSlash: true` 유지 | 유지 + `skipTrailingSlashRedirect: true` | Google OAuth 콜백과 스트림 본문 PUT 이 308 을 따라가지 못한다. 기존 URL(`/en/`)은 그대로. |
+| 비관리자 로그인 | 403 | 로그인 자체 거부(`signIn` 콜백), 그래도 세션이 비관리자면 404 | 허용 목록 밖 계정은 세션이 생기지 않으므로 403 화면이 필요 없다. |
+| Range 오류 | 형식 오류·범위 밖 → 416 | 범위 밖 → 416, 형식 오류·다중 범위 → 무시하고 200 | RFC 9110 동작. |
+| ETag | sha256 | `"<size>-<mtime>"` | 버전은 URL `?v=<sha>` 가 맡으므로 manifest 조회 없이 stat 으로 충분. |
+| manifest | `duration` 포함 | `size`, `sha256`, `updatedAt` 만 | 쓰는 곳이 없다. |
+| manifest 조회 API | 공개 | `MEDIA_UPLOAD_TOKEN` 필요 | push 스크립트만 쓴다. |
+| 관리자 데이터 업로드 | 변경 시 | push 때마다 항상 | 1.4 MB 로 작고, 비교 로직이 필요 없다. |
+| 관리자 표 | 모든 셀 nowrap | 장면·이유 칸만 어절 단위 줄바꿈(`.prose-cell`, `word-break: keep-all`) | 200자 넘는 장면 설명을 한 줄로 두면 읽을 수 없다. 단어는 쪼개지 않는다(반응형 규칙의 의도된 예외). |
