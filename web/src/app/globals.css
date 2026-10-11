@@ -42,4 +42,6 @@ body { background: var(--color-bg); color: var(--color-fg); word-break: keep-all
 .data-table th, .data-table td { @apply whitespace-nowrap px-3 py-2 text-left align-top border-b border-line; }
 .data-table thead th { @apply sticky top-0 z-[2] bg-bg font-semibold; }
 .data-table .sticky-col { @apply sticky left-0 z-[3] bg-bg; }
+/* 장면 설명처럼 긴 문장 칸: 단어(어절)는 쪼개지 않고 어절 사이에서만 줄을 바꾼다. */
+.data-table td.prose-cell { @apply min-w-[24rem] whitespace-normal; word-break: keep-all; }
 .data-table thead th.sticky-col { @apply z-[4]; }

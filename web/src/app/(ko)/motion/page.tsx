@@ -27,7 +27,7 @@ export default async function MotionPage({ searchParams }: { searchParams: Promi
           <p data-testid="motion-empty" className="text-muted">{ui.motion.empty}</p>
         )}
         <div className="mt-10 text-right">
-          <Link href="/motion/admin/" className="inline-flex min-h-11 items-center px-2 text-xs whitespace-nowrap text-muted">{ui.motion.admin}</Link>
+          <Link href="/motion/admin/" prefetch={false} className="inline-flex min-h-11 items-center px-2 text-xs whitespace-nowrap text-muted">{ui.motion.admin}</Link>
         </div>
       </div>
     </section>

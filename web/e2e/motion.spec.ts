@@ -49,3 +49,16 @@ test.describe('mobile 375px', () => {
     expect(overflow).toBeLessThanOrEqual(0);
   });
 });
+
+test('admin pages require sign-in', async ({ page }) => {
+  for (const p of ['/motion/admin/', '/motion/admin/01-pixel/']) {
+    await page.goto(p);
+    await expect(page).toHaveURL(/\/api\/auth\/signin/);
+  }
+});
+
+test('auth endpoints answer without a trailing-slash redirect', async ({ request }) => {
+  const r = await request.get('/api/auth/providers', { maxRedirects: 0 });
+  expect(r.status()).toBe(200);
+  expect(Object.keys(await r.json())).toContain('google');
+});
