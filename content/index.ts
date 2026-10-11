@@ -11,6 +11,7 @@ import uiEn from './en/ui.json';
 
 export * from './schema';
 export { computeStats, type Stats } from './stats';
+export * from './motion';
 
 export const locales = ['ko', 'en'] as const;
 export const tokens = tokensSchema.parse(rawTokens);

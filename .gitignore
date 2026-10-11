@@ -29,3 +29,6 @@ video/sting/renders/
 video/sting/.hyperframes/
 video/sting/.thumbnails/
 video/sting/.waveform-cache/
+.media-out/
+.local-volume/
+web/e2e/.volume/
