@@ -17,6 +17,13 @@ describe('applySchema', () => {
   });
 });
 
+describe('applySchema control characters', () => {
+  it.each([['DEL', '\u007f'], ['C1', '\u0085'], ['bidi override', '\u202e'], ['bidi isolate', '\u2066']])('rejects %s', (_label, ch) => {
+    expect(applySchema.safeParse({ name: '이름', affiliation: `소${ch}속` }).success).toBe(false);
+    expect(applySchema.safeParse({ name: `이${ch}름`, affiliation: '소속' }).success).toBe(false);
+  });
+});
+
 describe('adminAddSchema', () => {
   it('normalizes email', () => {
     expect(adminAddSchema.parse({ email: ' New@Example.COM ', name: '이름', affiliation: '소속' }).email).toBe('new@example.com');

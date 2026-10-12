@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-const CONTROL = /[\u0000-\u001f\u007f]/;
+const CONTROL = /[\u0000-\u001f\u007f-\u009f‪-‮⁦-⁩]/;
 
 const text = (max: number, empty: string, long: string) =>
   z.string().trim().min(1, empty).max(max, long).refine((v) => !CONTROL.test(v), '사용할 수 없는 문자가 있습니다.');
