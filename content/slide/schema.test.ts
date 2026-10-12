@@ -1,11 +1,11 @@
 import { describe, expect, it } from 'vitest';
+import raw from './public.json';
 import { getSlideList, slideAdminListSchema, slidePublicListSchema, slidePublicSchema } from './index';
 
 const base = {
   id: '24', no: 24, family: 'hand', name: '스케치노트', look: '설명', use: '용도', topic: '주제',
   slides: 8, cover: 1, body: 3, added: '2026-10-12',
 };
-const POPULAR = ['24', '59', '55', '04', '58', '10', '63'];
 
 describe('slidePublicSchema', () => {
   it('accepts a valid entry', () => {
@@ -41,6 +41,6 @@ describe('getSlideList', () => {
   it('parses the committed public.json and keeps popularity order', () => {
     const ids = getSlideList().map((s) => s.id);
     expect(ids.length).toBeGreaterThan(0);
-    expect(ids).toEqual([...ids].sort((a, b) => POPULAR.indexOf(a) - POPULAR.indexOf(b)));
+    expect(ids).toEqual(raw.map((s) => s.id));
   });
 });
