@@ -7,6 +7,8 @@ const CASES: [string, string][] = [
   ['/motion/admin/', '/ai/motion/admin/'],
   ['/motion/admin/01-pixel/', '/ai/motion/admin/01-pixel/'],
   ['/motion/admin/viewers/', '/ai/admin/members/'],
+  ['/motion/01-pixel', '/ai/motion/01-pixel/'],
+  ['/motion/admin/viewers', '/ai/admin/members/'],
   ['/motion/signin-error/?error=AccessDenied', '/ai/signin-error/?error=AccessDenied'],
 ];
 
