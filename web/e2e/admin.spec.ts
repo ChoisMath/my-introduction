@@ -97,6 +97,7 @@ test.describe('members', () => {
     const id = await row.getAttribute('data-id');
     // 등록 행에는 삭제 폼이 없으므로 pending2 행의 삭제 폼 id 값을 바꿔 보낸다.
     await page.goto('/ai/admin/members/?s=pending');
+    const done = page.waitForResponse((r) => r.request().method() === 'POST' && r.url().includes('/ai/admin/members'));
     await page.evaluate((target) => {
       const row = [...document.querySelectorAll('[data-testid="member-row"]')].find((r) => r.textContent?.includes('pending2@example.com'));
       const form = row?.querySelector<HTMLFormElement>('form[data-action="delete"]');
@@ -104,6 +105,7 @@ test.describe('members', () => {
       form.querySelector<HTMLInputElement>('input[name="id"]')!.value = target!;
       form.requestSubmit();
     }, id);
+    expect((await done).status()).toBeLessThan(400);
     await page.goto('/ai/admin/members/?s=approved');
     await expect(page.getByTestId('member-row').filter({ hasText: 'viewer@example.com' })).toHaveCount(1);
     await page.goto('/ai/admin/members/?s=pending');
