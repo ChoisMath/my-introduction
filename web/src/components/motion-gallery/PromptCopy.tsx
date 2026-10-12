@@ -68,11 +68,11 @@ export function PromptCopy(props: Props) {
           onClick={(e) => { if (e.target === e.currentTarget) e.currentTarget.close(); }}
           className="m-auto w-[min(92vw,420px)] rounded-2xl bg-bg p-0 text-fg backdrop:bg-black/60"
         >
-          <div className="flex flex-col gap-3 p-5">
-            <h2 id="signin-dialog-title" className="text-lg font-bold" style={{ wordBreak: 'keep-all' }}>
+          <div className="flex flex-col gap-3 p-3 sm:p-5">
+            <h2 id="signin-dialog-title" className="text-lg font-bold">
               {props.status === 'denied' ? '등록되지 않은 계정입니다.' : '로그인하여 프롬프트를 복사하세요.'}
             </h2>
-            <p className="text-sm text-muted" style={{ wordBreak: 'keep-all' }}>{CONTACT_NOTE}</p>
+            <p className="text-sm text-muted">{CONTACT_NOTE}</p>
             <div className="mt-1 flex flex-wrap gap-2">
               <GoogleSignInButton redirectTo={`/motion/${props.id}/`} label={props.status === 'denied' ? '다른 Google 계정으로 로그인' : 'Google로 로그인'} />
               <button type="button" onClick={() => dialog.current?.close()} className="inline-flex min-h-11 items-center rounded-full border border-line px-4 text-sm whitespace-nowrap">닫기</button>
