@@ -44,12 +44,13 @@ function Card({ item, href }: { item: AdminListItem; href: string }) {
   );
 }
 
-export function AdminGallery({ items, groups, initialGroup, initialQuery, hasAdminData }: {
+export function AdminGallery({ items, groups, initialGroup, initialQuery, hasAdminData, canManage }: {
   items: AdminListItem[];
   groups: readonly string[];
   initialGroup: string;
   initialQuery: string;
   hasAdminData: boolean;
+  canManage: boolean;
 }) {
   const [group, setGroup] = useState(groups.includes(initialGroup) ? initialGroup : ALL);
   const [query, setQuery] = useState(initialQuery);
@@ -79,6 +80,7 @@ export function AdminGallery({ items, groups, initialGroup, initialQuery, hasAdm
           <input type="search" placeholder="스타일·쓰임·컨셉 검색" autoComplete="off" value={query} onChange={(e) => setQuery(e.target.value)} aria-label="검색" />
         </div>
         <span className={s.count}>{list.length} / {items.length}</span>
+        {canManage ? <Link href="/motion/admin/viewers/" prefetch={false} className={s.manage} data-testid="viewers-link">열람자</Link> : null}
       </header>
       <div className={s.chips}>
         {[ALL, ...groups].map((g) => (

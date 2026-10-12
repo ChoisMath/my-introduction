@@ -9,12 +9,12 @@ export const dynamic = 'force-dynamic';
 const first = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v) ?? '';
 
 export default async function AdminListPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
-  const admin = await loadMotionAdmin('/motion/admin/');
+  const { role, list } = await loadMotionAdmin('/motion/admin/');
   const rendered = new Map((await getRenderedMotions()).map((m) => [m.id, m]));
   const sp = await searchParams;
   const items: AdminListItem[] = getMotionList().map(({ id, no, group, name, en, use, concept }) => {
     const card = rendered.get(id);
     return { id, no, group, name, en, use, concept, poster: card?.poster ?? null, preview: card?.preview ?? null };
   });
-  return <AdminGallery items={items} groups={MOTION_GROUPS} initialGroup={first(sp.g)} initialQuery={first(sp.q)} hasAdminData={Boolean(admin)} />;
+  return <AdminGallery items={items} groups={MOTION_GROUPS} initialGroup={first(sp.g)} initialQuery={first(sp.q)} hasAdminData={Boolean(list)} canManage={role === 'admin'} />;
 }

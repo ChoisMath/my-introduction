@@ -25,6 +25,8 @@ export default defineConfig({
       AUTH_GOOGLE_SECRET: 'e2e-secret',
       ADMIN_EMAILS: 'admin@example.com',
       MEDIA_UPLOAD_TOKEN: 'e2e-upload-token',
+      // 셸에 운영 DATABASE_URL 이 있어도 물려받지 않게 항상 덮어쓴다. 비어 있으면 열람자 조회는 실패 → 404.
+      DATABASE_URL: process.env.E2E_DATABASE_URL ?? '',
     },
   },
 });

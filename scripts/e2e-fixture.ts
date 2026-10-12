@@ -1,12 +1,15 @@
 // e2e 서버가 읽을 Volume 을 만든다: 01-pixel·17-embroidery 두 개만 렌더된 상태 + 표식이 든 관리자 데이터.
+import { execFileSync } from 'node:child_process';
 import { copyFileSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
+import pg from 'pg';
 import { buildManifest } from './media/manifest';
 
 const web = path.resolve(import.meta.dirname, '../web');
 const root = path.join(web, 'e2e/.volume');
 const fixtures = path.join(web, 'e2e/fixtures');
 export const RENDERED = ['01-pixel', '17-embroidery'];
+export const E2E_VIEWER = 'viewer@example.com';
 
 rmSync(root, { recursive: true, force: true });
 for (const id of RENDERED) {
@@ -27,3 +30,19 @@ writeFileSync(path.join(root, 'private/motion-admin.json'), JSON.stringify(RENDE
   cues: [['0.000', 'E2E-ADMIN-MARKER kick', 'first frame']],
 }))));
 console.info(`e2e volume ready: ${root}`);
+
+// 열람자 DB 는 E2E_DATABASE_URL 로만 받는다. .env.local 이나 셸의 DATABASE_URL(운영일 수 있음)은 절대 쓰지 않는다.
+const dbUrl = process.env.E2E_DATABASE_URL;
+if (dbUrl) {
+  const url = new URL(dbUrl);
+  const host = url.hostname;
+  // ?host= 파라미터는 pg 가 호스트명보다 우선하므로 허용하지 않는다.
+  if (!['localhost', '127.0.0.1', '[::1]'].includes(host) || url.searchParams.has('host')) throw new Error(`E2E_DATABASE_URL must point to localhost, got ${dbUrl.replace(/:[^:@/]*@/, ':***@')}`);
+  execFileSync('npx', ['prisma', 'migrate', 'deploy', '--config', path.join(web, 'prisma.config.ts')], { cwd: web, stdio: 'inherit', env: { ...process.env, DATABASE_URL: dbUrl } });
+  const client = new pg.Client({ connectionString: dbUrl });
+  await client.connect();
+  await client.query('TRUNCATE "MotionViewer" RESTART IDENTITY');
+  await client.query('INSERT INTO "MotionViewer" (email, "addedBy") VALUES ($1, $2)', [E2E_VIEWER, 'admin@example.com']);
+  await client.end();
+  console.info(`e2e viewer db ready: ${host}`);
+}

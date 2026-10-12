@@ -2,16 +2,18 @@
 
 ## 개요
 - 목적: 최재혁(포산고 수학교사) 소개 페이지 `me.chois.pro` 와 Remotion 모션그래픽 소개 영상. 웹·영상이 `content/` 의 JSON 을 단일 소스로 공유한다.
-- 스택: npm workspaces 모노레포 (Node 24) — `content`(zod 4 스키마 + JSON) / `web`(Next.js 16 App Router, `output: 'standalone'`, React 19, Tailwind 4, motion 14) / `video`(Remotion 4). 소개 영상 맨 앞 10초 스팅은 별도 `video/sting/`(HyperFrames, HTML+GSAP — 워크스페이스 아님, 자체 package.json). 테스트 vitest 5 + Playwright.
-- 배포: `main` push → GitHub Actions(`.github/workflows/ci.yml`, check+build+e2e) → Railway 가 `Dockerfile` 로 빌드(video 워크스페이스 제외)·standalone 서버 실행. 헬스체크 `/api/health`(`railway.json`). 도메인 `me.chois.pro`. **DB·Prisma 없음** — 모션 영상·관리자 데이터는 Railway Volume(`RAILWAY_VOLUME_MOUNT_PATH`, 1GB). 소개 영상·이미지 산출물은 CI 가 만들지 않고 커밋한다. (GitHub Pages 배포는 폐지, `deploy.yml` 삭제됨)
+- 스택: npm workspaces 모노레포 (Node 24) — `content`(zod 4 스키마 + JSON) / `web`(Next.js 16 App Router, `output: 'standalone'`, React 19, Tailwind 4, motion 14, Prisma 7.10 + Railway PostgreSQL) / `video`(Remotion 4). 소개 영상 맨 앞 10초 스팅은 별도 `video/sting/`(HyperFrames, HTML+GSAP — 워크스페이스 아님, 자체 package.json). 테스트 vitest 5 + Playwright.
+- 배포: `main` push → GitHub Actions(`.github/workflows/ci.yml`, check+build+e2e) → Railway 가 `Dockerfile` 로 빌드(video 워크스페이스 제외)·standalone 서버 실행. 헬스체크 `/api/health`(`railway.json`). 도메인 `me.chois.pro`. DB 는 Railway PostgreSQL(서비스 `Postgres`, 2026-10-12 추가) — 모션 열람자 계정(`MotionViewer`)만 저장. 모션 영상·관리자 데이터(프롬프트 등)는 여전히 Railway Volume(`RAILWAY_VOLUME_MOUNT_PATH`, 1GB). 배포 전 `railway.json` `preDeployCommand` 가 `prisma migrate deploy` 실행. 소개 영상·이미지 산출물은 CI 가 만들지 않고 커밋한다. (GitHub Pages 배포는 폐지, `deploy.yml` 삭제됨)
 - 모션 챕터 설계/계획: `docs/superpowers/specs/2026-10-12-motion-chapter-railway-design.md`, `docs/superpowers/plans/2026-10-12-motion-chapter-railway.md`.
+- 모션 열람자 계획: `.plans/2026-10-12-motion-viewers-{draft,review,final,post-review}.md`.
 - 설계/계획 문서: `docs/superpowers/specs/2026-10-09-my-introduction-design.md`, `docs/superpowers/plans/2026-10-09-my-introduction.md`, 약력 초안 `docs/content/profile-draft.md`.
 
 ## 폴더 구조
 ```
 .
-├── .github/workflows/ci.yml       # check → build:web → e2e (배포는 Railway 가 담당)
-├── Dockerfile, railway.json       # Railway 빌드·헬스체크
+├── .github/workflows/ci.yml       # check(postgres:17 서비스) → build:web → e2e / docker(이미지로 migrate deploy 시험). 배포는 Railway
+├── Dockerfile, railway.json       # Railway 빌드·헬스체크·preDeploy 마이그레이션
+├── .plans/                        # 작업 계획 문서 (모션 열람자 등)
 ├── content/                       # @me/content 워크스페이스 (TS 소스 그대로 import)
 │   ├── motion/ schema.ts, index.ts, public.json  # 모션 스타일 공개 데이터(커밋) + 관리자 스키마
 │   ├── schema.ts                  # zod 스키마·타입 (profile/projects/ui/tokens/narration)
@@ -23,10 +25,13 @@
 │   └── __tests__/                 # 4개 (schema, parity, stats, narration)
 ├── web/                           # Next.js standalone 서버
 │   ├── next.config.ts             # output standalone, trailingSlash, skipTrailingSlashRedirect, transpilePackages @me/content
+│   ├── prisma.config.ts           # Prisma 설정 (타입 전용 import + 평범한 객체, .env.local 폴백)
+│   ├── prisma/ schema.prisma, migrations/ (1개 + migration_lock.toml)
+│   ├── src/generated/prisma/      # prisma generate 산출물 (gitignore, 읽지 말 것)
 │   ├── src/app/
 │   │   ├── (ko)/ layout.tsx, page.tsx      # /
 │   │   ├── (en)/en/ layout.tsx, page.tsx   # /en/
-│   │   ├── (ko)/motion/ page.tsx, [id]/page.tsx, admin/{layout,page,[id]/page}.tsx  # 갤러리·상세·관리자(Google 로그인)
+│   │   ├── (ko)/motion/ page.tsx, [id]/page.tsx, admin/{layout,page,[id]/page}.tsx, admin/viewers/{page.tsx,actions.ts}  # 갤러리·상세·관리자/열람자(Google 로그인)
 │   │   ├── media/[...path]/route.ts        # Volume 영상 스트리밍(Range)
 │   │   ├── api/ health, media (PUT 업로드), media/manifest, auth/[...nextauth]
 │   │   ├── globals.css            # Tailwind 진입 + 히어로/표 공용 CSS
@@ -36,10 +41,10 @@
 │   │   ├── RootShell, Nav, LangToggle, Section, HomePage, HeroVideo, VideoDialog
 │   │   ├── motion/  HeroStage, hero-cycle, Typewriter, GridBackground, Reveal, CountUp
 │   │   └── sections/ Hero, Stats, Timeline, Pillars, Projects, Books, Lectures, Contact
-│   ├── src/components/motion-gallery/  MotionGallery, MotionCard, KeyNav, admin/{AdminGallery,AdminDetail,admin.module.css,admin-list,placeholders}
+│   ├── src/components/motion-gallery/  MotionGallery, MotionCard, KeyNav, admin/{AdminGallery,AdminDetail,ViewerForm,admin.module.css,admin-list,placeholders}
 │   ├── src/components/sections/Motion.tsx  # 홈 #motion 섹션
-│   ├── src/auth.ts                # NextAuth v5 (Google, ADMIN_EMAILS 화이트리스트)
-│   ├── src/lib/  locale, metadata, sections, volume, media, media-serve, media-upload, range, motion-admin, admin-emails, admin-session (+ *.test.ts)
+│   ├── src/auth.ts                # NextAuth v5 (Google, signIn 은 getMotionRole: 관리자 또는 등록 열람자)
+│   ├── src/lib/  locale, metadata, sections, volume, media, media-serve, media-upload, range, motion-admin, admin-emails, admin-session, motion-viewers, prisma, viewer-input (+ *.test.ts)
 │   ├── e2e/ smoke, platform, motion, admin, security .spec.ts  # Playwright (standalone 서버 포트 3100, e2e/.volume 픽스처)
 │   └── public/  robots.txt, sitemap.xml, img/, video/
 ├── video/                         # Remotion
@@ -83,7 +88,8 @@
 | `/en/` | `web/src/app/(en)/en/page.tsx` | 영어 홈. `LangToggle` 이 현재 `#hash` 를 유지한 채 전환 |
 | `/motion/` | `web/src/app/(ko)/motion/page.tsx` | 모션 갤러리(그룹 필터 `?g=`) |
 | `/motion/[id]/` | `.../motion/[id]/page.tsx` | 상세(영상·키보드 좌우 이동). 렌더 안 된 id 는 404 |
-| `/motion/admin/`, `/motion/admin/[id]/` | `.../motion/admin/` | Google 로그인 + `ADMIN_EMAILS` 만. 프롬프트·장면표·소리 큐 |
+| `/motion/admin/`, `/motion/admin/[id]/` | `.../motion/admin/` | Google 로그인 + 관리자(`ADMIN_EMAILS`) 또는 등록 열람자. 프롬프트·장면표·소리 큐. 목록 머리글 「열람자」 링크는 관리자만 |
+| `/motion/admin/viewers/` | `.../motion/admin/viewers/{page.tsx,actions.ts}` | 관리자만. 열람자 목록·추가·삭제 — Server Actions `addViewerAction`/`removeViewerAction` |
 | `GET/HEAD /media/[...path]` | `web/src/app/media/[...path]/route.ts` | `media/motion/<id>/(video.mp4\|preview.mp4\|poster.webp)` 만 Range 스트리밍. 그 외 404 |
 | `PUT /api/media?path=` | `web/src/app/api/media/route.ts` | `MEDIA_UPLOAD_TOKEN` Bearer. 같은 허용 경로만 |
 | `GET /api/media/manifest` | `.../api/media/manifest/route.ts` | 토큰. Volume 파일 해시 목록(media:push 가 차이만 업로드) |
@@ -103,8 +109,15 @@ Remotion 컴포지션 (`video/src/Root.tsx`, 1920×1080 30fps):
 
 HyperFrames 스팅 (`video/sting/index.html`, 1920×1080 30fps 10s): 변수 `name/role/url/card1–4/formula/tape/run/soundtrack` 를 `<html data-composition-variables>` 에 선언하고 `vars/{ko,en}.json` 으로 덮어씀(en 은 `soundtrack` 변수로 wav 도 교체). `<script id="cues" type="application/json">` 이 영상·오디오 큐의 단일 소스(126 BPM 16분음표 격자, 초 단위) — `audio/build-soundtrack.mjs` 가 이 블록을 regex 로 읽어 외부 음원 없이 음악·효과음을 합성해 `audio/soundtrack-{ko,en}.wav`(48kHz 16bit 스테레오)를 만들고, `audio/verify-cues.mjs` 가 각 큐 ±1프레임 온셋을 검증한다.
 
+## 데이터 모델 (Prisma — `web/prisma/schema.prisma`)
+`prisma-client` generator → `web/src/generated/prisma`(gitignore, web `predev`/`prebuild`/`typecheck` 가 `prisma generate`). 런타임은 `@prisma/adapter-pg`.
+
+| 모델 | 관계 | 주요 필드 | 비고 |
+|---|---|---|---|
+| `MotionViewer` | 없음 | id, email(unique), note?, addedBy(등록한 관리자 이메일), createdAt | 모션 관리자 화면 열람 허용 계정. email 소문자 CHECK 제약은 `migration.sql` 에만(스키마에 없음). 마이그레이션 1개(`20261012000000_motion_viewer`) |
+
 ## 데이터 모델 (content 워크스페이스 — `content/schema.ts`)
-Prisma 대신 zod 스키마로 검증되는 JSON. `getContent(locale)` 이 파싱·캐시, `npm run content:validate` 가 ko/en id 패리티를 검사.
+zod 스키마로 검증되는 JSON. `getContent(locale)` 이 파싱·캐시, `npm run content:validate` 가 ko/en id 패리티를 검사.
 
 | 스키마 | 파일 | 주요 필드 | 비고 |
 |---|---|---|---|
@@ -140,6 +153,11 @@ Prisma 대신 zod 스키마로 검증되는 JSON. `getContent(locale)` 이 파�
 | `Lectures` | `web/src/components/sections/Lectures.tsx` | 클라이언트 탭(교사/학생) + `.data-table` sticky 표 |
 | `locale.ts` | `web/src/lib/locale.ts` | `localePath`, `otherLocale`, `toggleHref` |
 | `metadata.ts` | `web/src/lib/metadata.ts` | `SITE_URL`, `buildMetadata(locale)` (canonical/hreflang/OG) |
+| `motion-viewers.ts` | `web/src/lib/motion-viewers.ts` | `getMotionRole`(env `ADMIN_EMAILS` 먼저 → 'admin', 아니면 Prisma 동적 import 로 DB 조회 → 'viewer', 오류는 null = fail-closed), `listViewers`/`addViewer`/`removeViewer` |
+| `admin-session.ts` | `web/src/lib/admin-session.ts` | `requireViewer`, `requireAdmin`(관리자 이메일 반환), `loadMotionAdmin`(→ {role, list}). 미로그인 redirect, 권한 없음 404 |
+| `prisma.ts` | `web/src/lib/prisma.ts` | PrismaClient 싱글턴(adapter-pg). `DATABASE_URL` 없으면 throw, 연결 대기 5초 |
+| `viewer-input.ts` | `web/src/lib/viewer-input.ts` (+test) | zod `viewerInputSchema`(email trim·소문자 정규화, note ≤100), `viewerIdSchema` |
+| `ViewerForm` | `web/src/components/motion-gallery/admin/ViewerForm.tsx` | 클라이언트 열람자 추가 폼(`useActionState`) |
 | `timeline.ts` | `video/src/timeline.ts` | FPS/WIDTH/HEIGHT, `buildScenes`(manifest 길이 기반), `timelineSchedule`, `projectSchedule`, `HERO_LOOP_DURATION` |
 | `plan.ts` | `video/src/plan.ts` | `buildPlan(locale)` → scenes, careerIds(대본에 있는 경력만), clip(key) 경로 |
 | `loop.ts` | `video/src/loop.ts` | `loopVeil` — 루프 경계 흰 베일 (0.5s in / 0.7s out) |
@@ -147,9 +165,9 @@ Prisma 대신 zod 스키마로 검증되는 JSON. `getContent(locale)` 이 파�
 | `Clip` | `video/src/components/Clip.tsx` | 내레이션 Audio Sequence (클립 없으면 렌더 안 함) |
 
 ## 외부 의존성
-- 외부 서비스: Railway(호스팅·Volume), Google OAuth(관리자 로그인, next-auth 5.0.0-beta.32). DB 없음.
-- 서버 환경변수: `RAILWAY_VOLUME_MOUNT_PATH`(절대경로), `PORT`(Railway 자동), `AUTH_SECRET`, `AUTH_URL`(운영 `https://me.chois.pro`), `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET`, `ADMIN_EMAILS`(쉼표 구분), `MEDIA_UPLOAD_TOKEN`. 예시는 루트 `.env.example`.
-- 스크립트 전용: `MOTION_SRC`(motion 폴더, motion:import), `MEDIA_PUSH_URL`(+`MEDIA_UPLOAD_TOKEN`, media:push).
+- 외부 서비스: Railway(호스팅·Volume·PostgreSQL), Google OAuth(관리자·열람자 로그인, next-auth 5.0.0-beta.32).
+- 서버 환경변수: `RAILWAY_VOLUME_MOUNT_PATH`(절대경로), `PORT`(Railway 자동), `AUTH_SECRET`, `AUTH_URL`(운영 `https://me.chois.pro`), `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET`, `ADMIN_EMAILS`(쉼표 구분), `MEDIA_UPLOAD_TOKEN`, `DATABASE_URL`(운영은 Railway 참조 `${{Postgres.DATABASE_URL}}`, 로컬은 `web/.env.local`). 예시는 루트 `.env.example`.
+- 스크립트 전용: `MOTION_SRC`(motion 폴더, motion:import), `MEDIA_PUSH_URL`(+`MEDIA_UPLOAD_TOKEN`, media:push), `E2E_DATABASE_URL`(e2e 전용, localhost 만 허용, 실행마다 `MotionViewer` TRUNCATE 후 `viewer@example.com` 시드. 없으면 열람자 e2e 2개 skip. Playwright 서버의 `DATABASE_URL` 은 항상 이 값으로 덮어씀).
 - `scripts/narrate.ts` 만 선택적으로 사용:
 
 | 키 | 용도 | 기본값 |
@@ -158,7 +176,7 @@ Prisma 대신 zod 스키마로 검증되는 JSON. `getContent(locale)` 이 파�
 | `TTS_MODEL` | Qwen3-TTS 모델 | `mlx-community/Qwen3-TTS-12Hz-1.7B-Base-bf16` |
 
 - 로컬 도구: `cwebp`(brew webp), `sips`, `ffmpeg`/`ffprobe`, Playwright Chromium(`npx playwright install chromium`), mlx-audio venv.
-- 주요 패키지: next 16.4 / react 19.2 / motion 14 / tailwindcss 4.3 / remotion 4.0.534 / zod 4.6 / vitest 5 / @playwright/test 1.64 / pretendard, @fontsource-variable/jetbrains-mono. `video/sting/package.json`(별도): hyperframes 0.8.145 핀, devDeps `@fontsource/black-han-sans`, `@fontsource/archivo-black`.
+- 주요 패키지: next 16.4 / react 19.2 / motion 14 / prisma·@prisma/client·@prisma/adapter-pg 7.10.0 / pg 8.23 / tailwindcss 4.3 / remotion 4.0.534 / zod 4.6 / vitest 5 / @playwright/test 1.64 / pretendard, @fontsource-variable/jetbrains-mono. `video/sting/package.json`(별도): hyperframes 0.8.145 핀, devDeps `@fontsource/black-han-sans`, `@fontsource/archivo-black`.
 - 외부 자원: 배경음악 CC0 "Calm Ambient 3" (cynicmusic) — `video/public/audio/README.md`.
 
 ## 명령 (루트 `package.json`)
@@ -168,6 +186,7 @@ Prisma 대신 zod 스키마로 검증되는 JSON. `getContent(locale)` 이 파�
 | `npm run dev` / `build:web` | 웹 개발/standalone 빌드 (`predev`/`prebuild` 가 tokens.css 생성) |
 | `npm run e2e` | standalone 서버(3100, `web/e2e/.volume` 픽스처 = `scripts/e2e-fixture.ts`)로 Playwright — `build:web` 선행 필요 |
 | `npm start` | standalone 서버 실행 (`RAILWAY_VOLUME_MOUNT_PATH` 절대경로 필요) |
+| `npm -w web run db:migrate` / `db:deploy` | `prisma migrate dev` / `prisma migrate deploy`. 로컬 DB 는 `npx prisma dev -n motion-e2e --detach` (TCP `postgres://postgres:postgres@localhost:51214/template1?sslmode=disable`). Claude 세션에서는 Prisma 가 `migrate reset` 을 막으므로 픽스처는 migrate deploy + TRUNCATE |
 | `npm run motion:import` | motion 폴더 → `content/motion/public.json`(커밋) + `.media-out/` 관리자 데이터 |
 | `npm run media:prepare` | 렌더 mp4 → 웹용 video/preview/poster 인코딩 + manifest |
 | `npm run media:push` | manifest diff 로 바뀐 파일만 `PUT /api/media` 업로드 (재배포 불필요) |
@@ -178,8 +197,8 @@ Prisma 대신 zod 스키마로 검증되는 JSON. `getContent(locale)` 이 파�
 | `npm run video:studio` | Remotion 스튜디오 |
 
 ## 운영 현황 (Railway, 2026-10-12)
-- 프로젝트 `me_chois` / 서비스 `my-introduction` / 환경 `production`. Volume `/data`. 커스텀 도메인 `me.chois.pro` 가 이미 Railway 를 가리킨다(DNS 전환 완료, 응답 헤더 `server: railway-hikari`).
-- 환경변수 7개 설정 완료: `ADMIN_EMAILS`, `AUTH_URL=https://me.chois.pro`, `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET`, `AUTH_SECRET`, `MEDIA_UPLOAD_TOKEN`(뒤 둘은 `openssl rand` 로 생성 — 값은 Railway 에만 있음), `RAILWAY_VOLUME_MOUNT_PATH`(자동).
+- 프로젝트 `me_chois` / 서비스 `my-introduction` + `Postgres`(2026-10-12 추가) / 환경 `production`. Volume `/data`. 커스텀 도메인 `me.chois.pro` 가 이미 Railway 를 가리킨다(DNS 전환 완료, 응답 헤더 `server: railway-hikari`).
+- 환경변수 8개 설정 완료: `ADMIN_EMAILS`, `DATABASE_URL`(`${{Postgres.DATABASE_URL}}` 참조), `AUTH_URL=https://me.chois.pro`, `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET`, `AUTH_SECRET`, `MEDIA_UPLOAD_TOKEN`(뒤 둘은 `openssl rand` 로 생성 — 값은 Railway 에만 있음), `RAILWAY_VOLUME_MOUNT_PATH`(자동).
 - **`AUTH_URL` 필수**: standalone 서버가 `HOSTNAME=0.0.0.0`·`PORT=8080` 으로 떠서, 없으면 Auth.js 가 로그인·콜백 URL 을 `https://0.0.0.0:8080/...` 로 만든다(2026-10-12 실제 장애). 도메인을 바꾸면 이 값과 Google 리디렉션 URI 를 함께 바꾼다.
 - Railway CLI 링크: 이 폴더를 위 서비스에 연결해 둠(`railway status`). `AUTH_SECRET` 은 바꾸면 관리자 세션이 모두 풀린다.
 - Volume 내용: 모션 01–50 전부 영상·미리보기·포스터(manifest 150파일, 약 299 MB / Volume 1 GB) + `private/motion-admin.json`(50개). 운영 확인: `/motion/` 카드 50, 홈 `#motion` 카드 6, 영상 Range 206, `/media/private/...` 404, 공개 HTML 에 프롬프트 0건.
@@ -191,6 +210,7 @@ Prisma 대신 zod 스키마로 검증되는 JSON. `getContent(locale)` 이 파�
   - [ ] GitHub Pages 비활성화(저장소 Settings → Pages)
   - [ ] `railway.json` → `.railway/railway.ts` 이전 — Railway CLI 경고: Config as Code 는 2026-12-01 까지만 지원(`railway config migrate`)
   - [x] 모션 21–30, 31–50 업로드(2026-10-12) — 50개 전부 공개. 스타일을 다시 렌더하면 같은 세 명령만 반복
+  - [ ] PR #2(feat/motion-viewers) 병합·배포 후: preDeploy 마이그레이션 로그 확인, 운영에서 Server Action(CSRF) 으로 열람자 추가·삭제, 등록한 비관리자 계정으로 실제 Google 로그인 확인
 
 ## 주의사항 / 특이 패턴
 - **관리자 데이터는 Volume 에만**: 프롬프트·장면표·소리 큐(`motion-admin.json`)는 git·빌드 산출물·공개 HTML 어디에도 들어가면 안 된다. `web/e2e/security.spec.ts` 가 마커(`E2E-ADMIN-MARKER`)와 `{{Channel name=` 유출, `/media` 경로 우회, 토큰 없는 업로드를 검사.
@@ -198,6 +218,8 @@ Prisma 대신 zod 스키마로 검증되는 JSON. `getContent(locale)` 이 파�
 - **`skipTrailingSlashRedirect: true`**: Google OAuth 콜백과 스트림 본문 PUT 이 308 리다이렉트를 따라가지 못해서. `trailingSlash` 는 유지하되 슬래시 없는 API 경로도 응답.
 - **모션 페이지는 `force-dynamic`**: 렌더 여부를 Volume 에서 읽기 때문. 관리자 표 `.prose-cell` 의 어절 단위 줄바꿈은 긴 장면 설명용 의도된 반응형 규칙 예외.
 - **관리자 화면 디자인 = motion 폴더 `index.html`**: `/motion/admin/` 목록·상세는 사이트 머리글 위를 덮는 전체 화면 어두운 앱(`fixed inset-0`). 스타일은 `admin/admin.module.css` 에 index.html CSS 를 그대로 옮김(사이트 토큰과 별개). 목록의 그룹·검색은 `?g=&q=` 로 상세에 넘겨 이전/다음 순서·닫기 위치를 맞춘다(`admin-list.ts` `adminOrder`). 단축키 `←` `→` / `1` `2` `3` / `Esc`.
+- **열람자 권한**: 관리자 판정은 env(`ADMIN_EMAILS`) 우선이라 DB 장애·Prisma 로드 실패와 무관하게 관리자는 항상 들어간다. 비관리자는 DB 조회 실패 시 fail-closed(404). 열람자 삭제는 요청마다 DB 를 확인하므로 즉시 반영(JWT 세션과 무관). 열람자 화면 표는 `.vTable` 이 스스로 스크롤해야 sticky 머리글이 고정된다.
+- **Prisma 배포 구성**: `web/prisma.config.ts` 는 `defineConfig` 대신 타입 전용 import + 평범한 객체 — 런타임 이미지가 전역 설치 prisma CLI 로 migrate deploy 를 돌려 `prisma/config` 를 resolve 못 하기 때문. Dockerfile 런타임 단계에 openssl + `npm i -g prisma@7.10.0` + `web/prisma`·`prisma.config.ts` 복사. `lib/prisma` 는 `motion-viewers.ts` 가 동적 import 로만 부른다.
 - **모션 카드 미리보기**: 호버 가능 기기(`(hover: hover)`)에서만 preview.mp4 를 지연 로드. 터치는 탭하면 상세로.
 - **콘텐츠 단일 소스**: `content/ko/*.json` 과 `content/en/*.json` 을 항상 함께 수정. id·배열 길이·`since` 가 어긋나면 `content:validate` 가 실패해 CI 가 멈춘다.
 - **색·폰트는 `content/tokens.json` 만** 수정. `web/src/app/tokens.css` 는 생성 파일(gitignore). `video/src/theme.ts` 도 같은 토큰을 읽는다.
@@ -214,7 +236,7 @@ Prisma 대신 zod 스키마로 검증되는 JSON. `getContent(locale)` 이 파�
 - **HyperFrames 렌더 브라우저**: `~/.cache/hyperframes` 의 chrome-headless-shell 을 쓴다(Remotion 의 Playwright Chromium 과 별개). `npx hyperframes lint` 의 sub-composition 분할 경고는 "단일 HTML" 요구사항 때문에 의도적으로 무시.
 - **연차("N년차")는 요청 시각 기준**(`computeStats`, 3월 임용 기준) → 홈이 force-dynamic 이라 요청마다 계산되므로 재배포 없이 자동 갱신된다.
 - **반응형 규칙 적용 지점**: 표는 `.data-table`(globals.css, sticky header/col + nowrap), body `word-break: keep-all`, 히어로 높이 `100dvh - var(--nav-h)`, 터치 타겟 `min-h-11`.
-- 테스트: vitest 22개 파일(`vitest.config.ts` include 참고), Playwright 5 파일(smoke, platform, motion, admin, security — 38개). `check` 는 e2e 를 돌리지 않고 CI 워크플로가 build 후 따로 실행.
+- 테스트: vitest 23개 파일 109 tests(`vitest.config.ts` include 참고), Playwright 5 파일(smoke, platform, motion, admin, security — 40개, admin.spec 에 열람자 2개). `check` 는 e2e 를 돌리지 않고 CI 워크플로가 build 후 따로 실행.
 - 문서 불일치 메모: `video/public/audio/README.md` 는 BGM 볼륨 0.6 이라 적혀 있으나 실제 `Intro.tsx` `BGM_LEVEL` 은 0.22.
 
 ---

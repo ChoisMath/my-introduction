@@ -1,0 +1,17 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// 관리자(ADMIN_EMAILS)가 등록한, 모션 관리자 화면을 볼 수 있는 Google 계정.
+model MotionViewer {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  note      String?
+  addedBy   String
+  createdAt DateTime @default(now())
+}

@@ -16,8 +16,8 @@ export default async function AdminDetailPage({ params, searchParams }: {
   const { id } = await params;
   const motion = getMotion(id);
   if (!motion) notFound();
-  const admin = await loadMotionAdmin(`/motion/admin/${id}/`);
-  const data = admin?.find((a) => a.id === id) ?? null;
+  const { list } = await loadMotionAdmin(`/motion/admin/${id}/`);
+  const data = list?.find((a) => a.id === id) ?? null;
   const card = (await getRenderedMotions()).find((m) => m.id === id) ?? null;
 
   const sp = await searchParams;
