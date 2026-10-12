@@ -1,6 +1,8 @@
+import type { Metadata } from 'next';
 import { requireAdmin } from '@/lib/access';
 import { AI_MEMBERS } from '@/lib/ai-paths';
 
+export const metadata: Metadata = { title: '회원 관리', robots: { index: false, follow: false } };
 export const dynamic = 'force-dynamic';
 
 export default async function MembersPage() {

@@ -44,8 +44,8 @@ test.describe('registered viewers', () => {
     expect(r.status()).toBe(404);
   });
 
-  // Task 8 회원 관리로 대체
-  test.skip('admin adds and removes a viewer and access follows immediately', async ({ browser }) => {
+  test('admin adds and removes a viewer and access follows immediately', async ({ browser }) => {
+    test.skip(true, 'Task 8 회원 관리로 대체');
     const email = 'new.student@example.com';
     const admin = await browser.newContext();
     await signInAs(admin, 'admin@example.com');

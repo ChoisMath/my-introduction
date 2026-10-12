@@ -17,7 +17,7 @@ export default async function SignInErrorPage({ searchParams }: { searchParams: 
         <p className="text-muted">{CONTACT_NOTE}</p>
         {isDenied ? null : <p className="overflow-hidden font-mono text-xs text-ellipsis whitespace-nowrap text-muted" title={String(error ?? 'Unknown')}>{String(error ?? 'Unknown')}</p>}
         <div className="flex flex-wrap gap-2">
-          <GoogleSignInButton from="/ai/motion/" label="다른 Google 계정으로 로그인" />
+          <GoogleSignInButton from={AI_MOTION} label="다른 Google 계정으로 로그인" />
           <Link href={AI_MOTION} className="inline-flex min-h-11 items-center rounded-full border border-line px-4 text-sm whitespace-nowrap hover:border-accent">모션 갤러리로</Link>
         </div>
       </div>
