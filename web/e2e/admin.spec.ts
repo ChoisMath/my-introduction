@@ -1,14 +1,5 @@
-import { expect, test, type BrowserContext } from '@playwright/test';
-import { encode } from 'next-auth/jwt';
-
-const SECRET = 'e2e-secret-e2e-secret-e2e-secret-00';
-const COOKIE = 'authjs.session-token';
-const MARKER = 'E2E-ADMIN-MARKER';
-
-async function signInAs(context: BrowserContext, email: string) {
-  const value = await encode({ token: { email, name: email, sub: email }, secret: SECRET, salt: COOKIE });
-  await context.addCookies([{ name: COOKIE, value, domain: 'localhost', path: '/' }]);
-}
+import { expect, test } from '@playwright/test';
+import { MARKER, signInAs } from './session';
 
 test('anonymous request is redirected to sign-in without leaking data', async ({ request }) => {
   for (const p of ['/motion/admin/', '/motion/admin/01-pixel/']) {

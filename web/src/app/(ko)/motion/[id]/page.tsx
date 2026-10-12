@@ -3,6 +3,9 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getContent } from '@me/content';
 import { KeyNav } from '@/components/motion-gallery/KeyNav';
+import { PromptCopy } from '@/components/motion-gallery/PromptCopy';
+import { finalPrompt, type PromptState } from '@/components/motion-gallery/admin/placeholders';
+import { getPromptAccess } from '@/lib/admin-session';
 import { getRenderedMotions } from '@/lib/media';
 
 export const dynamic = 'force-dynamic';
@@ -30,6 +33,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+// 관리자 상세의 기본 복사와 같은 결과(빈칸 기본값, 장면표·소리 큐 포함).
+const DEFAULT_PROMPT: PromptState = { values: {}, toggles: {}, withTables: true };
+
 const navLink = 'inline-flex min-h-11 items-center rounded-full border border-line px-4 text-sm whitespace-nowrap hover:border-accent';
 
 export default async function MotionDetailPage({ params }: Props) {
@@ -37,6 +43,7 @@ export default async function MotionDetailPage({ params }: Props) {
   if (!hit) notFound();
   const { ui } = getContent('ko');
   const { item, prev, next } = hit;
+  const access = await getPromptAccess(item.id);
   const href = (m: { id: string } | null) => (m ? `/motion/${m.id}/` : null);
   return (
     <article className="px-2 py-6 sm:px-3 md:px-4 lg:px-6">
@@ -49,6 +56,15 @@ export default async function MotionDetailPage({ params }: Props) {
         </header>
         <p className="mt-1 text-sm text-muted">{item.use}</p>
         <p className="mt-4 leading-relaxed">{item.concept}</p>
+        {access.status === 'allowed' ? (
+          <PromptCopy
+            id={item.id}
+            status="allowed"
+            prompts={access.data ? { en: finalPrompt(access.data, 'en', DEFAULT_PROMPT), ko: finalPrompt(access.data, 'ko', DEFAULT_PROMPT) } : null}
+          />
+        ) : (
+          <PromptCopy id={item.id} status={access.status} />
+        )}
         <nav className="mt-6 flex flex-wrap items-center gap-2" aria-label="motion">
           {prev ? <Link href={href(prev)!} className={navLink}>← {ui.motion.prev}</Link> : null}
           <Link href="/motion/" className={navLink}>{ui.motion.back}</Link>

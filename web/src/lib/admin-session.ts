@@ -26,6 +26,17 @@ export async function requireAdmin(callbackPath: string): Promise<string> {
   return email;
 }
 
+export type PromptAccess = { status: 'signedOut' | 'denied' } | { status: 'allowed'; data: MotionAdmin | null };
+
+// 공개 상세 페이지용: 리다이렉트하지 않고 상태만 돌려준다. 권한이 있을 때만 프롬프트를 읽는다.
+export async function getPromptAccess(id: string): Promise<PromptAccess> {
+  const session = await auth();
+  if (!session?.user) return { status: 'signedOut' };
+  if (!(await getMotionRole(session.user.email))) return { status: 'denied' };
+  const list = await readMotionAdmin(volumeRoot());
+  return { status: 'allowed', data: list?.find((a) => a.id === id) ?? null };
+}
+
 export async function loadMotionAdmin(callbackPath: string): Promise<{ role: MotionRole; list: MotionAdmin[] | null }> {
   const role = await requireViewer(callbackPath);
   return { role, list: await readMotionAdmin(volumeRoot()) };

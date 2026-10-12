@@ -7,6 +7,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [Google],
   session: { strategy: 'jwt' },
   trustHost: true,
+  // 미등록 계정의 AccessDenied 를 Auth.js 기본(영문) 화면 대신 한국어 안내로 보여 준다.
+  pages: { error: '/motion/signin-error/' },
   callbacks: {
     signIn: async ({ user, profile }) => profile?.email_verified !== false && (await getMotionRole(user.email)) !== null,
   },
