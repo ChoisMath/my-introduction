@@ -1,13 +1,14 @@
 import type { Locale, Ui } from '@me/content';
+import { AI_HOME } from '@/lib/ai-paths';
 import { localePath } from '@/lib/locale';
 import { SECTION_IDS } from '@/lib/sections';
 import type { ViewerState } from '@/lib/access';
 import { AccountMenu } from './ai-hub/AccountMenu';
 import { LangToggle } from './LangToggle';
 
-export function Nav({ locale, ui, hasMotion, account }: { locale: Locale; ui: Ui; hasMotion: boolean; account: ViewerState }) {
+export function Nav({ locale, ui, account }: { locale: Locale; ui: Ui; account: ViewerState }) {
   const home = localePath(locale);
-  const ids = SECTION_IDS.filter((id) => id !== 'hero' && (hasMotion || id !== 'ai'));
+  const ids = SECTION_IDS.filter((id) => id !== 'hero');
   return (
     <header className="fixed inset-x-0 top-0 z-10 h-[var(--nav-h)] border-b border-line bg-bg/90 backdrop-blur">
       <nav className="mx-auto flex h-full max-w-6xl items-center gap-2 px-2 sm:px-3" aria-label="primary">
@@ -20,6 +21,11 @@ export function Nav({ locale, ui, hasMotion, account }: { locale: Locale; ui: Ui
               </a>
             </li>
           ))}
+          <li>
+            <a href={AI_HOME} className="min-h-11 inline-flex items-center rounded-full px-3 text-sm text-muted hover:text-fg">
+              {ui.nav.ai}
+            </a>
+          </li>
         </ul>
         <LangToggle locale={locale} label={ui.lang.switchTo} title={ui.lang.switchLabel} />
         {account.status === 'signedOut' ? null : <AccountMenu state={account} />}

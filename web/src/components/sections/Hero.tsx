@@ -8,7 +8,7 @@ import { VideoDialog } from '../VideoDialog';
 export function Hero({ profile, ui, locale }: { profile: Profile; ui: Ui; locale: Locale }) {
   return (
     <Section id="hero">
-      <div className="relative -mx-2 -mt-10 flex overflow-hidden min-h-[calc(100dvh-var(--nav-h))] flex-col justify-center gap-6 px-2 py-10 sm:-mx-3 sm:px-3 md:-mx-4 md:px-4 lg:-mx-6 lg:-mt-16 lg:flex-row lg:items-center lg:px-6">
+      <div className="relative -mx-2 -mt-10 flex overflow-hidden min-h-[calc(100dvh-var(--nav-h)-var(--footer-h))] flex-col justify-center gap-6 px-2 py-10 sm:-mx-3 sm:px-3 md:-mx-4 md:px-4 lg:-mx-6 lg:-mt-16 lg:flex-row lg:items-center lg:px-6">
         <HeroStage video={{ srcMp4: '/video/hero-loop.mp4', srcWebm: '/video/hero-loop.webm', poster: '/video/hero-poster.jpg', playLabel: ui.hero.playVideo }}>
         <div className="pointer-events-none relative z-[1] flex-1 [&_a]:pointer-events-auto [&_button]:pointer-events-auto">
           <Typewriter as="p" text={`${profile.affiliation} · ${profile.role}`} startMs={300} msPerChar={70} className="font-mono text-sm text-accent" />

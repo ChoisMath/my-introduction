@@ -60,7 +60,3 @@ export async function getRenderedMotions(): Promise<MotionCardData[]> {
   }
   return renderedMotions(getMotionList(), await readManifest(root));
 }
-
-export function pickFeatured(items: MotionCardData[], n = 6): MotionCardData[] {
-  return [...items.filter((m) => m.featured), ...items.filter((m) => !m.featured)].slice(0, n);
-}

@@ -96,7 +96,7 @@ export const uiSchema = z.object({
     projects: z.string(), ai: z.string(), books: z.string(), materials: z.string(), lectures: z.string(), contact: z.string(),
   }),
   projects: z.object({ visit: z.string(), watch: z.string(), stack: z.string() }),
-  motion: z.object({ title: z.string(), intro: z.string(), viewAll: z.string(), empty: z.string(), all: z.string(), admin: z.string(), back: z.string(), prev: z.string(), next: z.string() }),
+  motion: z.object({ title: z.string(), intro: z.string(), empty: z.string(), all: z.string(), admin: z.string(), back: z.string(), prev: z.string(), next: z.string() }),
   ai: z.object({ intro: z.string(), signIn: z.string(), members: z.string() }),
   lectures: z.object({ teacher: z.string(), student: z.string(), period: z.string(), title: z.string(), org: z.string() }),
   contact: z.object({ email: z.string(), github: z.string(), sites: z.string() }),

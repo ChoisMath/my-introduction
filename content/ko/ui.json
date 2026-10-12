@@ -48,7 +48,6 @@
   "motion": {
     "title": "바이브코딩 모션그래픽",
     "intro": "기초 바이브코딩부터 에이전틱 AI까지 — HyperFrames 로 직접 만든 10초 인트로",
-    "viewAll": "전체 보기",
     "empty": "영상을 준비하고 있습니다.",
     "all": "전체",
     "admin": "관리자",
@@ -77,5 +76,5 @@
     "switchTo": "EN",
     "switchLabel": "Switch to English"
   },
-  "footer": "© 2026 최재혁. 이 페이지는 Next.js 와 Remotion 으로 직접 만들었습니다."
+  "footer": "© 최재혁, 대구광역시교육청 수학교사"
 }

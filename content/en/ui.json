@@ -48,7 +48,6 @@
   "motion": {
     "title": "Vibe-coding motion graphics",
     "intro": "10-second intros I made with HyperFrames — from vibe-coding basics to agentic AI",
-    "viewAll": "See all",
     "empty": "Videos are on the way.",
     "all": "All",
     "admin": "Admin",
@@ -77,5 +76,5 @@
     "switchTo": "한국어",
     "switchLabel": "한국어로 보기"
   },
-  "footer": "© 2026 Jae-hyuk Choi. Built with Next.js and Remotion."
+  "footer": "© Jae-hyuk Choi, Math Teacher, Daegu Metropolitan Office of Education"
 }

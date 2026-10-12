@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import type { MediaManifest, MotionPublic } from '@me/content';
-import { getRenderedMotions, mediaUrl, pickFeatured, readManifest, renderedMotions, type MotionCardData } from './media';
+import { getRenderedMotions, mediaUrl, readManifest, renderedMotions } from './media';
 
 const entry = (c: string) => ({ size: 1, sha256: c.repeat(64), updatedAt: '2026-10-12T00:00:00.000Z' });
 const manifest: MediaManifest = {
@@ -26,14 +26,6 @@ describe('renderedMotions', () => {
     expect(out[0]).toMatchObject({ poster: '/media/motion/01-pixel/poster.webp?v=bbbbbbbb', preview: '/media/motion/01-pixel/preview.mp4?v=cccccccc' });
   });
   it('returns [] when manifest is missing', () => expect(renderedMotions([item('01-pixel', 1)], null)).toEqual([]));
-});
-
-describe('pickFeatured', () => {
-  const card = (id: string, no: number, featured: boolean): MotionCardData => ({ ...item(id, no, featured), video: 'v', poster: 'p', preview: null });
-  it('puts featured first then fills by number', () => {
-    const list = [card('01-a', 1, false), card('02-b', 2, true), card('03-c', 3, false)];
-    expect(pickFeatured(list, 2).map((m) => m.id)).toEqual(['02-b', '01-a']);
-  });
 });
 
 describe('getRenderedMotions', () => {

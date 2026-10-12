@@ -43,13 +43,12 @@
 │   │   ├── tokens.css             # 생성 파일 (gitignore) ← scripts/gen-tokens-css.ts
 │   │   └── icon.png, apple-icon.png        # prepare-assets.sh 가 생성
 │   ├── src/components/
-│   │   ├── RootShell, Nav, LangToggle, Section, HomePage, HeroVideo, VideoDialog
+│   │   ├── RootShell, Nav, LangToggle, Section, HomePage, HeroVideo, VideoDialog, SiteFooter, LegacyAiAnchor
 │   │   ├── motion/  HeroStage, hero-cycle, Typewriter, GridBackground, Reveal, CountUp
 │   │   └── sections/ Hero, Stats, Timeline, Pillars, Projects, Books, Lectures, Contact
 │   ├── src/components/ai-hub/  AiHeader, AiTabs, SignInButton, SignInDialog, JoinForm, AccountMenu, MemberAddForm, ConfirmDelete, clipboard.ts
 │   ├── src/components/motion-gallery/  MotionGallery, MotionCard, KeyNav, PromptCopy, GoogleSignInButton, contact.ts, admin/{AdminGallery,AdminDetail,admin.module.css,admin-list,placeholders}
 │   ├── src/components/slide-gallery/  SlideGallery, SlideCard, SlideSortMenu, SlideViewer, SlidePrompt, slide-order.ts, slide-hash.ts (+test 2)
-│   ├── src/components/sections/AiHub.tsx  # 홈 #ai 섹션 (옛 #motion 앵커 호환)
 │   ├── src/auth.ts                # NextAuth v5 (Google, signIn 은 검증된(email_verified) 구글 계정이면 통과 — 권한은 요청마다 access.ts, pages.error → /ai/signin-error/)
 │   ├── src/lib/  locale, metadata, sections, volume, media, media-serve, media-upload, range, motion-admin, slides, admin-emails, prisma, member-role, member-input, members, access, ai-paths, ai-tabs, log (+ *.test.ts)
 │   ├── e2e/ smoke, platform, motion, slide, admin, security, prompt-copy, redirects, hub, membership, account .spec.ts + session.ts(signInAs·MARKER 공용)  # Playwright (standalone 서버 포트 3100, e2e/.volume 픽스처)
@@ -88,7 +87,7 @@
 ```
 
 ## 주요 엔드포인트 / 라우트
-홈 두 페이지는 `HomePage` 가 섹션 9개(#ai 포함)를 렌더한다. 모션 라우트는 Volume 을 읽으므로 `force-dynamic`.
+홈 두 페이지는 `HomePage` 가 섹션 8개를 렌더한다(홈 `#ai` 섹션은 2026-10-13 제거 — AI활용은 Nav 마지막 항목·Contact 링크로 `/ai/` 이동). 모션 라우트는 Volume 을 읽으므로 `force-dynamic`.
 
 | 경로 | 파일 | 설명 |
 |---|---|---|
@@ -108,7 +107,7 @@
 | `GET /api/media/manifest` | `.../api/media/manifest/route.ts` | 토큰. Volume 파일 해시 목록(media:push 가 차이만 업로드). `?set=slide` 면 `media/slide/manifest.json` |
 | `/api/health` | `.../api/health/route.ts` | Railway 헬스체크 |
 | `/api/auth/[...nextauth]` | `.../api/auth/[...nextauth]/route.ts` | NextAuth v5 Google |
-| `#hero #stats #timeline #pillars #projects #ai #books #lectures #contact` | `web/src/lib/sections.ts` `SECTION_IDS` | Nav 앵커·e2e 검증 기준 |
+| `#hero #stats #timeline #pillars #projects #books #lectures #contact` | `web/src/lib/sections.ts` `SECTION_IDS` | Nav 앵커·e2e 검증 기준. 옛 `/#ai`·`/#motion`(`/en/` 포함)은 `LegacyAiAnchor` 가 클라이언트에서 `/ai/` 로 보냄 |
 
 정적 파일: `/video/intro-{ko,en}.mp4`(소개 영상 = 10초 스팅 + Remotion 본편, VideoDialog), `/video/hero-loop.{mp4,webm}` + `/video/hero-poster.jpg`(히어로 배경), `/img/og.png`(OG 1200×630), `/img/{photo,pictogram}.webp`, `/img/books/*.webp`, `/img/projects/*.webp`.
 
@@ -154,8 +153,12 @@ zod 스키마로 검증되는 JSON. `getContent(locale)` 이 파싱·캐시, `np
 ## 주요 컴포넌트·유틸
 | 이름 | 파일 | 역할 |
 |---|---|---|
-| `RootShell` | `web/src/components/RootShell.tsx` | html/body, 폰트 import, Nav + main + footer |
-| `HomePage` | `web/src/components/HomePage.tsx` | 서버 컴포넌트. getContent + computeStats → 섹션 8개 |
+| `RootShell` | `web/src/components/RootShell.tsx` | html/body, 폰트 import, Nav + main. footer 는 렌더하지 않음(페이지별 `SiteFooter`) |
+| `HomePage` | `web/src/components/HomePage.tsx` | 서버 컴포넌트. getContent + computeStats → 섹션 8개 + `LegacyAiAnchor` + `SiteFooter`(`ui.footer`). 모션 데이터는 읽지 않음 |
+| `Nav` | `web/src/components/Nav.tsx` | `SECTION_IDS`(hero 제외) 앵커 + 마지막 항목 AI활용(`ui.nav.ai`) → `/ai/`(`AI_HOME`) + 계정 메뉴 |
+| `Contact` | `web/src/components/sections/Contact.tsx` | 연락처 + AI활용 링크(`/ai/`, 라벨은 `AI_TABS` 의 locale 별 탭 이름). `locale` prop 필요 |
+| `SiteFooter` | `web/src/components/SiteFooter.tsx` | 화면 바닥 고정 footer(높이 `--footer-h`, globals.css) + 같은 높이 spacer. 문구가 달라 페이지별로 렌더: 홈은 `ui.footer`, `ai/(hub)/layout.tsx` 는 oppadu.com/ai 2차 저작물 고지(링크). (app) 전체 화면 앱은 없음 |
+| `LegacyAiAnchor` | `web/src/components/LegacyAiAnchor.tsx` | 'use client'. 해시 `#ai`/`#motion` 이면 `location.replace('/ai/')` — 해시는 서버로 안 가서 `redirects()` 로 못 잡음 |
 | `Section` | `web/src/components/Section.tsx` | 섹션 래퍼 (id, title, dark, nav 높이 scroll-mt) |
 | `Hero` | `web/src/components/sections/Hero.tsx` | `HeroStage` 안에 Typewriter 3줄(소속·이름·태그라인) + 픽토그램 + VideoDialog |
 | `HeroStage` | `web/src/components/motion/HeroStage.tsx` | 히어로 20초 주기 제공자. GridBackground + HeroVideo 렌더, 영상 `onLoop` 로 주기 재동기화 |
@@ -192,7 +195,6 @@ zod 스키마로 검증되는 JSON. `getContent(locale)` 이 파싱·캐시, `np
 | `JoinForm` | `web/src/components/ai-hub/JoinForm.tsx` | 가입 신청 폼(`useActionState` + `applyAction`) |
 | `AccountMenu` | `web/src/components/ai-hub/AccountMenu.tsx` | 계정 칩+메뉴+로그아웃. 사이트 Nav 와 편집기·회원 관리 바(dark tone)에서 공용 |
 | `MemberAddForm`, `ConfirmDelete` | `web/src/components/ai-hub/` | 관리자 회원 추가 폼 / 삭제 확인 |
-| `AiHub` | `web/src/components/sections/AiHub.tsx` | 홈 `#ai` 섹션(옛 `#motion` 앵커 호환). content 키 `nav.ai`, `sections.ai`, `ai.{intro,signIn,members}`, `motion.title` |
 | `timeline.ts` | `video/src/timeline.ts` | FPS/WIDTH/HEIGHT, `buildScenes`(manifest 길이 기반), `timelineSchedule`, `projectSchedule`, `HERO_LOOP_DURATION` |
 | `plan.ts` | `video/src/plan.ts` | `buildPlan(locale)` → scenes, careerIds(대본에 있는 경력만), clip(key) 경로 |
 | `loop.ts` | `video/src/loop.ts` | `loopVeil` — 루프 경계 흰 베일 (0.5s in / 0.7s out) |
@@ -237,7 +239,7 @@ zod 스키마로 검증되는 JSON. `getContent(locale)` 이 파싱·캐시, `np
 - 환경변수 8개 설정 완료: `ADMIN_EMAILS`, `DATABASE_URL`(`${{Postgres.DATABASE_URL}}` 참조), `AUTH_URL=https://me.chois.pro`, `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET`, `AUTH_SECRET`, `MEDIA_UPLOAD_TOKEN`(뒤 둘은 `openssl rand` 로 생성 — 값은 Railway 에만 있음), `RAILWAY_VOLUME_MOUNT_PATH`(자동).
 - **`AUTH_URL` 필수**: standalone 서버가 `HOSTNAME=0.0.0.0`·`PORT=8080` 으로 떠서, 없으면 Auth.js 가 로그인·콜백 URL 을 `https://0.0.0.0:8080/...` 로 만든다(2026-10-12 실제 장애). 도메인을 바꾸면 이 값과 Google 리디렉션 URI 를 함께 바꾼다.
 - Railway CLI 링크: 이 폴더를 위 서비스에 연결해 둠(`railway status`). `AUTH_SECRET` 은 바꾸면 관리자 세션이 모두 풀린다.
-- Volume 내용: 모션 01–50 전부 영상·미리보기·포스터(manifest 150파일, 약 299 MB / Volume 1 GB) + `private/motion-admin.json`(50개). 운영 확인: `/ai/motion/` 카드 50, 홈 `#ai` 카드 6, 영상 Range 206, `/media/private/...` 404, 공개 HTML 에 프롬프트 0건.
+- Volume 내용: 모션 01–50 전부 영상·미리보기·포스터(manifest 150파일, 약 299 MB / Volume 1 GB) + `private/motion-admin.json`(50개). 운영 확인: `/ai/motion/` 카드 50, 홈 `#ai` 카드 6, 영상 Range 206, `/media/private/...` 404, 공개 HTML 에 프롬프트 0건. (홈 `#ai` 섹션은 2026-10-13 제거)
 - 슬라이드 원천: `/Volumes/Chois_SD2/dev/motion/slide/` 는 오빠두엑셀 스크랩(개인 참고용, **공개 배포 금지** — 코드·문구·이미지를 이 저장소에 복사하지 않음). 학교용 덱은 `school/<id>/{source.md,prompt.txt,instructions.txt,deck.pdf,notebook.txt}` 에서 NotebookLM(`notebooklm generate slide-deck`)으로 만들고, `school/manifest.json` 이 공개 문구·순서를 가진다.
 - 영상 원천: `/Volumes/Chois_SD2/dev/motion` (`MOTION_SRC` 기본값). 그 폴더의 `data/chois-gallery.json` 과 `media/chois/<id>.mp4` 만 읽는다. 렌더 절차는 그 폴더의 `.claude/PROJECT_MAP.md` 「21–50 렌더 절차」.
 - 업로드 명령(토큰을 화면에 내지 않음):
@@ -280,8 +282,8 @@ zod 스키마로 검증되는 JSON. `getContent(locale)` 이 파싱·캐시, `np
 - **스팅(video/sting) 수정 규칙**: 텍스트를 바꾸려면 `vars/*.json` 과 `index.html` 의 variable default 를 **함께** 수정. 큐 시각을 바꾸면 영상·오디오가 같이 움직이므로 `#cues` JSON 만 수정하고 `npm run render:sting` 재실행(사운드트랙이 큐에서 재합성됨). 스팅과 본편은 인코딩 파라미터가 달라 concat demuxer 로 못 붙이고 `prepend_sting` 이 필터로 재인코딩한다.
 - **HyperFrames 렌더 브라우저**: `~/.cache/hyperframes` 의 chrome-headless-shell 을 쓴다(Remotion 의 Playwright Chromium 과 별개). `npx hyperframes lint` 의 sub-composition 분할 경고는 "단일 HTML" 요구사항 때문에 의도적으로 무시.
 - **연차("N년차")는 요청 시각 기준**(`computeStats`, 3월 임용 기준) → 홈이 force-dynamic 이라 요청마다 계산되므로 재배포 없이 자동 갱신된다.
-- **반응형 규칙 적용 지점**: 표는 `.data-table`(globals.css, sticky header/col + nowrap), body `word-break: keep-all`, 히어로 높이 `100dvh - var(--nav-h)`, 터치 타겟 `min-h-11`.
-- 테스트: vitest 는 `vitest.config.ts` include 기준(32개 파일·160 tests, 2026-10-13), Playwright 11 파일(smoke, platform, motion, slide, admin, security, prompt-copy, redirects, hub, membership, account — 73 passed, 2026-10-13, `E2E_DATABASE_URL` 있을 때 skip 0). 세션 쿠키 헬퍼는 `e2e/session.ts`. `check` 는 e2e 를 돌리지 않고 CI 워크플로가 build 후 따로 실행.
+- **반응형 규칙 적용 지점**: 표는 `.data-table`(globals.css, sticky header/col + nowrap), body `word-break: keep-all`, 히어로 높이 `100dvh - var(--nav-h) - var(--footer-h)`, 터치 타겟 `min-h-11`.
+- 테스트: vitest 는 `vitest.config.ts` include 기준(32개 파일·161 tests, 2026-10-13), Playwright 11 파일(smoke, platform, motion, slide, admin, security, prompt-copy, redirects, hub, membership, account — 73 passed, 2026-10-13, `E2E_DATABASE_URL` 있을 때 skip 0). `motion.spec` 은 홈 AI활용 섹션 부재·Nav/Contact 허브 링크·옛 `#ai`/`#motion` 이동·페이지별 고정 footer 도 검사. 세션 쿠키 헬퍼는 `e2e/session.ts`. `check` 는 e2e 를 돌리지 않고 CI 워크플로가 build 후 따로 실행.
 - 문서 불일치 메모: `video/public/audio/README.md` 는 BGM 볼륨 0.6 이라 적혀 있으나 실제 `Intro.tsx` `BGM_LEVEL` 은 0.22.
 
 ---

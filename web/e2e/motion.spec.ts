@@ -1,20 +1,40 @@
 import { expect, test } from '@playwright/test';
 
-test('home shows the AI활용 section with the motion tab and rendered cards only', async ({ page }) => {
+test('home has no AI활용 section; nav (last item) and contact link to the hub', async ({ page }) => {
   await page.goto('/');
-  const section = page.locator('section#ai');
-  await expect(section.getByRole('heading', { level: 2 })).toHaveText('AI활용');
-  await expect(section.getByRole('link', { name: '모션그래픽' })).toHaveAttribute('href', '/ai/motion/');
-  await expect(section.getByTestId('motion-card')).toHaveCount(2);
-  await expect(section.getByRole('link', { name: /전체 보기/ })).toHaveAttribute('href', '/ai/motion/');
-  await expect(page.getByRole('navigation', { name: 'primary' }).getByRole('link', { name: 'AI활용' })).toHaveAttribute('href', '/#ai');
+  await expect(page.locator('section#ai')).toHaveCount(0);
+  await expect(page.getByTestId('motion-card')).toHaveCount(0);
+  const navLinks = page.getByRole('navigation', { name: 'primary' }).getByRole('listitem');
+  await expect(navLinks.last().getByRole('link')).toHaveText('AI활용');
+  await expect(navLinks.last().getByRole('link')).toHaveAttribute('href', '/ai/');
+  await expect(page.locator('section#contact').getByRole('link', { name: /AI활용/ })).toHaveAttribute('href', '/ai/');
+  await navLinks.last().getByRole('link').click();
+  await expect(page).toHaveURL(/\/ai\/motion\/$/);
 });
 
-test('english home labels the section AI Tools and old #motion anchor still lands in it', async ({ page }) => {
-  await page.goto('/en/');
-  await expect(page.locator('section#ai').getByRole('heading', { level: 2 })).toHaveText('AI Tools');
-  await page.goto('/#motion');
-  await expect(page.locator('section#ai')).toBeInViewport();
+test('old #ai and #motion anchors on the home page move to the hub', async ({ page }) => {
+  for (const p of ['/#ai', '/#motion', '/en/#ai']) {
+    await page.goto(p);
+    await expect(page).toHaveURL(/\/ai\/motion\/$/);
+  }
+});
+
+test('footer is pinned to the bottom with a page-specific text', async ({ page }) => {
+  for (const [p, text] of [
+    ['/', '© 최재혁, 대구광역시교육청 수학교사'],
+    ['/en/', '© Jae-hyuk Choi, Math Teacher, Daegu Metropolitan Office of Education'],
+    ['/ai/motion/', '© 이 페이지는 oppadu.com/ai를 가공한 2차 저작물입니다.'],
+    ['/ai/slide/', '© 이 페이지는 oppadu.com/ai를 가공한 2차 저작물입니다.'],
+  ] as const) {
+    await page.goto(p);
+    const footer = page.getByTestId('site-footer');
+    await expect(footer).toHaveCount(1);
+    await expect(footer).toHaveText(text);
+    await expect(footer).toHaveCSS('position', 'fixed');
+    const box = await footer.boundingBox();
+    expect(Math.round(box!.y + box!.height)).toBe(page.viewportSize()!.height);
+  }
+  await expect(page.getByTestId('site-footer').getByRole('link', { name: 'oppadu.com/ai' })).toHaveAttribute('href', 'https://oppadu.com/ai');
 });
 
 test('gallery filters by group and keeps it in the url', async ({ page }) => {
@@ -56,7 +76,7 @@ test.describe('mobile 375px', () => {
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
     expect(overflow).toBeLessThanOrEqual(0);
   });
-  for (const p of ['/ai/motion/01-pixel/', '/#ai']) {
+  for (const p of ['/ai/motion/01-pixel/', '/ai/slide/']) {
     test(`${p} has no horizontal page scroll`, async ({ page }) => {
       await page.goto(p);
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
