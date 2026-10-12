@@ -45,5 +45,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: docker build -t me-chois .
-      # Railway preDeployCommand 와 같은 명령을 런타임 이미지에서 실제로 돌려 본다.
-      - run: docker run --rm --network host -e DATABASE_URL=postgresql://e2e:e2e@localhost:5432/e2e me-chois prisma migrate deploy --config web/prisma.config.ts
+      # 운영과 같은 기본 CMD(시작 시 migrate deploy → 서버)로 띄워 헬스체크와 테이블 생성을 확인한다.
+      - run: |
+          docker run -d --name app --network host -e PORT=3200 -e RAILWAY_VOLUME_MOUNT_PATH=/tmp \
+            -e DATABASE_URL=postgresql://e2e:e2e@localhost:5432/e2e -e AUTH_SECRET=ci-secret-ci-secret-ci-secret-000 me-chois
+          for i in $(seq 1 30); do curl -fs http://localhost:3200/api/health && break; sleep 2; done
+          docker logs app
+          curl -fs http://localhost:3200/api/health
+          PGPASSWORD=e2e psql -h localhost -U e2e -d e2e -c 'SELECT count(*) FROM "MotionViewer"'

@@ -3,7 +3,7 @@
 ## 개요
 - 목적: 최재혁(포산고 수학교사) 소개 페이지 `me.chois.pro` 와 Remotion 모션그래픽 소개 영상. 웹·영상이 `content/` 의 JSON 을 단일 소스로 공유한다.
 - 스택: npm workspaces 모노레포 (Node 24) — `content`(zod 4 스키마 + JSON) / `web`(Next.js 16 App Router, `output: 'standalone'`, React 19, Tailwind 4, motion 14, Prisma 7.10 + Railway PostgreSQL) / `video`(Remotion 4). 소개 영상 맨 앞 10초 스팅은 별도 `video/sting/`(HyperFrames, HTML+GSAP — 워크스페이스 아님, 자체 package.json). 테스트 vitest 5 + Playwright.
-- 배포: `main` push → GitHub Actions(`.github/workflows/ci.yml`, check+build+e2e) → Railway 가 `Dockerfile` 로 빌드(video 워크스페이스 제외)·standalone 서버 실행. 헬스체크 `/api/health`(`railway.json`). 도메인 `me.chois.pro`. DB 는 Railway PostgreSQL(서비스 `Postgres`, 2026-10-12 추가) — 모션 열람자 계정(`MotionViewer`)만 저장. 모션 영상·관리자 데이터(프롬프트 등)는 여전히 Railway Volume(`RAILWAY_VOLUME_MOUNT_PATH`, 1GB). 배포 전 `railway.json` `preDeployCommand` 가 `prisma migrate deploy` 실행. 소개 영상·이미지 산출물은 CI 가 만들지 않고 커밋한다. (GitHub Pages 배포는 폐지, `deploy.yml` 삭제됨)
+- 배포: `main` push → GitHub Actions(`.github/workflows/ci.yml`, check+build+e2e) → Railway 가 `Dockerfile` 로 빌드(video 워크스페이스 제외)·standalone 서버 실행. 헬스체크 `/api/health`(`railway.json` 에 적혀 있지만 **이 서비스에는 railway.json 이 적용되지 않음** — 배포 manifest 의 configFile·healthcheckPath·preDeployCommand 가 비어 있다, 2026-10-12 확인). 도메인 `me.chois.pro`. DB 는 Railway PostgreSQL(서비스 `Postgres`, 2026-10-12 추가) — 모션 열람자 계정(`MotionViewer`)만 저장. 모션 영상·관리자 데이터(프롬프트 등)는 여전히 Railway Volume(`RAILWAY_VOLUME_MOUNT_PATH`, 1GB). 마이그레이션은 Dockerfile `CMD` 가 서버 시작 전에 `prisma migrate deploy` 를 실행(실패해도 서버는 뜨고 `[migrate]` 오류 로그만 남김 — 관리자 화면은 DB 무관, 열람자 기능만 fail-closed). 소개 영상·이미지 산출물은 CI 가 만들지 않고 커밋한다. (GitHub Pages 배포는 폐지, `deploy.yml` 삭제됨)
 - 모션 챕터 설계/계획: `docs/superpowers/specs/2026-10-12-motion-chapter-railway-design.md`, `docs/superpowers/plans/2026-10-12-motion-chapter-railway.md`.
 - 모션 열람자 계획: `.plans/2026-10-12-motion-viewers-{draft,review,final,post-review}.md`.
 - 설계/계획 문서: `docs/superpowers/specs/2026-10-09-my-introduction-design.md`, `docs/superpowers/plans/2026-10-09-my-introduction.md`, 약력 초안 `docs/content/profile-draft.md`.
@@ -11,8 +11,8 @@
 ## 폴더 구조
 ```
 .
-├── .github/workflows/ci.yml       # check(postgres:17 서비스) → build:web → e2e / docker(이미지로 migrate deploy 시험). 배포는 Railway
-├── Dockerfile, railway.json       # Railway 빌드·헬스체크·preDeploy 마이그레이션
+├── .github/workflows/ci.yml       # check(postgres:17 서비스) → build:web → e2e / docker(기본 CMD 로 컨테이너를 띄워 헬스체크·MotionViewer 테이블 생성 확인). 배포는 Railway
+├── Dockerfile, railway.json       # Railway 빌드(Dockerfile CMD 가 시작 시 migrate deploy). railway.json 은 현재 서비스에 미적용
 ├── .plans/                        # 작업 계획 문서 (모션 열람자 등)
 ├── content/                       # @me/content 워크스페이스 (TS 소스 그대로 import)
 │   ├── motion/ schema.ts, index.ts, public.json  # 모션 스타일 공개 데이터(커밋) + 관리자 스키마
@@ -210,7 +210,7 @@ zod 스키마로 검증되는 JSON. `getContent(locale)` 이 파싱·캐시, `np
   - [ ] GitHub Pages 비활성화(저장소 Settings → Pages)
   - [ ] `railway.json` → `.railway/railway.ts` 이전 — Railway CLI 경고: Config as Code 는 2026-12-01 까지만 지원(`railway config migrate`)
   - [x] 모션 21–30, 31–50 업로드(2026-10-12) — 50개 전부 공개. 스타일을 다시 렌더하면 같은 세 명령만 반복
-  - [ ] PR #2(feat/motion-viewers) 병합·배포 후: preDeploy 마이그레이션 로그 확인, 운영에서 Server Action(CSRF) 으로 열람자 추가·삭제, 등록한 비관리자 계정으로 실제 Google 로그인 확인
+  - [ ] 마이그레이션 핫픽스(fix/migrate-on-start) 배포 후: 로그에 migrate 적용 확인, 운영에서 Server Action(CSRF) 으로 열람자 추가·삭제, 등록한 비관리자 계정으로 실제 Google 로그인 확인
 
 ## 주의사항 / 특이 패턴
 - **관리자 데이터는 Volume 에만**: 프롬프트·장면표·소리 큐(`motion-admin.json`)는 git·빌드 산출물·공개 HTML 어디에도 들어가면 안 된다. `web/e2e/security.spec.ts` 가 마커(`E2E-ADMIN-MARKER`)와 `{{Channel name=` 유출, `/media` 경로 우회, 토큰 없는 업로드를 검사.
