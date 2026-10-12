@@ -187,7 +187,7 @@ Prisma 대신 zod 스키마로 검증되는 JSON. `getContent(locale)` 이 파�
 - 업로드 명령(토큰을 화면에 내지 않음):
   `T=$(railway variables --json | python3 -c 'import json,sys;print(json.load(sys.stdin)["MEDIA_UPLOAD_TOKEN"])') && MEDIA_PUSH_URL=https://me.chois.pro MEDIA_UPLOAD_TOKEN="$T" npm run media:push`
 - 남은 일:
-  - [ ] 관리자 Google 로그인 실사용 확인(`/motion/admin/`). 리디렉션 URI `https://me.chois.pro/api/auth/callback/google`(끝 슬래시 없음), 동의 화면이 테스트 상태면 테스트 사용자 등록
+  - [x] 관리자 Google 로그인 확인(2026-10-12). OAuth 클라이언트는 Google Cloud 의 `Me_Chois`(Client ID `318764925465-…`) — Railway `AUTH_GOOGLE_ID/SECRET` 은 반드시 이 클라이언트 값(처음엔 다른 프로젝트 클라이언트 값이 들어가 redirect_uri_mismatch 발생). 리디렉션 URI `https://me.chois.pro/api/auth/callback/google`(끝 슬래시 없음)
   - [ ] GitHub Pages 비활성화(저장소 Settings → Pages)
   - [ ] `railway.json` → `.railway/railway.ts` 이전 — Railway CLI 경고: Config as Code 는 2026-12-01 까지만 지원(`railway config migrate`)
   - [ ] 모션 21–50 렌더 후 `motion:import` → `media:prepare` → `media:push`
