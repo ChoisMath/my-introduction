@@ -2,15 +2,15 @@ import { expect, test } from '@playwright/test';
 
 test('home shows the motion section with rendered cards only', async ({ page }) => {
   await page.goto('/');
-  const section = page.locator('section#motion');
+  const section = page.locator('section#ai');
   await expect(section.getByTestId('motion-card')).toHaveCount(2);
   await expect(section.getByRole('link', { name: /전체 보기/ })).toHaveAttribute('href', '/ai/motion/');
-  await expect(page.getByRole('navigation', { name: 'primary' }).getByRole('link', { name: '모션' })).toHaveAttribute('href', '/#motion');
+  await expect(page.getByRole('navigation', { name: 'primary' }).getByRole('link', { name: 'AI활용' })).toHaveAttribute('href', '/#ai');
 });
 
 test('english home links english names to the korean gallery', async ({ page }) => {
   await page.goto('/en/');
-  await expect(page.locator('section#motion').getByTestId('motion-card')).toHaveCount(2);
+  await expect(page.locator('section#ai').getByTestId('motion-card')).toHaveCount(2);
 });
 
 test('gallery filters by group and keeps it in the url', async ({ page }) => {
@@ -52,7 +52,7 @@ test.describe('mobile 375px', () => {
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
     expect(overflow).toBeLessThanOrEqual(0);
   });
-  for (const p of ['/ai/motion/01-pixel/', '/#motion']) {
+  for (const p of ['/ai/motion/01-pixel/', '/#ai']) {
     test(`${p} has no horizontal page scroll`, async ({ page }) => {
       await page.goto(p);
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);

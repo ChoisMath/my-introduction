@@ -7,7 +7,7 @@ import { AI_MOTION } from '@/lib/ai-paths';
 
 export function Motion({ items, ui, locale }: { items: MotionCardData[]; ui: Ui; locale: Locale }) {
   return (
-    <Section id="motion" title={ui.sections.motion}>
+    <Section id="ai" title={ui.sections.ai}>
       <p className="mb-4 text-muted">{ui.motion.intro}</p>
       <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3">
         {items.map((m) => (

@@ -7,7 +7,7 @@
     "timeline": "Career",
     "pillars": "Work",
     "projects": "Projects",
-    "motion": "Motion",
+    "ai": "AI Tools",
     "books": "Books",
     "lectures": "Lectures",
     "contact": "Contact"
@@ -33,7 +33,7 @@
     "awards": "Credentials & awards",
     "pillars": "What I do",
     "projects": "Things I built",
-    "motion": "Vibe-coding motion graphics",
+    "ai": "AI Tools",
     "books": "Books",
     "materials": "Items & materials",
     "lectures": "Lectures & trainings",
@@ -46,6 +46,7 @@
     "stack": "Stack"
   },
   "motion": {
+    "title": "Vibe-coding motion graphics",
     "intro": "10-second intros I made with HyperFrames — from vibe-coding basics to agentic AI",
     "viewAll": "See all",
     "empty": "Videos are on the way.",
@@ -54,6 +55,11 @@
     "back": "Back to list",
     "prev": "Previous",
     "next": "Next"
+  },
+  "ai": {
+    "intro": "Ready-to-use vibe-coding prompts for classes and work. Approved teachers can copy the prompts.",
+    "signIn": "Sign in · Apply",
+    "members": "Members"
   },
   "lectures": {
     "teacher": "For teachers",

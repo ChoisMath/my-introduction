@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const hit = await load((await params).id);
   if (!hit) return {};
   const { ui } = getContent('ko');
-  const title = `${hit.item.name} · ${ui.sections.motion}`;
+  const title = `${hit.item.name} · ${ui.motion.title}`;
   const url = aiMotionPath(hit.item.id);
   return {
     title,

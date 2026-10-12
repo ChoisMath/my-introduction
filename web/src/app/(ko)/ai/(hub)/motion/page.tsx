@@ -10,7 +10,7 @@ export const dynamic = 'force-dynamic';
 
 const { ui } = getContent('ko');
 export const metadata: Metadata = {
-  title: `${ui.sections.motion} · ${ui.siteTitle}`,
+  title: `${ui.motion.title} · ${ui.siteTitle}`,
   description: ui.motion.intro,
   alternates: { canonical: AI_MOTION },
 };
@@ -18,9 +18,9 @@ export const metadata: Metadata = {
 export default async function MotionPage() {
   const items = await getRenderedMotions();
   return (
-    <section className="px-2 py-8 sm:px-3 md:px-4 lg:px-6">
+    <section className="px-2 pt-4 pb-8 sm:px-3 md:px-4 lg:px-6">
       <div className="mx-auto w-full max-w-6xl">
-        <h1 className="mb-2 text-2xl font-bold tracking-tight sm:text-3xl">{ui.sections.motion}</h1>
+        <h2 className="mb-2 text-2xl font-bold tracking-tight sm:text-3xl">{ui.motion.title}</h2>
         <p className="mb-4 text-muted">{ui.motion.intro}</p>
         {items.length > 0 ? (
           <Suspense>
