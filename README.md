@@ -32,7 +32,7 @@ npm run build:web && npm run e2e   # standalone 빌드 후 Playwright e2e
 
 - `main` push → GitHub Actions CI 통과 → Railway 가 `Dockerfile` 로 빌드·배포. 헬스체크 `/api/health`.
 - Volume `/data` (1 GB): `media/motion/<id>/{video.mp4,preview.mp4,poster.webp}`, `media/motion/manifest.json`, `private/motion-admin.json`.
-- 환경변수: `AUTH_SECRET`, `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET`, `ADMIN_EMAILS`, `MEDIA_UPLOAD_TOKEN` (`RAILWAY_VOLUME_MOUNT_PATH`·`PORT` 는 Railway 자동).
+- 환경변수: `AUTH_SECRET`, `AUTH_URL`(`https://me.chois.pro` — 없으면 로그인 URL 이 내부 주소 `0.0.0.0:8080` 으로 만들어진다), `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET`, `ADMIN_EMAILS`, `MEDIA_UPLOAD_TOKEN` (`RAILWAY_VOLUME_MOUNT_PATH`·`PORT` 는 Railway 자동).
 
 ### 모션 영상 올리기
 1. (motion 폴더에서 렌더 후) `npm run motion:import` — 공개 데이터 갱신(커밋), 관리자 데이터는 `.media-out/` 에만.

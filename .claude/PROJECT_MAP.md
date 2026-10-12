@@ -148,7 +148,7 @@ Prisma 대신 zod 스키마로 검증되는 JSON. `getContent(locale)` 이 파�
 
 ## 외부 의존성
 - 외부 서비스: Railway(호스팅·Volume), Google OAuth(관리자 로그인, next-auth 5.0.0-beta.32). DB 없음.
-- 서버 환경변수: `RAILWAY_VOLUME_MOUNT_PATH`(절대경로), `PORT`(Railway 자동), `AUTH_SECRET`, `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET`, `ADMIN_EMAILS`(쉼표 구분), `MEDIA_UPLOAD_TOKEN`. 예시는 루트 `.env.example`.
+- 서버 환경변수: `RAILWAY_VOLUME_MOUNT_PATH`(절대경로), `PORT`(Railway 자동), `AUTH_SECRET`, `AUTH_URL`(운영 `https://me.chois.pro`), `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET`, `ADMIN_EMAILS`(쉼표 구분), `MEDIA_UPLOAD_TOKEN`. 예시는 루트 `.env.example`.
 - 스크립트 전용: `MOTION_SRC`(motion 폴더, motion:import), `MEDIA_PUSH_URL`(+`MEDIA_UPLOAD_TOKEN`, media:push).
 - `scripts/narrate.ts` 만 선택적으로 사용:
 
@@ -179,7 +179,8 @@ Prisma 대신 zod 스키마로 검증되는 JSON. `getContent(locale)` 이 파�
 
 ## 운영 현황 (Railway, 2026-10-12)
 - 프로젝트 `me_chois` / 서비스 `my-introduction` / 환경 `production`. Volume `/data`. 커스텀 도메인 `me.chois.pro` 가 이미 Railway 를 가리킨다(DNS 전환 완료, 응답 헤더 `server: railway-hikari`).
-- 환경변수 6개 설정 완료: `ADMIN_EMAILS`, `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET`, `AUTH_SECRET`, `MEDIA_UPLOAD_TOKEN`(뒤 둘은 `openssl rand` 로 생성 — 값은 Railway 에만 있음), `RAILWAY_VOLUME_MOUNT_PATH`(자동).
+- 환경변수 7개 설정 완료: `ADMIN_EMAILS`, `AUTH_URL=https://me.chois.pro`, `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET`, `AUTH_SECRET`, `MEDIA_UPLOAD_TOKEN`(뒤 둘은 `openssl rand` 로 생성 — 값은 Railway 에만 있음), `RAILWAY_VOLUME_MOUNT_PATH`(자동).
+- **`AUTH_URL` 필수**: standalone 서버가 `HOSTNAME=0.0.0.0`·`PORT=8080` 으로 떠서, 없으면 Auth.js 가 로그인·콜백 URL 을 `https://0.0.0.0:8080/...` 로 만든다(2026-10-12 실제 장애). 도메인을 바꾸면 이 값과 Google 리디렉션 URI 를 함께 바꾼다.
 - Railway CLI 링크: 이 폴더를 위 서비스에 연결해 둠(`railway status`). `AUTH_SECRET` 은 바꾸면 관리자 세션이 모두 풀린다.
 - Volume 내용: 모션 01–20 영상·미리보기·포스터(약 151 MB, manifest 60파일) + `private/motion-admin.json`(50개). 운영 확인: `/motion/` 카드 20, 홈 `#motion` 카드 6, 영상 Range 206, `/media/private/...` 404, 공개 HTML 에 프롬프트 0건.
 - 영상 원천: `/Volumes/Chois_SD2/dev/motion` (`MOTION_SRC` 기본값). 그 폴더의 `data/chois-gallery.json` 과 `media/chois/<id>.mp4` 만 읽는다. 렌더 절차는 그 폴더의 `.claude/PROJECT_MAP.md` 「21–50 렌더 절차」.
