@@ -6,6 +6,7 @@ describe('safeReturnPath', () => {
     expect(safeReturnPath('/ai/motion/01-pixel/')).toBe('/ai/motion/01-pixel/');
     expect(safeReturnPath('/ai/motion/admin/01-pixel/')).toBe('/ai/motion/admin/01-pixel/');
     expect(safeReturnPath('/ai/')).toBe('/ai/');
+    expect(safeReturnPath('/ai/slide/')).toBe('/ai/slide/');
   });
   it('falls back for anything else', () => {
     for (const bad of ['//evil.com', 'https://evil.com/ai/', '/ai/../admin/', '/motion/', '/ai/motion', '/ai/Motion/', null, 42, '/ai/a/b/c/d/']) {
@@ -28,6 +29,10 @@ describe('signOutReturnPath', () => {
     expect(signOutReturnPath('/en/')).toBe('/en/');
     expect(signOutReturnPath('/ai/motion/')).toBe('/ai/motion/');
     expect(signOutReturnPath('/ai/motion/01-pixel/')).toBe('/ai/motion/01-pixel/');
+  });
+  it('stays on the public slide gallery', () => {
+    expect(signOutReturnPath('/ai/slide/')).toBe('/ai/slide/');
+    expect(signOutReturnPath('/ai/slide/x/')).toBe('/ai/motion/');
   });
   it('leaves protected pages for the gallery', () => {
     expect(signOutReturnPath('/ai/motion/admin/')).toBe('/ai/motion/');

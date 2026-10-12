@@ -9,6 +9,7 @@ import { errorTag } from './log';
 import { canUsePrompts, normalizeEmail, resolveRole, type MemberLookup, type MemberRole } from './member-role';
 import { countPending, lookupMember, type MemberRow } from './members';
 import { readMotionAdmin } from './motion-admin';
+import { readSlideAdmin } from './slides';
 import { volumeRoot } from './volume';
 
 export type MemberSummary = { name: string; affiliation: string; createdAt: string };
@@ -18,6 +19,9 @@ export type ViewerState =
 export type PromptAccess =
   | { status: 'signedOut' | 'guest' | 'pending' | 'unavailable'; member: MemberSummary | null }
   | { status: 'allowed'; data: MotionAdmin | null };
+export type SlidePromptAccess =
+  | { status: 'signedOut' | 'guest' | 'pending' | 'unavailable'; member: MemberSummary | null }
+  | { status: 'allowed'; prompts: Record<string, string> | null };
 
 const summary = (m: MemberRow | null): MemberSummary | null =>
   m ? { name: m.name, affiliation: m.affiliation, createdAt: m.createdAt.toISOString() } : null;
@@ -62,6 +66,16 @@ export async function getPromptAccess(id: string): Promise<PromptAccess> {
   if (!canUsePrompts(role)) return { status: role, member: summary(member) };
   const list = await readMotionAdmin(volumeRoot());
   return { status: 'allowed', data: list?.find((a) => a.id === id) ?? null };
+}
+
+// 슬라이드는 한 페이지 안의 상세 창이라 공개 상세 라우트가 없다. 목록 요청에서 한 번 판정해 권한이 있을 때만 프롬프트를 싣는다.
+export async function getSlidePromptAccess(): Promise<SlidePromptAccess> {
+  const session = await auth();
+  if (!session?.user?.email) return { status: 'signedOut', member: null };
+  const { role, member } = await getAccess(session.user.email);
+  if (!canUsePrompts(role)) return { status: role, member: summary(member) };
+  const list = await readSlideAdmin(volumeRoot());
+  return { status: 'allowed', prompts: list ? Object.fromEntries(list.map((a) => [a.id, a.prompt])) : null };
 }
 
 export async function loadMotionAdmin(path: string): Promise<{ role: 'admin' | 'member'; list: MotionAdmin[] | null }> {
