@@ -9,7 +9,9 @@ const web = path.resolve(import.meta.dirname, '../web');
 const root = path.join(web, 'e2e/.volume');
 const fixtures = path.join(web, 'e2e/fixtures');
 export const RENDERED = ['01-pixel', '17-embroidery'];
-export const E2E_VIEWER = 'viewer@example.com';
+export const E2E_MEMBER = 'viewer@example.com';
+export const E2E_PENDING = 'pending@example.com';
+export const E2E_PENDING2 = 'pending2@example.com';
 
 rmSync(root, { recursive: true, force: true });
 for (const id of RENDERED) {
@@ -41,8 +43,14 @@ if (dbUrl) {
   execFileSync('npx', ['prisma', 'migrate', 'deploy', '--config', path.join(web, 'prisma.config.ts')], { cwd: web, stdio: 'inherit', env: { ...process.env, DATABASE_URL: dbUrl } });
   const client = new pg.Client({ connectionString: dbUrl });
   await client.connect();
-  await client.query('TRUNCATE "MotionViewer" RESTART IDENTITY');
-  await client.query('INSERT INTO "MotionViewer" (email, "addedBy") VALUES ($1, $2)', [E2E_VIEWER, 'admin@example.com']);
+  await client.query('TRUNCATE "Member" RESTART IDENTITY');
+  await client.query(
+    `INSERT INTO "Member" (email, name, affiliation, status, "decidedBy", "decidedAt") VALUES
+       ($1, '등록교사', '테스트고등학교', 'APPROVED', 'admin@example.com', now()),
+       ($2, '대기교사', '대기중학교', 'PENDING', NULL, NULL),
+       ($3, '대기교사2', '대기중학교2', 'PENDING', NULL, NULL)`,
+    [E2E_MEMBER, E2E_PENDING, E2E_PENDING2],
+  );
   await client.end();
-  console.info(`e2e viewer db ready: ${host}`);
+  console.info(`e2e member db ready: ${host}`);
 }

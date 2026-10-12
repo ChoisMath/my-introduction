@@ -7,11 +7,21 @@ datasource db {
   provider = "postgresql"
 }
 
-// 관리자(ADMIN_EMAILS)가 등록한, 모션 관리자 화면을 볼 수 있는 Google 계정.
-model MotionViewer {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  note      String?
-  addedBy   String
-  createdAt DateTime @default(now())
+enum MemberStatus {
+  PENDING
+  APPROVED
+}
+
+// AI활용 회원. 관리자(ADMIN_EMAILS)는 여기 없어도 항상 관리자다. 이메일 소문자 CHECK 제약은 migration.sql 에만 있다.
+model Member {
+  id          Int          @id @default(autoincrement())
+  email       String       @unique
+  name        String
+  affiliation String       @default("")
+  status      MemberStatus @default(PENDING)
+  createdAt   DateTime     @default(now())
+  decidedBy   String?
+  decidedAt   DateTime?
+
+  @@index([status, createdAt])
 }
