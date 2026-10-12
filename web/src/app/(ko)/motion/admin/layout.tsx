@@ -3,9 +3,10 @@ import type { ReactNode } from 'react';
 import { requireAdmin } from '@/lib/admin-session';
 
 export const dynamic = 'force-dynamic';
-export const metadata: Metadata = { robots: { index: false, follow: false } };
+export const metadata: Metadata = { title: '모션 관리자', robots: { index: false, follow: false } };
 
+// 관리자 화면은 사이트 머리글 위를 덮는 전체 화면 앱(motion 폴더 index.html 과 같은 모양)이다.
 export default async function AdminLayout({ children }: { children: ReactNode }) {
   await requireAdmin('/motion/admin/');
-  return <div className="px-2 py-6 sm:px-3 md:px-4 lg:px-6"><div className="mx-auto w-full max-w-6xl">{children}</div></div>;
+  return children;
 }

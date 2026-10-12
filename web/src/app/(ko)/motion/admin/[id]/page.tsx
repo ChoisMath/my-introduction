@@ -1,25 +1,45 @@
-import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getMotion } from '@me/content';
-import { PromptPanel } from '@/components/motion-gallery/admin/PromptPanel';
+import { getMotion, getMotionList } from '@me/content';
+import { AdminDetail } from '@/components/motion-gallery/admin/AdminDetail';
+import { adminOrder } from '@/components/motion-gallery/admin/admin-list';
 import { loadMotionAdmin } from '@/lib/admin-session';
 import { getRenderedMotions } from '@/lib/media';
 
 export const dynamic = 'force-dynamic';
 
-export default async function AdminDetailPage({ params }: { params: Promise<{ id: string }> }) {
+const first = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v) || undefined;
+
+export default async function AdminDetailPage({ params, searchParams }: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
   const { id } = await params;
   const motion = getMotion(id);
   if (!motion) notFound();
   const admin = await loadMotionAdmin(`/motion/admin/${id}/`);
   const data = admin?.find((a) => a.id === id) ?? null;
   const card = (await getRenderedMotions()).find((m) => m.id === id) ?? null;
+
+  const sp = await searchParams;
+  const query = new URLSearchParams();
+  const group = first(sp.g);
+  const q = first(sp.q);
+  if (group) query.set('g', group);
+  if (q) query.set('q', q);
+  const suffix = query.size ? `?${query}` : '';
+  const order = adminOrder(getMotionList(), id, group, q);
+  const idx = order.findIndex((m) => m.id === id);
+  const href = (m: { id: string } | undefined) => (m ? `/motion/admin/${m.id}/${suffix}` : null);
+
   return (
-    <article>
-      <Link href="/motion/admin/" prefetch={false} className="inline-flex min-h-11 items-center text-sm whitespace-nowrap text-muted">← 관리자 목록</Link>
-      <h1 className="mt-2 text-2xl font-bold whitespace-nowrap">{String(motion.no).padStart(2, '0')} {motion.name}</h1>
-      {card ? <video src={card.video} poster={card.poster} controls playsInline preload="metadata" className="mt-4 aspect-video w-full max-w-3xl rounded-[var(--radius-card)] bg-black" /> : <p className="mt-4 text-sm text-muted">아직 렌더하지 않은 스타일입니다.</p>}
-      {data ? <PromptPanel item={data} /> : <p role="alert" className="mt-6 text-sm">관리자 데이터가 없습니다. <code>npm run media:push</code> 를 실행하세요.</p>}
-    </article>
+    <AdminDetail
+      motion={motion}
+      data={data}
+      media={card ? { video: card.video, poster: card.poster } : null}
+      pos={`${idx + 1} / ${order.length}`}
+      prevHref={href(order[idx - 1])}
+      nextHref={href(order[idx + 1])}
+      closeHref={`/motion/admin/${suffix}`}
+    />
   );
 }

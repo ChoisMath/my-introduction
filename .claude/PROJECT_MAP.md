@@ -36,7 +36,7 @@
 │   │   ├── RootShell, Nav, LangToggle, Section, HomePage, HeroVideo, VideoDialog
 │   │   ├── motion/  HeroStage, hero-cycle, Typewriter, GridBackground, Reveal, CountUp
 │   │   └── sections/ Hero, Stats, Timeline, Pillars, Projects, Books, Lectures, Contact
-│   ├── src/components/motion-gallery/  MotionGallery, MotionCard, KeyNav, admin/{PromptPanel,RowsTable,placeholders}
+│   ├── src/components/motion-gallery/  MotionGallery, MotionCard, KeyNav, admin/{AdminGallery,AdminDetail,admin.module.css,admin-list,placeholders}
 │   ├── src/components/sections/Motion.tsx  # 홈 #motion 섹션
 │   ├── src/auth.ts                # NextAuth v5 (Google, ADMIN_EMAILS 화이트리스트)
 │   ├── src/lib/  locale, metadata, sections, volume, media, media-serve, media-upload, range, motion-admin, admin-emails, admin-session (+ *.test.ts)
@@ -197,6 +197,7 @@ Prisma 대신 zod 스키마로 검증되는 JSON. `getContent(locale)` 이 파�
 - **standalone 은 server.js 폴더로 chdir** → 상대 `RAILWAY_VOLUME_MOUNT_PATH` 는 엉뚱한 곳을 가리킨다. 항상 절대경로(e2e 는 `web/e2e/.volume` 절대경로).
 - **`skipTrailingSlashRedirect: true`**: Google OAuth 콜백과 스트림 본문 PUT 이 308 리다이렉트를 따라가지 못해서. `trailingSlash` 는 유지하되 슬래시 없는 API 경로도 응답.
 - **모션 페이지는 `force-dynamic`**: 렌더 여부를 Volume 에서 읽기 때문. 관리자 표 `.prose-cell` 의 어절 단위 줄바꿈은 긴 장면 설명용 의도된 반응형 규칙 예외.
+- **관리자 화면 디자인 = motion 폴더 `index.html`**: `/motion/admin/` 목록·상세는 사이트 머리글 위를 덮는 전체 화면 어두운 앱(`fixed inset-0`). 스타일은 `admin/admin.module.css` 에 index.html CSS 를 그대로 옮김(사이트 토큰과 별개). 목록의 그룹·검색은 `?g=&q=` 로 상세에 넘겨 이전/다음 순서·닫기 위치를 맞춘다(`admin-list.ts` `adminOrder`). 단축키 `←` `→` / `1` `2` `3` / `Esc`.
 - **모션 카드 미리보기**: 호버 가능 기기(`(hover: hover)`)에서만 preview.mp4 를 지연 로드. 터치는 탭하면 상세로.
 - **콘텐츠 단일 소스**: `content/ko/*.json` 과 `content/en/*.json` 을 항상 함께 수정. id·배열 길이·`since` 가 어긋나면 `content:validate` 가 실패해 CI 가 멈춘다.
 - **색·폰트는 `content/tokens.json` 만** 수정. `web/src/app/tokens.css` 는 생성 파일(gitignore). `video/src/theme.ts` 도 같은 토큰을 읽는다.
