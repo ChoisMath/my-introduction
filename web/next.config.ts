@@ -15,6 +15,16 @@ const nextConfig: NextConfig = {
   transpilePackages: ['@me/content'],
   turbopack: { root: repoRoot },
   agentRules: false,
+  // 예전 모션 챕터 주소(공유 링크·검색 결과)는 AI활용 허브로 영구 이동한다. 구체 규칙이 먼저다.
+  async redirects() {
+    return [
+      { source: '/motion/admin/viewers/', destination: '/ai/admin/members/', permanent: true },
+      { source: '/motion/signin-error/', destination: '/ai/signin-error/', permanent: true },
+      { source: '/motion', destination: '/ai/motion/', permanent: true },
+      { source: '/motion/', destination: '/ai/motion/', permanent: true },
+      { source: '/motion/:path+/', destination: '/ai/motion/:path+/', permanent: true },
+    ];
+  },
 };
 
 export default nextConfig;

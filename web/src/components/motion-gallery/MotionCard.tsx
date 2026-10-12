@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import { useRef } from 'react';
 import type { MotionCardData } from '@/lib/media';
+import { aiMotionPath } from '@/lib/ai-paths';
 
 export function MotionCard({ item, label, href, subtitle }: { item: MotionCardData; label: string; href?: string; subtitle?: string | null }) {
   const video = useRef<HTMLVideoElement>(null);
@@ -20,7 +21,7 @@ export function MotionCard({ item, label, href, subtitle }: { item: MotionCardDa
   };
   return (
     <Link
-      href={href ?? `/motion/${item.id}/`}
+      href={href ?? aiMotionPath(item.id)}
       data-testid="motion-card"
       onMouseEnter={play}
       onMouseLeave={stop}

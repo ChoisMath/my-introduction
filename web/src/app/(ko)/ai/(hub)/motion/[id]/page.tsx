@@ -7,6 +7,7 @@ import { PromptCopy } from '@/components/motion-gallery/PromptCopy';
 import { finalPrompt, type PromptState } from '@/components/motion-gallery/admin/placeholders';
 import { getPromptAccess } from '@/lib/access';
 import { getRenderedMotions } from '@/lib/media';
+import { AI_MOTION, aiMotionPath } from '@/lib/ai-paths';
 
 export const dynamic = 'force-dynamic';
 
@@ -24,7 +25,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!hit) return {};
   const { ui } = getContent('ko');
   const title = `${hit.item.name} · ${ui.sections.motion}`;
-  const url = `/motion/${hit.item.id}/`;
+  const url = aiMotionPath(hit.item.id);
   return {
     title,
     description: hit.item.concept,
@@ -44,7 +45,7 @@ export default async function MotionDetailPage({ params }: Props) {
   const { ui } = getContent('ko');
   const { item, prev, next } = hit;
   const access = await getPromptAccess(item.id);
-  const href = (m: { id: string } | null) => (m ? `/motion/${m.id}/` : null);
+  const href = (m: { id: string } | null) => (m ? aiMotionPath(m.id) : null);
   return (
     <article className="px-2 py-6 sm:px-3 md:px-4 lg:px-6">
       <div className="mx-auto w-full max-w-5xl">
@@ -67,7 +68,7 @@ export default async function MotionDetailPage({ params }: Props) {
         )}
         <nav className="mt-6 flex flex-wrap items-center gap-2" aria-label="motion">
           {prev ? <Link href={href(prev)!} className={navLink}>← {ui.motion.prev}</Link> : null}
-          <Link href="/motion/" className={navLink}>{ui.motion.back}</Link>
+          <Link href={AI_MOTION} className={navLink}>{ui.motion.back}</Link>
           {next ? <Link href={href(next)!} className={navLink}>{ui.motion.next} →</Link> : null}
         </nav>
         <KeyNav prevHref={href(prev)} nextHref={href(next)} />

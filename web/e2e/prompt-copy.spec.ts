@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { MARKER, signInAs } from './session';
 
-const DETAIL = '/motion/01-pixel/';
+const DETAIL = '/ai/motion/01-pixel/';
 
 test('anonymous visitor gets the Google-only sign-in modal and no prompt data', async ({ page }) => {
   const html = await (await page.request.get(DETAIL)).text();
@@ -26,7 +26,7 @@ test('Google button goes straight to Google and returns to the same detail page'
   const url = new URL(page.url());
   expect(url.searchParams.get('redirect_uri')).toContain('/api/auth/callback/google');
   const cookies = await page.context().cookies();
-  expect(decodeURIComponent(cookies.find((c) => c.name === 'authjs.callback-url')?.value ?? '')).toContain(DETAIL);
+  expect(decodeURIComponent(cookies.find((c) => c.name === 'authjs.callback-url')?.value ?? '')).toContain('/ai/join/?from=' + encodeURIComponent(DETAIL));
 });
 
 test('signed-in admin copies english and korean prompts', async ({ context, page }) => {
@@ -55,7 +55,7 @@ test('signed-in unregistered account sees the not-registered modal', async ({ co
 });
 
 test('access denied page explains registration in Korean', async ({ page }) => {
-  await page.goto('/motion/signin-error/?error=AccessDenied');
+  await page.goto('/ai/signin-error/?error=AccessDenied');
   await expect(page.getByTestId('signin-error-title')).toHaveText('등록되지 않은 Google 계정입니다.');
   await expect(page.getByText('로그인을 위한 아이디 등록은 최재혁T에게 문의하세요.')).toBeVisible();
 });

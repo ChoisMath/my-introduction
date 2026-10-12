@@ -4,6 +4,7 @@ import { AdminDetail } from '@/components/motion-gallery/admin/AdminDetail';
 import { adminOrder } from '@/components/motion-gallery/admin/admin-list';
 import { loadMotionAdmin } from '@/lib/access';
 import { getRenderedMotions } from '@/lib/media';
+import { AI_MOTION_ADMIN, aiMotionAdminPath } from '@/lib/ai-paths';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,7 +17,7 @@ export default async function AdminDetailPage({ params, searchParams }: {
   const { id } = await params;
   const motion = getMotion(id);
   if (!motion) notFound();
-  const { list } = await loadMotionAdmin(`/motion/admin/${id}/`);
+  const { list } = await loadMotionAdmin(aiMotionAdminPath(id));
   const data = list?.find((a) => a.id === id) ?? null;
   const card = (await getRenderedMotions()).find((m) => m.id === id) ?? null;
 
@@ -29,7 +30,7 @@ export default async function AdminDetailPage({ params, searchParams }: {
   const suffix = query.size ? `?${query}` : '';
   const order = adminOrder(getMotionList(), id, group, q);
   const idx = order.findIndex((m) => m.id === id);
-  const href = (m: { id: string } | undefined) => (m ? `/motion/admin/${m.id}/${suffix}` : null);
+  const href = (m: { id: string } | undefined) => (m ? `${aiMotionAdminPath(m.id)}${suffix}` : null);
 
   return (
     <AdminDetail
@@ -39,7 +40,7 @@ export default async function AdminDetailPage({ params, searchParams }: {
       pos={`${idx + 1} / ${order.length}`}
       prevHref={href(order[idx - 1])}
       nextHref={href(order[idx + 1])}
-      closeHref={`/motion/admin/${suffix}`}
+      closeHref={`${AI_MOTION_ADMIN}${suffix}`}
     />
   );
 }

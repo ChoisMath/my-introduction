@@ -4,6 +4,7 @@ import { Suspense } from 'react';
 import { MOTION_GROUPS, getContent } from '@me/content';
 import { MotionGallery } from '@/components/motion-gallery/MotionGallery';
 import { getRenderedMotions } from '@/lib/media';
+import { AI_MOTION, AI_MOTION_ADMIN } from '@/lib/ai-paths';
 
 export const dynamic = 'force-dynamic';
 
@@ -11,7 +12,7 @@ const { ui } = getContent('ko');
 export const metadata: Metadata = {
   title: `${ui.sections.motion} · ${ui.siteTitle}`,
   description: ui.motion.intro,
-  alternates: { canonical: '/motion/' },
+  alternates: { canonical: AI_MOTION },
 };
 
 export default async function MotionPage() {
@@ -29,7 +30,7 @@ export default async function MotionPage() {
           <p data-testid="motion-empty" className="text-muted">{ui.motion.empty}</p>
         )}
         <div className="mt-10 text-right">
-          <Link href="/motion/admin/" prefetch={false} className="inline-flex min-h-11 items-center px-2 text-xs whitespace-nowrap text-muted">{ui.motion.admin}</Link>
+          <Link href={AI_MOTION_ADMIN} prefetch={false} className="inline-flex min-h-11 items-center px-2 text-xs whitespace-nowrap text-muted">{ui.motion.admin}</Link>
         </div>
       </div>
     </section>

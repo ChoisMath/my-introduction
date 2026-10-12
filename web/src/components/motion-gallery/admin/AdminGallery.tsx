@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import { matchesQuery, type AdminListItem } from './admin-list';
 import s from './admin.module.css';
+import { AI_MEMBERS, AI_MOTION_ADMIN, aiMotionAdminPath } from '@/lib/ai-paths';
 
 const ALL = '전체';
 
@@ -64,7 +65,7 @@ export function AdminGallery({ items, groups, initialGroup, initialQuery, hasAdm
   if (query.trim()) params.set('q', query.trim());
   const suffix = params.size ? `?${params}` : '';
   useEffect(() => {
-    history.replaceState(null, '', `/motion/admin/${suffix}`);
+    history.replaceState(null, '', `${AI_MOTION_ADMIN}${suffix}`);
   }, [suffix]);
 
   return (
@@ -80,7 +81,7 @@ export function AdminGallery({ items, groups, initialGroup, initialQuery, hasAdm
           <input type="search" placeholder="스타일·쓰임·컨셉 검색" autoComplete="off" value={query} onChange={(e) => setQuery(e.target.value)} aria-label="검색" />
         </div>
         <span className={s.count}>{list.length} / {items.length}</span>
-        {canManage ? <Link href="/motion/admin/viewers/" prefetch={false} className={s.manage} data-testid="viewers-link">열람자</Link> : null}
+        {canManage ? <Link href={AI_MEMBERS} prefetch={false} className={s.manage} data-testid="members-link">회원 관리</Link> : null}
       </header>
       <div className={s.chips}>
         {[ALL, ...groups].map((g) => (
@@ -100,7 +101,7 @@ export function AdminGallery({ items, groups, initialGroup, initialQuery, hasAdm
             <section key={g}>
               <div className={s.groupH}><h2>{g}</h2><span>{gl.length}</span></div>
               <div className={s.grid}>
-                {gl.map((i) => <Card key={i.id} item={i} href={`/motion/admin/${i.id}/${suffix}`} />)}
+                {gl.map((i) => <Card key={i.id} item={i} href={`${aiMotionAdminPath(i.id)}${suffix}`} />)}
               </div>
             </section>
           );

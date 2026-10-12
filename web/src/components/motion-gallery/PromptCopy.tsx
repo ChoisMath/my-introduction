@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { useRef, useState } from 'react';
 import { CONTACT_NOTE } from './contact';
 import { GoogleSignInButton } from './GoogleSignInButton';
+import { aiMotionAdminPath, aiMotionPath } from '@/lib/ai-paths';
 
 type Lang = 'en' | 'ko';
 type Props =
@@ -55,7 +56,7 @@ export function PromptCopy(props: Props) {
         </button>
       ))}
       {props.status === 'allowed' ? (
-        <Link href={`/motion/admin/${props.id}/`} prefetch={false} className="inline-flex min-h-11 items-center rounded-full border border-line px-4 text-sm whitespace-nowrap hover:border-accent">
+        <Link href={aiMotionAdminPath(props.id)} prefetch={false} className="inline-flex min-h-11 items-center rounded-full border border-line px-4 text-sm whitespace-nowrap hover:border-accent">
           빈칸 편집·장면표
         </Link>
       ) : null}
@@ -74,7 +75,7 @@ export function PromptCopy(props: Props) {
             </h2>
             <p className="text-sm text-muted">{CONTACT_NOTE}</p>
             <div className="mt-1 flex flex-wrap gap-2">
-              <GoogleSignInButton from={`/motion/${props.id}/`} label={props.status !== 'signedOut' ? '다른 Google 계정으로 로그인' : 'Google로 로그인'} />
+              <GoogleSignInButton from={aiMotionPath(props.id)} label={props.status !== 'signedOut' ? '다른 Google 계정으로 로그인' : 'Google로 로그인'} />
               <button type="button" onClick={() => dialog.current?.close()} className="inline-flex min-h-11 items-center rounded-full border border-line px-4 text-sm whitespace-nowrap">닫기</button>
             </div>
           </div>

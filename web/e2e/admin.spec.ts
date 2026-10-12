@@ -2,18 +2,18 @@ import { expect, test } from '@playwright/test';
 import { MARKER, signInAs } from './session';
 
 test('anonymous request is redirected to sign-in without leaking data', async ({ request }) => {
-  for (const p of ['/motion/admin/', '/motion/admin/01-pixel/']) {
+  for (const p of ['/ai/motion/admin/', '/ai/motion/admin/01-pixel/']) {
     const r = await request.get(p, { maxRedirects: 0 });
     expect(r.status()).toBeGreaterThanOrEqual(300);
     expect(r.status()).toBeLessThan(400);
-    expect(r.headers().location).toContain('/api/auth/signin');
+    expect(r.headers().location).toContain('/ai/join/?from=');
     expect(await r.text()).not.toContain(MARKER);
   }
 });
 
 test('signed-in non-admin gets 404 without data', async ({ context }) => {
   await signInAs(context, 'other@example.com');
-  for (const p of ['/motion/admin/', '/motion/admin/01-pixel/']) {
+  for (const p of ['/ai/motion/admin/', '/ai/motion/admin/01-pixel/']) {
     const r = await context.request.get(p, { maxRedirects: 0 });
     expect(r.status()).toBe(404);
     expect(await r.text()).not.toContain(MARKER);
@@ -23,7 +23,7 @@ test('signed-in non-admin gets 404 without data', async ({ context }) => {
 test('admin sees fixture data and can copy the prompt', async ({ context, page }) => {
   await context.grantPermissions(['clipboard-read', 'clipboard-write']);
   await signInAs(context, 'admin@example.com');
-  await page.goto('/motion/admin/01-pixel/');
+  await page.goto('/ai/motion/admin/01-pixel/');
   await expect(page.getByTestId('prompt-output')).toContainText(MARKER);
   await page.getByTestId('copy-prompt').click();
   await expect(page.getByTestId('copy-prompt')).toHaveText('복사됨');
@@ -33,23 +33,24 @@ test('admin sees fixture data and can copy the prompt', async ({ context, page }
 test.describe('registered viewers', () => {
   test.skip(!process.env.E2E_DATABASE_URL, 'E2E_DATABASE_URL 이 없으면 DB 가 필요한 열람자 시나리오는 건너뛴다');
 
-  test('viewer sees prompts but not viewer management', async ({ context, page }) => {
+  test('member sees prompts but not member management', async ({ context, page }) => {
     await signInAs(context, 'viewer@example.com');
-    await page.goto('/motion/admin/01-pixel/');
+    await page.goto('/ai/motion/admin/01-pixel/');
     await expect(page.getByTestId('prompt-output')).toContainText(MARKER);
-    await page.goto('/motion/admin/');
+    await page.goto('/ai/motion/admin/');
     await expect(page.getByTestId('admin-row').first()).toBeVisible();
-    await expect(page.getByTestId('viewers-link')).toHaveCount(0);
-    const r = await context.request.get('/motion/admin/viewers/', { maxRedirects: 0 });
+    await expect(page.getByTestId('members-link')).toHaveCount(0);
+    const r = await context.request.get('/ai/admin/members/', { maxRedirects: 0 });
     expect(r.status()).toBe(404);
   });
 
-  test('admin adds and removes a viewer and access follows immediately', async ({ browser }) => {
+  // Task 8 회원 관리로 대체
+  test.skip('admin adds and removes a viewer and access follows immediately', async ({ browser }) => {
     const email = 'new.student@example.com';
     const admin = await browser.newContext();
     await signInAs(admin, 'admin@example.com');
     const page = await admin.newPage();
-    await page.goto('/motion/admin/');
+    await page.goto('/ai/motion/admin/');
     await page.getByTestId('viewers-link').click();
     await expect(page.getByTestId('viewer-row')).toHaveCount(1);
 
@@ -66,11 +67,11 @@ test.describe('registered viewers', () => {
 
     const student = await browser.newContext();
     await signInAs(student, email);
-    expect((await student.request.get('/motion/admin/01-pixel/', { maxRedirects: 0 })).status()).toBe(200);
+    expect((await student.request.get('/ai/motion/admin/01-pixel/', { maxRedirects: 0 })).status()).toBe(200);
 
     await page.getByRole('button', { name: `${email} 삭제` }).click();
     await expect(page.getByTestId('viewer-row').filter({ hasText: email })).toHaveCount(0);
-    expect((await student.request.get('/motion/admin/01-pixel/', { maxRedirects: 0 })).status()).toBe(404);
+    expect((await student.request.get('/ai/motion/admin/01-pixel/', { maxRedirects: 0 })).status()).toBe(404);
     await Promise.all([admin.close(), student.close()]);
   });
 });

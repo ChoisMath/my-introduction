@@ -1,5 +1,8 @@
 User-agent: *
 Allow: /
-Disallow: /motion/admin/
+Disallow: /ai/motion/admin/
+Disallow: /ai/admin/
+Disallow: /ai/join/
+Disallow: /ai/signin-error/
 Disallow: /api/
 Sitemap: https://me.chois.pro/sitemap.xml

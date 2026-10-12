@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { GoogleSignInButton } from '@/components/motion-gallery/GoogleSignInButton';
 import { CONTACT_NOTE } from '@/components/motion-gallery/contact';
+import { AI_MOTION } from '@/lib/ai-paths';
 
 export const dynamic = 'force-dynamic';
 export const metadata: Metadata = { title: '로그인 안내', robots: { index: false, follow: false } };
@@ -17,7 +18,7 @@ export default async function SignInErrorPage({ searchParams }: { searchParams: 
         {isDenied ? null : <p className="overflow-hidden font-mono text-xs text-ellipsis whitespace-nowrap text-muted" title={String(error ?? 'Unknown')}>{String(error ?? 'Unknown')}</p>}
         <div className="flex flex-wrap gap-2">
           <GoogleSignInButton from="/ai/motion/" label="다른 Google 계정으로 로그인" />
-          <Link href="/motion/" className="inline-flex min-h-11 items-center rounded-full border border-line px-4 text-sm whitespace-nowrap hover:border-accent">모션 갤러리로</Link>
+          <Link href={AI_MOTION} className="inline-flex min-h-11 items-center rounded-full border border-line px-4 text-sm whitespace-nowrap hover:border-accent">모션 갤러리로</Link>
         </div>
       </div>
     </article>

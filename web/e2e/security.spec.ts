@@ -5,7 +5,7 @@ import { expect, test } from '@playwright/test';
 const MARKER = 'E2E-ADMIN-MARKER';
 
 test('no admin text leaks into public html or build output', async ({ request }) => {
-  for (const p of ['/', '/en/', '/motion/', '/motion/01-pixel/', '/motion/17-embroidery/']) {
+  for (const p of ['/', '/en/', '/ai/motion/', '/ai/motion/01-pixel/', '/ai/motion/17-embroidery/']) {
     const html = await (await request.get(p)).text();
     expect(html, p).not.toContain(MARKER);
     expect(html, p).not.toContain('{{Channel name=');
