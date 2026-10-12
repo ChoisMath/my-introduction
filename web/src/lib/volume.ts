@@ -5,8 +5,14 @@ export class VolumeError extends Error {}
 
 export const MANIFEST_PATH = 'media/motion/manifest.json';
 export const ADMIN_PATH = 'private/motion-admin.json';
+export const SLIDE_MANIFEST_PATH = 'media/slide/manifest.json';
+export const SLIDE_ADMIN_PATH = 'private/slide-admin.json';
 
-const SERVABLE = /^media\/motion\/\d{2}-[a-z0-9-]+\/(video\.mp4|preview\.mp4|poster\.webp)$/;
+const SERVABLE = [
+  /^media\/motion\/\d{2}-[a-z0-9-]+\/(video\.mp4|preview\.mp4|poster\.webp)$/,
+  /^media\/slide\/\d{2,3}\/(?:[st]\/)?\d{1,2}\.webp$/,
+];
+const UPLOADABLE_JSON = [MANIFEST_PATH, ADMIN_PATH, SLIDE_MANIFEST_PATH, SLIDE_ADMIN_PATH];
 
 export function volumeRoot(): string {
   const root = process.env.RAILWAY_VOLUME_MOUNT_PATH;
@@ -17,11 +23,11 @@ export function volumeRoot(): string {
 }
 
 export function isServablePath(rel: string): boolean {
-  return SERVABLE.test(rel);
+  return SERVABLE.some((re) => re.test(rel));
 }
 
 export function isUploadablePath(rel: string): boolean {
-  return SERVABLE.test(rel) || rel === MANIFEST_PATH || rel === ADMIN_PATH;
+  return isServablePath(rel) || UPLOADABLE_JSON.includes(rel);
 }
 
 export function resolveIn(root: string, rel: string): string {

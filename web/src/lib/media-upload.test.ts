@@ -64,4 +64,13 @@ describe('handleUpload', () => {
     expect((await handleUpload(root, put('private/motion-admin.json', admin), TOKEN)).status).toBe(200);
     expect((await handleUpload(root, put('media/motion/manifest.json', '{"a":1}'), TOKEN)).status).toBe(422);
   });
+  it('validates slide json files and accepts slide images', async () => {
+    const bad = '[{"id":"24","prompt":""}]';
+    expect((await handleUpload(root, put('private/slide-admin.json', bad), TOKEN)).status).toBe(422);
+    const good = '[{"id":"24","prompt":"p"}]';
+    expect((await handleUpload(root, put('private/slide-admin.json', good), TOKEN)).status).toBe(200);
+    expect((await handleUpload(root, put('media/slide/manifest.json', '{"x":1}'), TOKEN)).status).toBe(422);
+    expect((await handleUpload(root, put('media/slide/24/t/1.webp', 'img'), TOKEN)).status).toBe(200);
+    expect(readFileSync(path.join(root, 'media/slide/24/t/1.webp'), 'utf8')).toBe('img');
+  });
 });

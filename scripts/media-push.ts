@@ -9,8 +9,13 @@ import { diffManifest, sha256File } from './media/manifest';
 const BASE = (process.env.MEDIA_PUSH_URL ?? 'http://localhost:3000').replace(/\/$/, '');
 const TOKEN = process.env.MEDIA_UPLOAD_TOKEN;
 const OUT = path.resolve('.media-out');
-const MANIFEST = 'media/motion/manifest.json';
-const ADMIN = 'private/motion-admin.json';
+const SETS = {
+  motion: { manifest: 'media/motion/manifest.json', admin: 'private/motion-admin.json', importCmd: 'motion:import' },
+  slide: { manifest: 'media/slide/manifest.json', admin: 'private/slide-admin.json', importCmd: 'slide:import' },
+} as const;
+const setArg = process.argv.includes('--set') ? process.argv[process.argv.indexOf('--set') + 1] : 'motion';
+if (setArg !== 'motion' && setArg !== 'slide') throw new Error(`--set must be motion or slide, got ${setArg}`);
+const { manifest: MANIFEST, admin: ADMIN, importCmd } = SETS[setArg];
 
 if (!TOKEN) throw new Error('MEDIA_UPLOAD_TOKEN is not set');
 const auth = { authorization: `Bearer ${TOKEN}` };
@@ -27,9 +32,9 @@ async function put(rel: string) {
   console.info(`uploaded ${rel}`);
 }
 
-if (!existsSync(path.join(OUT, ADMIN))) throw new Error(`${ADMIN} missing — run npm run motion:import first`);
+if (!existsSync(path.join(OUT, ADMIN))) throw new Error(`${ADMIN} missing — run npm run ${importCmd} first`);
 const local = mediaManifestSchema.parse(JSON.parse(await readFile(path.join(OUT, MANIFEST), 'utf8')));
-const remoteRes = await fetch(`${BASE}/api/media/manifest`, { headers: auth });
+const remoteRes = await fetch(`${BASE}/api/media/manifest?set=${setArg}`, { headers: auth });
 if (!remoteRes.ok) throw new Error(`manifest fetch failed: ${remoteRes.status}`);
 const remote = mediaManifestSchema.parse(await remoteRes.json());
 const changed = diffManifest(local, remote);

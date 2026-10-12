@@ -15,8 +15,8 @@ export function mediaRel(id: string, kind: MediaKind): string {
 // 요청마다 렌더하므로 manifest 는 mtime 이 바뀔 때만 다시 읽는다.
 const cache = new Map<string, { mtimeMs: number; manifest: MediaManifest }>();
 
-export async function readManifest(root: string): Promise<MediaManifest | null> {
-  const file = resolveIn(root, MANIFEST_PATH);
+export async function readManifest(root: string, rel: string = MANIFEST_PATH): Promise<MediaManifest | null> {
+  const file = resolveIn(root, rel);
   let mtimeMs: number;
   try {
     mtimeMs = (await stat(file)).mtimeMs;

@@ -6,8 +6,8 @@ import path from 'node:path';
 import { Readable, Transform } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
 import type { ReadableStream as NodeReadableStream } from 'node:stream/web';
-import { mediaManifestSchema, motionAdminListSchema } from '@me/content';
-import { ADMIN_PATH, MANIFEST_PATH, isUploadablePath, resolveIn } from './volume';
+import { mediaManifestSchema, motionAdminListSchema, slideAdminListSchema } from '@me/content';
+import { ADMIN_PATH, MANIFEST_PATH, SLIDE_ADMIN_PATH, SLIDE_MANIFEST_PATH, isUploadablePath, resolveIn } from './volume';
 
 export const MAX_UPLOAD_BYTES = 100 * 1024 * 1024;
 
@@ -16,6 +16,8 @@ class TooLarge extends Error {}
 const JSON_SCHEMAS: Record<string, { parse(value: unknown): unknown }> = {
   [MANIFEST_PATH]: mediaManifestSchema,
   [ADMIN_PATH]: motionAdminListSchema,
+  [SLIDE_MANIFEST_PATH]: mediaManifestSchema,
+  [SLIDE_ADMIN_PATH]: slideAdminListSchema,
 };
 
 const fail = (status: number, error: string) => Response.json({ error }, { status });
