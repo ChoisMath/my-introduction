@@ -125,15 +125,28 @@ model Member {
 
 ### 허브 공통 레이아웃 (`ai/layout.tsx`)
 
-- 머리글: 「AI활용」 + 한 줄 소개(`content/ko/ui.json` `ai.intro`), 오른쪽 계정 버튼 `AccountButton`.
-  - signedOut: 「로그인 · 가입 신청」 → 로그인 모달
-  - guest: 「가입 신청」 → `/ai/join/`
-  - pending: 「승인 대기 중」 배지(누르면 `/ai/join/` 상태 안내)
-  - member: 이름 + 「로그아웃」
-  - admin: 위에 더해 「회원 관리」 + 대기 수 배지(0 이면 숨김)
+- 머리글: 「AI활용」 + 한 줄 소개(`content/ko/ui.json` `ai.intro`), 오른쪽에 비로그인이면 「로그인 · 가입 신청」 버튼(→ 로그인 모달), 로그인했으면 아래 `AccountMenu`. admin 이고 대기가 있으면 칩 옆에 「회원 관리 n」 배지 링크도 둔다.
 - 탭 줄: `lib/ai-tabs.ts` 의 `AI_TABS` 배열(`{ id: 'motion', label: '모션그래픽', href: '/ai/motion/', isEnabled }`)을 그린다. 현재 경로로 활성 탭 표시. 새 탭 = 배열 한 항목 + 라우트 폴더.
 - 편집기(`/ai/motion/admin/…`)와 회원 관리 화면은 지금처럼 머리글을 덮는 전체 화면이므로 허브 머리글·탭을 보이지 않는다(라우트 그룹으로 분리하거나 해당 화면이 `fixed inset-0` 을 유지).
 - 반응형 규칙(`responsive-ui.md`): 탭·버튼·배지 `whitespace-nowrap`, 탭 줄 가로 스크롤, 터치 타깃 44px.
+
+### 계정 표시와 로그아웃 (`AccountMenu`)
+
+로그인한 사용자는 **어느 화면에서나** 자기 로그인 상태를 보고 로그아웃할 수 있다.
+
+- **위치**: (1) 사이트 Nav 오른쪽(홈 `/`·`/en/` 포함, 로그인했을 때만 보임 — 비로그인 방문자의 홈 Nav 는 지금과 같음), (2) AI활용 허브 머리글 오른쪽(비로그인이면 「로그인 · 가입 신청」 버튼), (3) 전체 화면 편집기(`/ai/motion/admin/…`) 상단 바 오른쪽, (4) 회원 관리 화면 상단.
+- **칩(닫힌 상태)**: Google 프로필 사진(없으면 이름 첫 글자 원) + 이름 + 상태 배지. 이름은 `Member.name` 이 있으면 그것, 없으면 Google 이름. 모바일(<640px)에서는 사진 + 배지만, 이름은 메뉴 안에.
+  - 배지: admin 「관리자」, member 「등록」, pending 「승인 대기」, guest 「미신청」, unavailable 표시 없음.
+- **메뉴(칩을 누르면 열림, 클릭 기반 — 호버 전용 금지)**: 이름 · 이메일 · 상태 한 줄, 그 아래
+  - guest: [가입 신청하기] → `/ai/join/`
+  - pending: 「승인 대기 중 · 신청일」 + [신청 내용 수정] → `/ai/join/`
+  - member·admin: [모션그래픽 프롬프트] → `/ai/motion/admin/`
+  - admin: [회원 관리 (대기 n)] → `/ai/admin/members/`
+  - 모든 상태: [로그아웃]
+  - `Esc`·바깥 클릭으로 닫힘, 키보드 포커스 이동(`aria-expanded`, 메뉴 항목 44px).
+- **로그아웃**: Server Action `signOutAction` → Auth.js `signOut({ redirectTo })`. 돌아갈 곳은 현재 경로가 공개 경로(`/`, `/en/`, `/ai/motion/…` 상세·목록)면 그대로, 권한이 필요한 경로(`/ai/motion/admin/…`, `/ai/admin/…`, `/ai/join/`)면 `/ai/motion/`. 허용 목록 밖이면 `/`.
+- 칩과 메뉴의 데이터는 서버에서 `getViewerState()` 한 번으로 받아 클라이언트 컴포넌트에 props 로 넘긴다(클라이언트에서 세션을 다시 조회하지 않음). 사이트 Nav 에 넣으려고 `RootShell` 이 `auth()` 를 부르므로 홈도 요청마다 렌더된다(지금도 `getRenderedMotions` 때문에 동적).
+- 회원 개인정보 노출 범위: 칩·메뉴의 이름·이메일은 본인에게만 보인다(그 사용자의 응답에만 실림).
 
 ### 로그인·가입 모달 (`SignInDialog`, 지금 `PromptCopy` 안의 `<dialog>` 를 분리)
 
@@ -181,7 +194,7 @@ model Member {
 | 입력 검증 | `lib/member-input.ts` (`viewer-input.ts` 대체) | `applySchema`(name, affiliation), `adminAddSchema`(+email), `memberIdSchema` |
 | 접근 가드 | `lib/access.ts` (`admin-session.ts` 대체) | `requireMember`, `requireAdmin`, `getPromptAccess`, `getViewerState`(머리글·모달용) |
 | 탭 목록 | `lib/ai-tabs.ts` | `AI_TABS` |
-| 허브 UI | `components/ai-hub/` | `AiHeader`, `AiTabs`, `AccountButton`, `SignInDialog`, `JoinForm`, `MemberTable`, `MemberAddForm` |
+| 허브 UI | `components/ai-hub/` | `AiHeader`, `AiTabs`, `AccountMenu`(+`signOutAction`), `SignInDialog`, `JoinForm`, `MemberTable`, `MemberAddForm` |
 | 모션 UI | `components/motion-gallery/` | 그대로(경로 문자열만 `/ai/motion/` 으로). `PromptCopy` 는 `SignInDialog` 를 쓰도록 축소 |
 
 경로 문자열은 `lib/ai-tabs.ts` 옆 `lib/ai-paths.ts` 의 상수/함수(`aiMotionPath(id)` 등)로 모아 하드코딩을 줄인다.
@@ -206,13 +219,14 @@ model Member {
 
 ## 8. 테스트
 
-- **vitest**: `member-input`(공백·길이·제어문자), `getAccess` 판정 표(admin env 우선, APPROVED/PENDING/없음/DB 오류), `redirectTo` 허용 정규식, `AI_TABS`/경로 함수.
+- **vitest**: `member-input`(공백·길이·제어문자), `getAccess` 판정 표(admin env 우선, APPROVED/PENDING/없음/DB 오류), `redirectTo`·로그아웃 돌아갈 곳 허용 규칙, `AI_TABS`/경로 함수.
 - **Playwright** (`E2E_DATABASE_URL` 로컬 Postgres, 픽스처는 TRUNCATE + 시드: approved@, pending@):
   - guest 로그인 → 모달 「가입 신청」 → `/ai/join/` 제출 → 대기 안내, 프롬프트 HTML 없음.
   - pending: 상세에서 「승인 대기 중」, `/ai/motion/admin/` 404.
   - admin: 회원 관리에서 승인 → 그 계정으로 프롬프트 복사 성공 → 대기로 변경 → 다시 404.
   - 등록 행엔 삭제 버튼 없음, 대기 행 삭제 확인.
   - `/motion/…` 4종 → 308 `Location` 확인.
+  - 계정 메뉴: member 로 홈·허브·편집기에서 칩(이름·「등록」) 보임 → [로그아웃] → 비로그인 상태로 돌아오고 칩 사라짐. 편집기에서 로그아웃하면 `/ai/motion/` 으로. 비로그인 홈 Nav 에는 칩 없음.
   - 홈 `#ai` 섹션·Nav 「AI활용」, 탭 줄, 모바일 375px 가로 스크롤 없음.
   - 기존 `security.spec`·`prompt-copy.spec` 을 새 경로로 옮기고 guest/pending 유출 검사를 추가.
 - **수동(운영)**: 실제 다른 Google 계정으로 신청 → 승인 → 사용 → 대기로 변경까지 한 번.
