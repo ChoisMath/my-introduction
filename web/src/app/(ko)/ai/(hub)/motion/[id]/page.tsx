@@ -52,7 +52,7 @@ export default async function MotionDetailPage({ params }: Props) {
         <video data-testid="motion-video" src={item.video} poster={item.poster} controls playsInline preload="metadata" className="aspect-video w-full rounded-[var(--radius-card)] bg-black" />
         <header className="mt-4 flex items-baseline gap-x-3">
           <span className="shrink-0 font-mono text-sm text-muted">{String(item.no).padStart(2, '0')}</span>
-          <h1 className="min-w-0 overflow-hidden text-2xl font-bold tracking-tight text-ellipsis whitespace-nowrap sm:text-3xl" title={item.name}>{item.name}</h1>
+          <h2 className="min-w-0 overflow-hidden text-2xl font-bold tracking-tight text-ellipsis whitespace-nowrap sm:text-3xl" title={item.name}>{item.name}</h2>
           <span className="min-w-0 shrink overflow-hidden text-sm text-ellipsis whitespace-nowrap text-muted" title={item.en}>{item.en}</span>
         </header>
         <p className="mt-1 text-sm text-muted">{item.use}</p>

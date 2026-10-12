@@ -1,13 +1,13 @@
 'use client';
 import Link from 'next/link';
-import { useRef, useState } from 'react';
-import { CONTACT_NOTE } from './contact';
-import { GoogleSignInButton } from './GoogleSignInButton';
+import { useState } from 'react';
+import { SignInDialog, type DialogState } from '@/components/ai-hub/SignInDialog';
+import type { MemberSummary } from '@/lib/access';
 import { aiMotionAdminPath, aiMotionPath } from '@/lib/ai-paths';
 
 type Lang = 'en' | 'ko';
 type Props =
-  | { id: string; status: 'signedOut' | 'guest' | 'pending' | 'unavailable'; member?: unknown }
+  | { id: string; status: DialogState; member: MemberSummary | null }
   | { id: string; status: 'allowed'; prompts: Record<Lang, string> | null };
 
 const LABEL: Record<Lang, string> = { en: '프롬프트 복사 (영문)', ko: '프롬프트 복사 (국문)' };
@@ -26,14 +26,14 @@ async function writeClipboard(text: string) {
 }
 
 export function PromptCopy(props: Props) {
-  const dialog = useRef<HTMLDialogElement>(null);
+  const [isOpen, setOpen] = useState(false);
   const [copied, setCopied] = useState<Lang | null>(null);
   const prompts = props.status === 'allowed' ? props.prompts : null;
   const isUnavailable = props.status === 'allowed' && !prompts;
 
   const onCopy = async (lang: Lang) => {
     if (!prompts) {
-      dialog.current?.showModal();
+      setOpen(true);
       return;
     }
     await writeClipboard(prompts[lang]);
@@ -62,24 +62,7 @@ export function PromptCopy(props: Props) {
       ) : null}
       {isUnavailable ? <span className="text-sm whitespace-nowrap text-muted">프롬프트 데이터 준비 중</span> : null}
       {props.status === 'allowed' ? null : (
-        <dialog
-          ref={dialog}
-          data-testid="signin-dialog"
-          aria-labelledby="signin-dialog-title"
-          onClick={(e) => { if (e.target === e.currentTarget) e.currentTarget.close(); }}
-          className="m-auto w-[min(92vw,420px)] rounded-2xl bg-bg p-0 text-fg backdrop:bg-black/60"
-        >
-          <div className="flex flex-col gap-3 p-3 sm:p-5">
-            <h2 id="signin-dialog-title" className="text-lg font-bold">
-              {props.status !== 'signedOut' ? '등록되지 않은 계정입니다.' : '로그인하여 프롬프트를 복사하세요.'}
-            </h2>
-            <p className="text-sm text-muted">{CONTACT_NOTE}</p>
-            <div className="mt-1 flex flex-wrap gap-2">
-              <GoogleSignInButton from={aiMotionPath(props.id)} label={props.status !== 'signedOut' ? '다른 Google 계정으로 로그인' : 'Google로 로그인'} />
-              <button type="button" onClick={() => dialog.current?.close()} className="inline-flex min-h-11 items-center rounded-full border border-line px-4 text-sm whitespace-nowrap">닫기</button>
-            </div>
-          </div>
-        </dialog>
+        <SignInDialog open={isOpen} onClose={() => setOpen(false)} state={props.status} from={aiMotionPath(props.id)} member={props.member} />
       )}
     </div>
   );

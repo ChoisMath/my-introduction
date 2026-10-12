@@ -3,7 +3,7 @@ import { MARKER, signInAs } from './session';
 
 const DETAIL = '/ai/motion/01-pixel/';
 
-test('anonymous visitor gets the Google-only sign-in modal and no prompt data', async ({ page }) => {
+test('anonymous visitor gets the sign-in modal with a join button and no prompt data', async ({ page }) => {
   const html = await (await page.request.get(DETAIL)).text();
   expect(html).not.toContain(MARKER);
   await page.goto(DETAIL);
@@ -11,22 +11,22 @@ test('anonymous visitor gets the Google-only sign-in modal and no prompt data', 
   const dialog = page.getByTestId('signin-dialog');
   await expect(dialog).toBeVisible();
   await expect(dialog).toContainText('로그인하여 프롬프트를 복사하세요.');
-  await expect(dialog).toContainText('로그인을 위한 아이디 등록은 최재혁T에게 문의하세요.');
-  await expect(dialog.getByRole('button')).toHaveText(['Google로 로그인', '닫기']);
+  await expect(dialog).toContainText('승인된 교사만 프롬프트를 쓸 수 있어요.');
+  await expect(dialog.getByRole('button')).toHaveText(['Google로 로그인', '가입 신청 (교사)', '닫기']);
   await dialog.getByRole('button', { name: '닫기' }).click();
   await expect(dialog).toBeHidden();
 });
 
-test('Google button goes straight to Google and returns to the same detail page', async ({ page }) => {
+test('both Google buttons come back through /ai/join/ with the detail as from', async ({ page }) => {
   await page.route('https://accounts.google.com/**', (route) => route.fulfill({ body: 'google' }));
-  await page.goto(DETAIL);
-  await page.getByTestId('copy-prompt-ko').click();
-  await page.getByTestId('google-signin').click();
-  await page.waitForURL(/accounts\.google\.com/);
-  const url = new URL(page.url());
-  expect(url.searchParams.get('redirect_uri')).toContain('/api/auth/callback/google');
-  const cookies = await page.context().cookies();
-  expect(decodeURIComponent(cookies.find((c) => c.name === 'authjs.callback-url')?.value ?? '')).toContain('/ai/join/?from=' + encodeURIComponent(DETAIL));
+  for (const testId of ['google-signin', 'join-signin']) {
+    await page.goto(DETAIL);
+    await page.getByTestId('copy-prompt-ko').click();
+    await page.getByTestId(testId).click();
+    await page.waitForURL(/accounts\.google\.com/);
+    const cookies = await page.context().cookies();
+    expect(decodeURIComponent(cookies.find((c) => c.name === 'authjs.callback-url')?.value ?? '')).toContain(`/ai/join/?from=${encodeURIComponent(DETAIL)}`);
+  }
 });
 
 test('signed-in admin copies english and korean prompts', async ({ context, page }) => {
@@ -44,18 +44,8 @@ test('signed-in admin copies english and korean prompts', async ({ context, page
   await expect(page.getByTestId('signin-dialog')).toHaveCount(0);
 });
 
-test('signed-in unregistered account sees the not-registered modal', async ({ context, page }) => {
-  await signInAs(context, 'other@example.com');
-  const html = await (await context.request.get(DETAIL)).text();
-  expect(html).not.toContain(MARKER);
-  await page.goto(DETAIL);
-  await page.getByTestId('copy-prompt-en').click();
-  await expect(page.getByTestId('signin-dialog')).toContainText('등록되지 않은 계정입니다.');
-  await expect(page.getByTestId('google-signin')).toHaveText('다른 Google 계정으로 로그인');
-});
-
-test('access denied page explains registration in Korean', async ({ page }) => {
+test('access denied page explains the unverified email in Korean', async ({ page }) => {
   await page.goto('/ai/signin-error/?error=AccessDenied');
-  await expect(page.getByTestId('signin-error-title')).toHaveText('등록되지 않은 Google 계정입니다.');
-  await expect(page.getByText('로그인을 위한 아이디 등록은 최재혁T에게 문의하세요.')).toBeVisible();
+  await expect(page.getByTestId('signin-error-title')).toHaveText('이메일이 확인되지 않은 Google 계정입니다.');
+  await expect(page.getByText('문의는 최재혁T에게 해 주세요.')).toBeVisible();
 });

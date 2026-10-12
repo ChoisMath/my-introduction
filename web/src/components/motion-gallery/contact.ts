@@ -1,1 +1,1 @@
-export const CONTACT_NOTE = '로그인을 위한 아이디 등록은 최재혁T에게 문의하세요.';
+export const CONTACT_NOTE = '문의는 최재혁T에게 해 주세요.';

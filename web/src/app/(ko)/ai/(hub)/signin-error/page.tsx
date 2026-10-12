@@ -13,7 +13,7 @@ export default async function SignInErrorPage({ searchParams }: { searchParams: 
   return (
     <article className="px-2 py-4 sm:py-10 sm:px-3 md:px-4 lg:px-6">
       <div className="mx-auto flex w-full max-w-md flex-col gap-4 rounded-[var(--radius-card)] border border-line p-3 sm:p-6">
-        <h1 className="text-xl font-bold" data-testid="signin-error-title">{isDenied ? '등록되지 않은 Google 계정입니다.' : '로그인 중 문제가 발생했습니다.'}</h1>
+        <h2 className="text-xl font-bold" data-testid="signin-error-title">{isDenied ? '이메일이 확인되지 않은 Google 계정입니다.' : '로그인 중 문제가 발생했습니다.'}</h2>
         <p className="text-muted">{CONTACT_NOTE}</p>
         {isDenied ? null : <p className="overflow-hidden font-mono text-xs text-ellipsis whitespace-nowrap text-muted" title={String(error ?? 'Unknown')}>{String(error ?? 'Unknown')}</p>}
         <div className="flex flex-wrap gap-2">
