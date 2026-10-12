@@ -177,6 +177,20 @@ Prisma 대신 zod 스키마로 검증되는 JSON. `getContent(locale)` 이 파�
 | `npm run render:sting` | `video/sting` 사운드트랙 합성+큐 검증 후 `npx hyperframes render` → `video/out/sting-{ko,en}.mp4` |
 | `npm run video:studio` | Remotion 스튜디오 |
 
+## 운영 현황 (Railway, 2026-10-12)
+- 프로젝트 `me_chois` / 서비스 `my-introduction` / 환경 `production`. Volume `/data`. 커스텀 도메인 `me.chois.pro` 가 이미 Railway 를 가리킨다(DNS 전환 완료, 응답 헤더 `server: railway-hikari`).
+- 환경변수 6개 설정 완료: `ADMIN_EMAILS`, `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET`, `AUTH_SECRET`, `MEDIA_UPLOAD_TOKEN`(뒤 둘은 `openssl rand` 로 생성 — 값은 Railway 에만 있음), `RAILWAY_VOLUME_MOUNT_PATH`(자동).
+- Railway CLI 링크: 이 폴더를 위 서비스에 연결해 둠(`railway status`). `AUTH_SECRET` 은 바꾸면 관리자 세션이 모두 풀린다.
+- Volume 내용: 모션 01–20 영상·미리보기·포스터(약 151 MB, manifest 60파일) + `private/motion-admin.json`(50개). 운영 확인: `/motion/` 카드 20, 홈 `#motion` 카드 6, 영상 Range 206, `/media/private/...` 404, 공개 HTML 에 프롬프트 0건.
+- 영상 원천: `/Volumes/Chois_SD2/dev/motion` (`MOTION_SRC` 기본값). 그 폴더의 `data/chois-gallery.json` 과 `media/chois/<id>.mp4` 만 읽는다. 렌더 절차는 그 폴더의 `.claude/PROJECT_MAP.md` 「21–50 렌더 절차」.
+- 업로드 명령(토큰을 화면에 내지 않음):
+  `T=$(railway variables --json | python3 -c 'import json,sys;print(json.load(sys.stdin)["MEDIA_UPLOAD_TOKEN"])') && MEDIA_PUSH_URL=https://me.chois.pro MEDIA_UPLOAD_TOKEN="$T" npm run media:push`
+- 남은 일:
+  - [ ] 관리자 Google 로그인 실사용 확인(`/motion/admin/`). 리디렉션 URI `https://me.chois.pro/api/auth/callback/google`(끝 슬래시 없음), 동의 화면이 테스트 상태면 테스트 사용자 등록
+  - [ ] GitHub Pages 비활성화(저장소 Settings → Pages)
+  - [ ] `railway.json` → `.railway/railway.ts` 이전 — Railway CLI 경고: Config as Code 는 2026-12-01 까지만 지원(`railway config migrate`)
+  - [ ] 모션 21–50 렌더 후 `motion:import` → `media:prepare` → `media:push`
+
 ## 주의사항 / 특이 패턴
 - **관리자 데이터는 Volume 에만**: 프롬프트·장면표·소리 큐(`motion-admin.json`)는 git·빌드 산출물·공개 HTML 어디에도 들어가면 안 된다. `web/e2e/security.spec.ts` 가 마커(`E2E-ADMIN-MARKER`)와 `{{Channel name=` 유출, `/media` 경로 우회, 토큰 없는 업로드를 검사.
 - **standalone 은 server.js 폴더로 chdir** → 상대 `RAILWAY_VOLUME_MOUNT_PATH` 는 엉뚱한 곳을 가리킨다. 항상 절대경로(e2e 는 `web/e2e/.volume` 절대경로).
