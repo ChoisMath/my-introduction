@@ -182,7 +182,7 @@ Prisma 대신 zod 스키마로 검증되는 JSON. `getContent(locale)` 이 파�
 - 환경변수 7개 설정 완료: `ADMIN_EMAILS`, `AUTH_URL=https://me.chois.pro`, `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET`, `AUTH_SECRET`, `MEDIA_UPLOAD_TOKEN`(뒤 둘은 `openssl rand` 로 생성 — 값은 Railway 에만 있음), `RAILWAY_VOLUME_MOUNT_PATH`(자동).
 - **`AUTH_URL` 필수**: standalone 서버가 `HOSTNAME=0.0.0.0`·`PORT=8080` 으로 떠서, 없으면 Auth.js 가 로그인·콜백 URL 을 `https://0.0.0.0:8080/...` 로 만든다(2026-10-12 실제 장애). 도메인을 바꾸면 이 값과 Google 리디렉션 URI 를 함께 바꾼다.
 - Railway CLI 링크: 이 폴더를 위 서비스에 연결해 둠(`railway status`). `AUTH_SECRET` 은 바꾸면 관리자 세션이 모두 풀린다.
-- Volume 내용: 모션 01–20 영상·미리보기·포스터(약 151 MB, manifest 60파일) + `private/motion-admin.json`(50개). 운영 확인: `/motion/` 카드 20, 홈 `#motion` 카드 6, 영상 Range 206, `/media/private/...` 404, 공개 HTML 에 프롬프트 0건.
+- Volume 내용: 모션 01–30 영상·미리보기·포스터(manifest 90파일, 2026-10-12 21–30 추가) + `private/motion-admin.json`(50개). 운영 확인: `/motion/` 카드 30, 홈 `#motion` 카드 6, 영상 Range 206, `/media/private/...` 404, 공개 HTML 에 프롬프트 0건.
 - 영상 원천: `/Volumes/Chois_SD2/dev/motion` (`MOTION_SRC` 기본값). 그 폴더의 `data/chois-gallery.json` 과 `media/chois/<id>.mp4` 만 읽는다. 렌더 절차는 그 폴더의 `.claude/PROJECT_MAP.md` 「21–50 렌더 절차」.
 - 업로드 명령(토큰을 화면에 내지 않음):
   `T=$(railway variables --json | python3 -c 'import json,sys;print(json.load(sys.stdin)["MEDIA_UPLOAD_TOKEN"])') && MEDIA_PUSH_URL=https://me.chois.pro MEDIA_UPLOAD_TOKEN="$T" npm run media:push`
@@ -190,7 +190,8 @@ Prisma 대신 zod 스키마로 검증되는 JSON. `getContent(locale)` 이 파�
   - [x] 관리자 Google 로그인 확인(2026-10-12). OAuth 클라이언트는 Google Cloud 의 `Me_Chois`(Client ID `318764925465-…`) — Railway `AUTH_GOOGLE_ID/SECRET` 은 반드시 이 클라이언트 값(처음엔 다른 프로젝트 클라이언트 값이 들어가 redirect_uri_mismatch 발생). 리디렉션 URI `https://me.chois.pro/api/auth/callback/google`(끝 슬래시 없음)
   - [ ] GitHub Pages 비활성화(저장소 Settings → Pages)
   - [ ] `railway.json` → `.railway/railway.ts` 이전 — Railway CLI 경고: Config as Code 는 2026-12-01 까지만 지원(`railway config migrate`)
-  - [ ] 모션 21–50 렌더 후 `motion:import` → `media:prepare` → `media:push`
+  - [x] 모션 21–30 업로드(2026-10-12)
+  - [ ] 모션 31–50 렌더 후 `motion:import` → `media:prepare` → `media:push`
 
 ## 주의사항 / 특이 패턴
 - **관리자 데이터는 Volume 에만**: 프롬프트·장면표·소리 큐(`motion-admin.json`)는 git·빌드 산출물·공개 HTML 어디에도 들어가면 안 된다. `web/e2e/security.spec.ts` 가 마커(`E2E-ADMIN-MARKER`)와 `{{Channel name=` 유출, `/media` 경로 우회, 토큰 없는 업로드를 검사.
