@@ -45,6 +45,8 @@ export function SlideViewer({ list, pos, onMove, onClose, familyLabel, access }:
   if (!style) return null;
   const go = (dir: 1 | -1) => onMove(stepSlide(pos, dir, counts));
   const goStyle = (dir: 1 | -1) => onMove(stepStyle(pos, dir, list.length));
+  // iPhone Safari 처럼 요소 전체 화면을 지원하지 않는 브라우저에서는 단추를 숨긴다. 상세 창은 해시로만 열려 서버 렌더가 없다.
+  const canFullscreen = document.fullscreenEnabled;
   const toggleFull = () => {
     if (document.fullscreenElement) void document.exitFullscreen();
     else void stage.current?.requestFullscreen();
@@ -56,7 +58,7 @@ export function SlideViewer({ list, pos, onMove, onClose, familyLabel, access }:
       data-testid="slide-viewer"
       aria-labelledby="slide-viewer-name"
       onClose={onClose}
-      className="m-0 h-dvh max-h-none w-screen max-w-none bg-dark-bg p-0 text-dark-fg backdrop:bg-black/80"
+      className="m-0 h-dvh max-h-none w-full max-w-none bg-dark-bg p-0 text-dark-fg backdrop:bg-black/80"
     >
       <div className="flex h-full flex-col overflow-y-auto lg:flex-row lg:overflow-hidden">
         <div className="flex min-h-0 shrink-0 flex-col gap-2 p-2 sm:p-3 lg:flex-1 lg:p-4">
@@ -75,10 +77,12 @@ export function SlideViewer({ list, pos, onMove, onClose, familyLabel, access }:
             <img data-testid="slide-viewer-img" src={style.images[pos.slide]} alt={`${style.name} ${pos.slide + 1}번째 장`} width={1376} height={768} draggable={false} className="max-h-full max-w-full object-contain select-none" />
             <button type="button" aria-label="이전 슬라이드" title="이전 슬라이드 (←)" onClick={() => go(-1)} className={`${navBtn} left-1`}>‹</button>
             <button type="button" aria-label="다음 슬라이드" title="다음 슬라이드 (→)" onClick={() => go(1)} className={`${navBtn} right-1`}>›</button>
-            <button type="button" aria-label="전체 화면 전환" title="전체 화면" onClick={toggleFull} className={`${iconBtn} absolute top-1 right-1 bg-black/50 text-white`}>⛶</button>
+            {canFullscreen ? (
+              <button type="button" aria-label="전체 화면 전환" title="전체 화면" onClick={toggleFull} className={`${iconBtn} absolute top-1 right-1 bg-black/50 text-white`}>⛶</button>
+            ) : null}
           </div>
           <div className="flex items-center gap-2">
-            <div role="group" aria-label="이 스타일의 예시 슬라이드" className="flex min-w-0 flex-1 gap-1.5 overflow-x-auto pb-1">
+            <div role="group" aria-label="이 스타일의 예시 슬라이드" className="flex min-w-0 flex-1 gap-2 overflow-x-auto pb-1">
               {style.thumbs.map((src, k) => (
                 <button
                   key={src}

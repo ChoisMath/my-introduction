@@ -107,3 +107,15 @@ test('mobile layout has no horizontal page scroll', async ({ page }) => {
   await page.getByTestId('copy-slide-prompt').scrollIntoViewIfNeeded();
   await expect(page.getByTestId('copy-slide-prompt')).toBeVisible();
 });
+
+test('laptop-width viewer keeps the side panel on screen', async ({ page }) => {
+  for (const width of [1024, 1280]) {
+    await page.setViewportSize({ width, height: 800 });
+    await page.goto(`${PAGE}#${rendered[0]!.id}`);
+    for (const target of [page.getByRole('button', { name: '닫기' }), page.getByTestId('copy-slide-prompt')]) {
+      const box = await target.boundingBox();
+      expect(box, `${width}`).not.toBeNull();
+      expect(box!.x + box!.width, `${width}`).toBeLessThanOrEqual(width);
+    }
+  }
+});
