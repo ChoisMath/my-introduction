@@ -1,8 +1,26 @@
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import path from 'node:path';
 import { expect, test } from '@playwright/test';
+import { signInAs } from './session';
 
 const MARKER = 'E2E-ADMIN-MARKER';
+
+test('guest and pending pages never carry admin data', async ({ browser }) => {
+  test.skip(!process.env.E2E_DATABASE_URL, 'DB 필요');
+  for (const email of ['stranger@example.com', 'pending2@example.com']) {
+    const ctx = await browser.newContext();
+    await signInAs(ctx, email);
+    for (const p of ['/ai/motion/', '/ai/motion/01-pixel/', '/ai/join/', '/']) {
+      const html = await (await ctx.request.get(p)).text();
+      expect(html, `${email} ${p}`).not.toContain(MARKER);
+      expect(html, `${email} ${p}`).not.toContain('{{Channel name=');
+    }
+    for (const p of ['/ai/motion/admin/', '/ai/motion/admin/01-pixel/', '/ai/admin/members/']) {
+      expect((await ctx.request.get(p, { maxRedirects: 0 })).status(), `${email} ${p}`).toBe(404);
+    }
+    await ctx.close();
+  }
+});
 
 test('no admin text leaks into public html or build output', async ({ request }) => {
   for (const p of ['/', '/en/', '/ai/motion/', '/ai/motion/01-pixel/', '/ai/motion/17-embroidery/']) {
