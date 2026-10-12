@@ -7,6 +7,7 @@
 - 모션 챕터 설계/계획: `docs/superpowers/specs/2026-10-12-motion-chapter-railway-design.md`, `docs/superpowers/plans/2026-10-12-motion-chapter-railway.md`.
 - 모션 열람자 계획(이전 단계): `.plans/2026-10-12-motion-viewers-{draft,review,final,post-review}.md`.
 - AI활용 허브·회원제 설계: `docs/superpowers/specs/2026-10-12-ai-hub-membership-design.md` (브랜치 `feat/ai-hub-membership`).
+- AI활용 「슬라이드 디자인」 탭(브랜치 `feat/ai-slide`): spec `docs/superpowers/specs/2026-10-12-ai-slide-design.md`, plan `docs/superpowers/plans/2026-10-12-ai-slide.md`. 학교 상황으로 새로 만든 예시 덱 갤러리 + 승인 회원용 스타일 프롬프트 복사.
 - 설계/계획 문서: `docs/superpowers/specs/2026-10-09-my-introduction-design.md`, `docs/superpowers/plans/2026-10-09-my-introduction.md`, 약력 초안 `docs/content/profile-draft.md`.
 
 ## 폴더 구조
@@ -17,6 +18,7 @@
 ├── .plans/                        # 작업 계획 문서 (모션 열람자 등)
 ├── content/                       # @me/content 워크스페이스 (TS 소스 그대로 import)
 │   ├── motion/ schema.ts, index.ts, public.json  # 모션 스타일 공개 데이터(커밋) + 관리자 스키마
+│   ├── slide/ schema.ts, index.ts, public.json   # 슬라이드 스타일 공개 데이터(커밋, 배열 순서=인기순, .strict()) + 관리자 스키마 (+schema.test.ts)
 │   ├── schema.ts                  # zod 스키마·타입 (profile/projects/ui/tokens/narration)
 │   ├── index.ts                   # getContent(locale)/getNarration/checkParity/idsOf/tokens
 │   ├── stats.ts                   # computeStats (연차·저서·서비스·수상 수)
@@ -33,7 +35,7 @@
 │   │   ├── (ko)/ layout.tsx, page.tsx      # /
 │   │   ├── (en)/en/ layout.tsx, page.tsx   # /en/
 │   │   ├── (ko)/ai/ page.tsx(첫 탭으로 redirect), actions.ts(signInWithGoogle·signOutAction)
-│   │   │   ├── (hub)/ layout.tsx(AI활용 헤더+탭), motion/{page,[id]/page}.tsx, join/{page,actions}.tsx, signin-error/page.tsx  # 갤러리·상세(프롬프트 복사)·가입 신청·로그인 오류 안내
+│   │   │   ├── (hub)/ layout.tsx(AI활용 헤더+탭), motion/{page,[id]/page}.tsx, slide/page.tsx, join/{page,actions}.tsx, signin-error/page.tsx  # 갤러리·상세(프롬프트 복사)·슬라이드 갤러리·가입 신청·로그인 오류 안내
 │   │   │   └── (app)/ motion/admin/{layout,page,[id]/page}.tsx, admin/members/{page,actions}.tsx  # 전체 화면 앱: 프롬프트 편집기·회원 관리
 │   │   ├── media/[...path]/route.ts        # Volume 영상 스트리밍(Range)
 │   │   ├── api/ health, media (PUT 업로드), media/manifest, auth/[...nextauth]
@@ -44,12 +46,13 @@
 │   │   ├── RootShell, Nav, LangToggle, Section, HomePage, HeroVideo, VideoDialog
 │   │   ├── motion/  HeroStage, hero-cycle, Typewriter, GridBackground, Reveal, CountUp
 │   │   └── sections/ Hero, Stats, Timeline, Pillars, Projects, Books, Lectures, Contact
-│   ├── src/components/ai-hub/  AiHeader, AiTabs, SignInButton, SignInDialog, JoinForm, AccountMenu, MemberAddForm, ConfirmDelete
+│   ├── src/components/ai-hub/  AiHeader, AiTabs, SignInButton, SignInDialog, JoinForm, AccountMenu, MemberAddForm, ConfirmDelete, clipboard.ts
 │   ├── src/components/motion-gallery/  MotionGallery, MotionCard, KeyNav, PromptCopy, GoogleSignInButton, contact.ts, admin/{AdminGallery,AdminDetail,admin.module.css,admin-list,placeholders}
+│   ├── src/components/slide-gallery/  SlideGallery, SlideCard, SlideSortMenu, SlideViewer, SlidePrompt, slide-order.ts, slide-hash.ts (+test 2)
 │   ├── src/components/sections/AiHub.tsx  # 홈 #ai 섹션 (옛 #motion 앵커 호환)
 │   ├── src/auth.ts                # NextAuth v5 (Google, signIn 은 검증된(email_verified) 구글 계정이면 통과 — 권한은 요청마다 access.ts, pages.error → /ai/signin-error/)
-│   ├── src/lib/  locale, metadata, sections, volume, media, media-serve, media-upload, range, motion-admin, admin-emails, prisma, member-role, member-input, members, access, ai-paths, ai-tabs, log (+ *.test.ts)
-│   ├── e2e/ smoke, platform, motion, admin, security, prompt-copy, redirects, hub, membership, account .spec.ts + session.ts(signInAs·MARKER 공용)  # Playwright (standalone 서버 포트 3100, e2e/.volume 픽스처)
+│   ├── src/lib/  locale, metadata, sections, volume, media, media-serve, media-upload, range, motion-admin, slides, admin-emails, prisma, member-role, member-input, members, access, ai-paths, ai-tabs, log (+ *.test.ts)
+│   ├── e2e/ smoke, platform, motion, slide, admin, security, prompt-copy, redirects, hub, membership, account .spec.ts + session.ts(signInAs·MARKER 공용)  # Playwright (standalone 서버 포트 3100, e2e/.volume 픽스처)
 │   └── public/  robots.txt, sitemap.xml, img/, video/
 ├── video/                         # Remotion
 │   ├── remotion.config.ts         # Playwright Chromium 사용, @me/content alias
@@ -72,6 +75,7 @@
 │       └── node_modules/, snapshots/, renders/   # gitignore
 ├── scripts/                       # 루트 npm 스크립트 구현 (+ __tests__)
 │   ├── motion-import.ts, media-prepare.ts, media-push.ts, media/manifest.ts, e2e-fixture.ts, copy-standalone-assets.mjs  # 모션 챕터
+│   ├── slide-import.ts            # 슬라이드 원천(school/) → content/slide/public.json + .media-out (+test)
 │   ├── validate-content.ts        # ko/en id 패리티 검사
 │   ├── gen-tokens-css.ts          # tokens.json → web/src/app/tokens.css (@theme)
 │   ├── prepare-assets.sh          # asset/ → web/public/img (+ video/public/img rsync)
@@ -93,14 +97,15 @@
 | `/ai/` | `web/src/app/(ko)/ai/page.tsx` | `AI_TABS[0]`(모션그래픽 탭)으로 redirect |
 | `/ai/motion/` | `.../ai/(hub)/motion/page.tsx` | (hub) 그룹 — AI활용 헤더+탭. 모션 갤러리(그룹 필터 `?g=`) |
 | `/ai/motion/[id]/` | `.../ai/(hub)/motion/[id]/page.tsx` | 상세(영상·키보드 좌우 이동). 렌더 안 된 id 는 404. 「프롬프트 복사 (영문)」「(국문)」 — `getPromptAccess(id)` 가 allowed(관리자·승인 회원)일 때만 프롬프트를 props 로 실음, allowed 는 「빈칸 편집·장면표」→ `/ai/motion/admin/<id>/`. 비로그인·대기·guest 는 로그인/가입 안내 모달 |
+| `/ai/slide/` | `.../ai/(hub)/slide/page.tsx` | 슬라이드 갤러리(`force-dynamic`, Volume manifest 에 그림이 다 있는 덱만). 분류 칩 `?f=`, 정렬 `?s=pop\|no\|new`(기본 pop=배열 순서), 표지/본문 `?v=body`, 상세 창은 `#<id>` 해시(별도 상세 라우트 없음). 프롬프트는 `getSlidePromptAccess()` 가 allowed(관리자·승인 회원)일 때만 props 로 실음 |
 | `/ai/join/` | `.../ai/(hub)/join/{page,actions}.tsx` | 가입 신청(이름·소속). Server Action `applyAction` → PENDING 생성/갱신 |
 | `/ai/signin-error/` | `.../ai/(hub)/signin-error/page.tsx` | auth.ts `pages.error` 안내, noindex |
 | `/ai/motion/admin/`, `/ai/motion/admin/[id]/` | `.../ai/(app)/motion/admin/` | (app) 전체 화면 어두운 앱. `requireMember` — 관리자(`ADMIN_EMAILS`) 또는 승인 회원. 프롬프트·장면표·소리 큐. 목록 머리글 「회원 관리」 링크는 관리자만 |
 | `/ai/admin/members/` | `.../ai/(app)/admin/members/{page,actions}.tsx` | 관리자만(`requireAdmin`). 회원 목록·대기 승인·보류·대기 삭제·추가·이름/소속 수정 — Server Actions `approveAction`/`suspendAction`/`deleteAction`/`addMemberAction`/`updateProfileAction` |
 | `/motion/…` (옛 경로) | `web/next.config.ts` `redirects()` | 308 → `/ai/motion/…`, `/motion/admin/viewers` → `/ai/admin/members/`, `/motion/signin-error` → `/ai/signin-error/` (슬래시 유무 모두) |
-| `GET/HEAD /media/[...path]` | `web/src/app/media/[...path]/route.ts` | `media/motion/<id>/(video.mp4\|preview.mp4\|poster.webp)` 만 Range 스트리밍. 그 외 404 |
+| `GET/HEAD /media/[...path]` | `web/src/app/media/[...path]/route.ts` | `media/motion/<id>/(video.mp4\|preview.mp4\|poster.webp)`, `media/slide/<id>/[s/\|t/]<k>.webp` 만 Range 스트리밍(`volume.ts` `SERVABLE`). 그 외 404 |
 | `PUT /api/media?path=` | `web/src/app/api/media/route.ts` | `MEDIA_UPLOAD_TOKEN` Bearer. 같은 허용 경로만 |
-| `GET /api/media/manifest` | `.../api/media/manifest/route.ts` | 토큰. Volume 파일 해시 목록(media:push 가 차이만 업로드) |
+| `GET /api/media/manifest` | `.../api/media/manifest/route.ts` | 토큰. Volume 파일 해시 목록(media:push 가 차이만 업로드). `?set=slide` 면 `media/slide/manifest.json` |
 | `/api/health` | `.../api/health/route.ts` | Railway 헬스체크 |
 | `/api/auth/[...nextauth]` | `.../api/auth/[...nextauth]/route.ts` | NextAuth v5 Google |
 | `#hero #stats #timeline #pillars #projects #ai #books #lectures #contact` | `web/src/lib/sections.ts` `SECTION_IDS` | Nav 앵커·e2e 검증 기준 |
@@ -140,8 +145,10 @@ zod 스키마로 검증되는 JSON. `getContent(locale)` 이 파싱·캐시, `np
 | `Stats` | `stats.ts` | years, books, services, awards | 강의 수는 숫자 대신 `ui.stats.lecturesValue` |
 | `motionPublicSchema` | `content/motion/schema.ts` + `public.json`(커밋) | id(`NN-slug`), no, group(9개 `MOTION_GROUPS`), name, en, use, concept, featured | `.strict()` — 관리자 필드가 섞이면 파싱 실패. 렌더된 id 만 `getRenderedMotions()` 가 노출 |
 | `motionAdminSchema` | Volume `private/motion-admin.json` (**git 에 없음**) | id, prompt, ko, shots[[시간,장면,이유]], cues[[시각,소리,이벤트]] | 관리자 페이지 전용. `motion:import` 가 `.media-out/` 에 만들고 업로드 |
+| `slidePublicSchema` | `content/slide/schema.ts` + `public.json`(커밋) | id(2–3자리 원천 번호), no, family(7종 `SLIDE_FAMILIES`), name, look, use, topic, slides(1–12), cover, body(대표 장 번호), added(YYYY-MM-DD) | `.strict()`. 배열 순서 = 인기순(`getSlideList()` 는 정렬 안 함). 그림이 다 올라간 덱만 `getRenderedSlides()` 가 노출 |
+| `slideAdminSchema` | Volume `private/slide-admin.json` (**git 에 없음**) | [{id, prompt}] | `slide:import` 가 `.media-out/` 에 만들고 `media:push -- --set slide` 로 업로드 |
 | `mediaManifestSchema` | Volume `media/motion/manifest.json` | 경로 → {size, sha256, updatedAt} | `media:prepare` 산출, 서버 `/api/media/manifest` 가 diff 기준으로 제공 |
-| Volume 구조 | `$RAILWAY_VOLUME_MOUNT_PATH` | `media/motion/<id>/{video.mp4,preview.mp4,poster.webp}`, `media/motion/manifest.json`, `private/motion-admin.json` | `/media/*` 는 `media/motion/<id>/` 의 3파일만 공개, `private/` 는 절대 서빙 안 함 |
+| Volume 구조 | `$RAILWAY_VOLUME_MOUNT_PATH` | `media/motion/<id>/{video.mp4,preview.mp4,poster.webp}`, `media/motion/manifest.json`, `private/motion-admin.json` · `media/slide/<id>/{k}.webp`(1376×768), `s/{k}.webp`(172×96 장 넘김 썸네일), `t/{k}.webp`(760×424, 표지·본문 장만 카드용), `media/slide/manifest.json`, `private/slide-admin.json` | `/media/*` 는 `SERVABLE` 패턴(모션 3파일·슬라이드 webp)만 공개, manifest·`private/` 는 절대 서빙 안 함 |
 | `Manifest` | `video/public/narration/ko/manifest.json` | key → {text, duration} | narrate.ts 산출물. 씬 길이 계산 입력 |
 
 ## 주요 컴포넌트·유틸
@@ -168,6 +175,13 @@ zod 스키마로 검증되는 JSON. `getContent(locale)` 이 파싱·캐시, `np
 | `ai-paths.ts` | `web/src/lib/ai-paths.ts` (+test) | `/ai/…` 경로 상수와 `aiMotionPath`/`aiMotionAdminPath`, `safeReturnPath`·`joinPath`·`signOutReturnPath`(open redirect 방지) |
 | `ai-tabs.ts` | `web/src/lib/ai-tabs.ts` (+test) | `AI_TABS` — 새 허브 탭은 여기 한 항목 + `(hub)/<id>/` 라우트 추가 |
 | `log.ts` | `web/src/lib/log.ts` (+test) | `errorTag` — 오류를 태그로만 로그(이메일 등 개인정보 미기록) |
+| `slides.ts` | `web/src/lib/slides.ts` (+test) | server-only. `slideRel`, `renderedSlides`/`getRenderedSlides`(manifest 기준 `?v=sha8` 붙은 URL, 빠진 그림 있는 덱 제외), `readSlideAdmin`(mtime 캐시) |
+| `getSlidePromptAccess` | `web/src/lib/access.ts` | 슬라이드 목록 요청에서 한 번 판정. allowed 면 `prompts: {id→prompt}`, 아니면 status+member 만 |
+| `SlideGallery` | `web/src/components/slide-gallery/SlideGallery.tsx` | 'use client'. URL(`?f=&s=&v=`)이 거르기·정렬·보기의 유일한 상태, 해시로 `SlideViewer` 열기 |
+| `SlideCard`, `SlideSortMenu` | `web/src/components/slide-gallery/` | 카드(표지/본문 `t/` 이미지) / 정렬 메뉴(인기·번호·최신) |
+| `SlideViewer`, `SlidePrompt` | `web/src/components/slide-gallery/` | 상세 창(장·스타일 넘김, 썸네일 띠) / 프롬프트 복사(권한 없으면 `SignInDialog`) |
+| `slide-order.ts`, `slide-hash.ts` | `web/src/components/slide-gallery/` (+test) | `parseQuery`·`toSearch`·`arrange`·`pickOrder`·`stepSlide`·`stepStyle` / `useHashId`(useSyncExternalStore)·`setHashId`(replaceState + 자체 이벤트) |
+| `clipboard.ts` | `web/src/components/ai-hub/clipboard.ts` | `writeClipboard` — clipboard API 실패 시 textarea 폴백. PromptCopy·SlidePrompt 공용 |
 | `PromptCopy` | `web/src/components/motion-gallery/PromptCopy.tsx` | 'use client'. 복사 버튼 2개(영문·국문). allowed 면 받은 en/ko 를 바로 복사, 아니면 모달: 비로그인 「로그인하여 프롬프트를 복사하세요.」 + `CONTACT_NOTE` + Google 로그인, 미등록 「등록되지 않은 계정입니다.」 |
 | `GoogleSignInButton` | `web/src/components/motion-gallery/GoogleSignInButton.tsx` | Server Action `app/(ko)/ai/actions.ts` `signInWithGoogle` 호출 — `signIn('google', {redirectTo})`, 돌아갈 곳은 `safeReturnPath` 로 `/ai/…` 만 허용 |
 | `contact.ts` | `web/src/components/motion-gallery/contact.ts` | `CONTACT_NOTE` 문의 안내 문구 |
@@ -188,7 +202,7 @@ zod 스키마로 검증되는 JSON. `getContent(locale)` 이 파싱·캐시, `np
 ## 외부 의존성
 - 외부 서비스: Railway(호스팅·Volume·PostgreSQL), Google OAuth(관리자·회원 로그인, next-auth 5.0.0-beta.32).
 - 서버 환경변수: `RAILWAY_VOLUME_MOUNT_PATH`(절대경로), `PORT`(Railway 자동), `AUTH_SECRET`, `AUTH_URL`(운영 `https://me.chois.pro`), `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET`, `ADMIN_EMAILS`(쉼표 구분), `MEDIA_UPLOAD_TOKEN`, `DATABASE_URL`(운영은 Railway 참조 `${{Postgres.DATABASE_URL}}`, 로컬은 `web/.env.local`). 예시는 루트 `.env.example`.
-- 스크립트 전용: `MOTION_SRC`(motion 폴더, motion:import), `MEDIA_PUSH_URL`(+`MEDIA_UPLOAD_TOKEN`, media:push), `E2E_DATABASE_URL`(e2e 전용, localhost 만 허용, 실행마다 `Member` TRUNCATE 후 `viewer@`(APPROVED)·`pending@`(PENDING, admin.spec 이 변경)·`pending2@`(PENDING, 읽기 전용) 시드. 없으면 회원 e2e skip. Playwright 서버의 `DATABASE_URL` 은 항상 이 값으로 덮어씀).
+- 스크립트 전용: `MOTION_SRC`(motion 폴더, motion:import), `SLIDE_SRC`(슬라이드 원천, slide:import — 기본 `/Volumes/Chois_SD2/dev/motion/slide/school`), `MEDIA_PUSH_URL`(+`MEDIA_UPLOAD_TOKEN`, media:push), `E2E_DATABASE_URL`(e2e 전용, localhost 만 허용, 실행마다 `Member` TRUNCATE 후 `viewer@`(APPROVED)·`pending@`(PENDING, admin.spec 이 변경)·`pending2@`(PENDING, 읽기 전용) 시드. 없으면 회원 e2e skip. Playwright 서버의 `DATABASE_URL` 은 항상 이 값으로 덮어씀).
 - `scripts/narrate.ts` 만 선택적으로 사용:
 
 | 키 | 용도 | 기본값 |
@@ -196,7 +210,7 @@ zod 스키마로 검증되는 JSON. `getContent(locale)` 이 파싱·캐시, `np
 | `MLX_TTS` | mlx-audio TTS 실행 파일 | `/Volumes/Chois_SD2/venvs/mlx-audio/bin/mlx_audio.tts.generate` |
 | `TTS_MODEL` | Qwen3-TTS 모델 | `mlx-community/Qwen3-TTS-12Hz-1.7B-Base-bf16` |
 
-- 로컬 도구: `cwebp`(brew webp), `sips`, `ffmpeg`/`ffprobe`, Playwright Chromium(`npx playwright install chromium`), mlx-audio venv.
+- 로컬 도구: `cwebp`(brew webp), `pdftoppm`(poppler, slide:import), `sips`, `ffmpeg`/`ffprobe`, Playwright Chromium(`npx playwright install chromium`), mlx-audio venv.
 - 주요 패키지: next 16.4 / react 19.2 / motion 14 / prisma·@prisma/client·@prisma/adapter-pg 7.10.0 / pg 8.23 / tailwindcss 4.3 / remotion 4.0.534 / zod 4.6 / vitest 5 / @playwright/test 1.64 / pretendard, @fontsource-variable/jetbrains-mono. `video/sting/package.json`(별도): hyperframes 0.8.145 핀, devDeps `@fontsource/black-han-sans`, `@fontsource/archivo-black`.
 - 외부 자원: 배경음악 CC0 "Calm Ambient 3" (cynicmusic) — `video/public/audio/README.md`.
 
@@ -210,7 +224,8 @@ zod 스키마로 검증되는 JSON. `getContent(locale)` 이 파싱·캐시, `np
 | `npm -w web run db:migrate` / `db:deploy` | `prisma migrate dev` / `prisma migrate deploy`. 로컬 DB 는 `npx prisma dev -n motion-e2e --detach` (TCP `postgres://postgres:postgres@localhost:51214/template1?sslmode=disable`). Claude 세션에서는 Prisma 가 `migrate reset` 을 막으므로 픽스처는 migrate deploy + TRUNCATE |
 | `npm run motion:import` | motion 폴더 → `content/motion/public.json`(커밋) + `.media-out/` 관리자 데이터 |
 | `npm run media:prepare` | 렌더 mp4 → 웹용 video/preview/poster 인코딩 + manifest |
-| `npm run media:push` | manifest diff 로 바뀐 파일만 `PUT /api/media` 업로드 (재배포 불필요) |
+| `npm run slide:import` | 원천 `/Volumes/Chois_SD2/dev/motion/slide/school/` 의 `manifest.json` + `<id>/deck.pdf` + `prompt.txt` → `content/slide/public.json`(커밋) + `.media-out/`(webp 3종·manifest·`private/slide-admin.json`). `deck.pdf` 없는 덱은 건너뜀. env `SLIDE_SRC` |
+| `npm run media:push` | manifest diff 로 바뀐 파일만 `PUT /api/media` 업로드 (재배포 불필요). `-- --set slide` 면 슬라이드 세트(기본 motion) |
 | `npm run assets` | asset/ → web/public/img, video/public/img, 파비콘 |
 | `npm run narrate` | 대본 → wav + manifest (변경된 키만 재생성) |
 | `npm run render` | `render:sting` → Intro-{ko,en} 을 `out/intro-*-body.mp4` 로 렌더 → `prepend_sting`(ffmpeg concat 필터 재인코딩, crf 23, aac 160k)으로 `out/intro-{ko,en}.mp4` → HeroLoop(mp4/webm)·OgImage·포스터(2s 프레임) → web/public, 용량 상한 검사. `SKIP_STING=1` 이면 기존 `out/sting-*.mp4` 재사용 |
@@ -223,6 +238,7 @@ zod 스키마로 검증되는 JSON. `getContent(locale)` 이 파싱·캐시, `np
 - **`AUTH_URL` 필수**: standalone 서버가 `HOSTNAME=0.0.0.0`·`PORT=8080` 으로 떠서, 없으면 Auth.js 가 로그인·콜백 URL 을 `https://0.0.0.0:8080/...` 로 만든다(2026-10-12 실제 장애). 도메인을 바꾸면 이 값과 Google 리디렉션 URI 를 함께 바꾼다.
 - Railway CLI 링크: 이 폴더를 위 서비스에 연결해 둠(`railway status`). `AUTH_SECRET` 은 바꾸면 관리자 세션이 모두 풀린다.
 - Volume 내용: 모션 01–50 전부 영상·미리보기·포스터(manifest 150파일, 약 299 MB / Volume 1 GB) + `private/motion-admin.json`(50개). 운영 확인: `/ai/motion/` 카드 50, 홈 `#ai` 카드 6, 영상 Range 206, `/media/private/...` 404, 공개 HTML 에 프롬프트 0건.
+- 슬라이드 원천: `/Volumes/Chois_SD2/dev/motion/slide/` 는 오빠두엑셀 스크랩(개인 참고용, **공개 배포 금지** — 코드·문구·이미지를 이 저장소에 복사하지 않음). 학교용 덱은 `school/<id>/{source.md,prompt.txt,instructions.txt,deck.pdf,notebook.txt}` 에서 NotebookLM(`notebooklm generate slide-deck`)으로 만들고, `school/manifest.json` 이 공개 문구·순서를 가진다.
 - 영상 원천: `/Volumes/Chois_SD2/dev/motion` (`MOTION_SRC` 기본값). 그 폴더의 `data/chois-gallery.json` 과 `media/chois/<id>.mp4` 만 읽는다. 렌더 절차는 그 폴더의 `.claude/PROJECT_MAP.md` 「21–50 렌더 절차」.
 - 업로드 명령(토큰을 화면에 내지 않음):
   `T=$(railway variables --json | python3 -c 'import json,sys;print(json.load(sys.stdin)["MEDIA_UPLOAD_TOKEN"])') && MEDIA_PUSH_URL=https://me.chois.pro MEDIA_UPLOAD_TOKEN="$T" npm run media:push`
@@ -240,6 +256,9 @@ zod 스키마로 검증되는 JSON. `getContent(locale)` 이 파싱·캐시, `np
 
 ## 주의사항 / 특이 패턴
 - **관리자 데이터는 Volume 에만**: 프롬프트·장면표·소리 큐(`motion-admin.json`)는 git·빌드 산출물·공개 HTML 어디에도 들어가면 안 된다. 공개 상세 `/ai/motion/[id]/` 는 서버가 `getPromptAccess` 로 판정해 allowed(관리자·승인 회원) 응답에만 프롬프트를 싣는다 — 비로그인·pending·guest HTML 에는 프롬프트 없음(`prompt-copy.spec.ts` 가 검사). `web/e2e/security.spec.ts` 가 마커(`E2E-ADMIN-MARKER`)와 `{{Channel name=` 유출(guest/pending 포함), `/media` 경로 우회, 토큰 없는 업로드를 검사.
+- **슬라이드 프롬프트도 git·공개 HTML 금지**: `private/slide-admin.json` 은 Volume 에만, 공개 데이터 `content/slide/public.json` 은 `.strict()` 라 프롬프트가 섞이면 파싱 실패. security.spec 이 `/ai/slide/` 와 `/media/private/slide-admin.json`·`/media/slide/manifest.json` 404 도 검사. e2e 픽스처는 슬라이드 `24`·`63` 두 덱만 렌더된 상태.
+- **로그아웃 복귀 공개 경로**: `ai-paths.ts` `PUBLIC_AI` 에 `/ai/slide/` 포함 — 새 공개 탭을 만들면 여기도 추가.
+- **로컬 dev Volume**: gitignore 된 `web/.env.development.local` 에 `RAILWAY_VOLUME_MOUNT_PATH=<절대경로>/.local-volume`, `AUTH_SECRET` 을 둔다.
 - **standalone 은 server.js 폴더로 chdir** → 상대 `RAILWAY_VOLUME_MOUNT_PATH` 는 엉뚱한 곳을 가리킨다. 항상 절대경로(e2e 는 `web/e2e/.volume` 절대경로).
 - **`skipTrailingSlashRedirect: true`**: Google OAuth 콜백과 스트림 본문 PUT 이 308 리다이렉트를 따라가지 못해서. `trailingSlash` 는 유지하되 슬래시 없는 API 경로도 응답.
 - **모션 페이지는 `force-dynamic`**: 렌더 여부를 Volume 에서 읽기 때문. 관리자 표 `.prose-cell` 의 어절 단위 줄바꿈은 긴 장면 설명용 의도된 반응형 규칙 예외.
@@ -262,8 +281,8 @@ zod 스키마로 검증되는 JSON. `getContent(locale)` 이 파싱·캐시, `np
 - **HyperFrames 렌더 브라우저**: `~/.cache/hyperframes` 의 chrome-headless-shell 을 쓴다(Remotion 의 Playwright Chromium 과 별개). `npx hyperframes lint` 의 sub-composition 분할 경고는 "단일 HTML" 요구사항 때문에 의도적으로 무시.
 - **연차("N년차")는 요청 시각 기준**(`computeStats`, 3월 임용 기준) → 홈이 force-dynamic 이라 요청마다 계산되므로 재배포 없이 자동 갱신된다.
 - **반응형 규칙 적용 지점**: 표는 `.data-table`(globals.css, sticky header/col + nowrap), body `word-break: keep-all`, 히어로 높이 `100dvh - var(--nav-h)`, 터치 타겟 `min-h-11`.
-- 테스트: vitest 는 `vitest.config.ts` include 기준(27개 파일·130 tests, 2026-10-12), Playwright 10 파일(smoke, platform, motion, admin, security, prompt-copy, redirects, hub, membership, account — 64개, `E2E_DATABASE_URL` 있을 때 skip 0). 세션 쿠키 헬퍼는 `e2e/session.ts`. `check` 는 e2e 를 돌리지 않고 CI 워크플로가 build 후 따로 실행.
+- 테스트: vitest 는 `vitest.config.ts` include 기준(32개 파일·160 tests, 2026-10-13), Playwright 11 파일(smoke, platform, motion, slide, admin, security, prompt-copy, redirects, hub, membership, account — 73 passed, 2026-10-13, `E2E_DATABASE_URL` 있을 때 skip 0). 세션 쿠키 헬퍼는 `e2e/session.ts`. `check` 는 e2e 를 돌리지 않고 CI 워크플로가 build 후 따로 실행.
 - 문서 불일치 메모: `video/public/audio/README.md` 는 BGM 볼륨 0.6 이라 적혀 있으나 실제 `Intro.tsx` `BGM_LEVEL` 은 0.22.
 
 ---
-마지막 업데이트: 2026-10-12
+마지막 업데이트: 2026-10-13
