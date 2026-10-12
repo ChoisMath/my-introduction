@@ -1,3 +1,4 @@
+-- BEGIN; 과 COMMIT; 사이에서 실행한다(한 문장이 실패하면 전부 되돌리기 위해).
 -- 자동 실행하지 않는다. 이 마이그레이션 이전 코드로 되돌릴 때 수동으로 실행한 뒤
 -- DELETE FROM "_prisma_migrations" WHERE migration_name = '20261012010000_member'; 도 실행한다.
 -- PENDING 신청자는 예전 모델에 없는 개념이라 지운다.

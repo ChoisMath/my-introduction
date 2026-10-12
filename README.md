@@ -5,7 +5,7 @@
 ## 구조
 
 - `content/` — 약력·서비스·UI 문구(ko/en JSON)와 디자인 토큰. 웹과 영상이 함께 읽는 단일 소스.
-- `web/` — Next.js 16 standalone 서버 (`/` 한국어, `/en/` 영어, `/motion` 모션 갤러리·관리자).
+- `web/` — Next.js 16 standalone 서버 (`/` 한국어, `/en/` 영어, `/ai/motion/` AI활용 허브(모션 갤러리·프롬프트), `/ai/admin/members/` 회원 관리).
 - `video/` — Remotion 소개 영상(82초)·히어로 루프(20초)·OG 이미지.
 - `asset/` — 원본 이미지. 교체 방법은 `asset/README.md`.
 

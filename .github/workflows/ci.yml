@@ -52,4 +52,5 @@ jobs:
           for i in $(seq 1 30); do curl -fs http://localhost:3200/api/health && break; sleep 2; done
           docker logs app
           curl -fs http://localhost:3200/api/health
-          PGPASSWORD=e2e psql -h localhost -U e2e -d e2e -c 'SELECT count(*) FROM "MotionViewer"'
+          PGPASSWORD=e2e psql -h localhost -U e2e -d e2e -c 'SELECT count(*) FROM "Member"'
+          test -n "$(PGPASSWORD=e2e psql -h localhost -U e2e -d e2e -tAc "SELECT migration_name FROM \"_prisma_migrations\" WHERE migration_name = '20261012010000_member'")"
