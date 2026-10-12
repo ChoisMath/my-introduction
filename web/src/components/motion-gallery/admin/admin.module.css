@@ -31,6 +31,9 @@
 .search input::placeholder { color: var(--fg-3); }
 .search svg { flex: none; color: var(--fg-3); }
 .count { color: var(--fg-3); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.manage { flex: none; display: inline-flex; align-items: center; min-height: 44px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--line-2); color: var(--fg-2); white-space: nowrap; }
+.manage:hover { background: var(--bg-3); color: var(--fg); }
+@media (max-width: 639px) { .count:has(+ .manage) { display: none; } }
 
 .chips { flex: none; display: flex; gap: 6px; overflow-x: auto; padding: 8px 8px 4px; scrollbar-width: none; border-bottom: 1px solid var(--line); }
 .chips::-webkit-scrollbar { display: none; }
@@ -146,3 +149,25 @@
 .table td.p { min-width: 320px; max-width: 560px; word-break: keep-all; overflow-wrap: normal; color: var(--fg); }
 .table td.w { min-width: 240px; max-width: 420px; word-break: keep-all; overflow-wrap: normal; color: var(--fg-2); }
 .table tbody tr:hover td { background: var(--bg-2); }
+
+/* ---------- 열람자 관리 ---------- */
+/* 표가 스스로 세로 스크롤해야 sticky 머리글이 고정된다(바깥이 스크롤하면 sticky 기준이 어긋남). */
+.vMain { flex: 1; min-height: 0; overflow: hidden; padding: 8px; display: flex; flex-direction: column; gap: 10px; }
+@media (min-width: 640px) { .vMain { padding: 12px; } }
+@media (min-width: 1024px) { .vMain { padding: 16px; } }
+.vMain > section:first-child { flex: none; }
+.vForm { padding: 10px 12px; display: flex; flex-wrap: wrap; align-items: flex-end; gap: 8px; }
+.vForm .f { flex: 1 1 220px; }
+.vForm .f input { min-height: 44px; }
+.vSubmit { flex: none; min-height: 44px; padding: 0 16px; border-radius: 8px; background: var(--accent); color: #1a1200; font-weight: 600; white-space: nowrap; }
+.vSubmit:disabled { opacity: .5; }
+.vMsg { padding: 0 12px 10px; font-size: 12px; color: var(--ok); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.vMsg.isError { color: var(--accent-2); }
+.vTable { flex: 0 1 auto; min-height: 0; overflow: auto; overscroll-behavior: contain; }
+.vTable .table { min-width: 560px; }
+.vTable .table td { white-space: nowrap; color: var(--fg-2); vertical-align: middle; }
+.vTable .table td.t { color: var(--fg); background: var(--bg-2); }
+/* 표 셀의 max-width 는 브라우저마다 무시될 수 있어 폭 제한은 안쪽 블록에 건다. */
+.cut { display: block; max-width: min(260px, 55vw); overflow: hidden; text-overflow: ellipsis; }
+.del { min-height: 44px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--line-2); color: var(--fg-2); white-space: nowrap; }
+.del:hover { border-color: var(--accent-2); color: var(--accent-2); }

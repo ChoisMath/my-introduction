@@ -5,6 +5,6 @@ import nextTs from 'eslint-config-next/typescript';
 export default defineConfig([
   ...nextVitals,
   ...nextTs,
-  globalIgnores(['.next/**', 'out/**', 'playwright-report/**', 'test-results/**']),
+  globalIgnores(['.next/**', 'out/**', 'playwright-report/**', 'test-results/**', 'src/generated/**']),
   { rules: { '@typescript-eslint/no-unused-vars': ['warn', { varsIgnorePattern: '^_', argsIgnorePattern: '^_' }] } },
 ]);
