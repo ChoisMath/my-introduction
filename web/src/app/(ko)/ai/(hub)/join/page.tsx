@@ -38,7 +38,7 @@ export default async function JoinPage({ searchParams }: { searchParams: Promise
                 승인 대기 중 · {dateFormat.format(new Date(state.member.createdAt))} 신청
               </p>
             ) : null}
-            <JoinForm defaults={{ name: state.member?.name ?? state.name, affiliation: state.member?.affiliation ?? '' }} isPending={state.status === 'pending'} />
+            <JoinForm defaults={{ name: state.member?.name ?? state.name, affiliation: state.member?.affiliation ?? '' }} isPending={state.status === 'pending'} from={from} />
           </>
         )}
       </div>

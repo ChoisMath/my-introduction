@@ -1,10 +1,11 @@
 'use client';
+import Link from 'next/link';
 import { useActionState } from 'react';
 import { applyAction, type JoinFormState } from '@/app/(ko)/ai/(hub)/join/actions';
 
 const field = 'min-h-11 w-full rounded-lg border border-line bg-bg px-3 text-base';
 
-export function JoinForm({ defaults, isPending }: { defaults: { name: string; affiliation: string }; isPending: boolean }) {
+export function JoinForm({ defaults, isPending, from }: { defaults: { name: string; affiliation: string }; isPending: boolean; from: string }) {
   const [state, action, isSubmitting] = useActionState<JoinFormState, FormData>(applyAction, null);
   return (
     <form action={action} className="flex flex-col gap-3">
@@ -20,6 +21,9 @@ export function JoinForm({ defaults, isPending }: { defaults: { name: string; af
         {isSubmitting ? '보내는 중…' : isPending ? '신청 내용 저장' : '신청하기'}
       </button>
       {state ? <p role="status" className={`text-sm ${state.ok ? 'text-fg' : 'text-accent'}`}>{state.message}</p> : null}
+      {state?.ok ? (
+        <Link href={from} prefetch={false} className="inline-flex min-h-11 items-center justify-center rounded-full border border-line px-5 text-sm font-semibold whitespace-nowrap">돌아가기</Link>
+      ) : null}
     </form>
   );
 }

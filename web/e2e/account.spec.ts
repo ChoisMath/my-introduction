@@ -60,3 +60,12 @@ test('signed-in home has no horizontal scroll at 375px', async ({ context, page 
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   expect(overflow).toBeLessThanOrEqual(0);
 });
+
+test('menu link to the join form closes the menu after navigation', async ({ context, page }) => {
+  await signInAs(context, 'pending2@example.com');
+  await page.goto('/ai/motion/');
+  await page.getByTestId('account-chip').click();
+  await page.getByTestId('account-menu').getByRole('link', { name: '신청 내용 수정' }).click();
+  await expect(page).toHaveURL(/\/ai\/join\/$/);
+  await expect(page.getByTestId('account-menu')).toBeHidden();
+});

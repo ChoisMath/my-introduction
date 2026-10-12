@@ -21,6 +21,12 @@ export function AccountMenu({ state, tone = 'site' }: { state: SignedIn; tone?: 
   const root = useRef<HTMLDivElement>(null);
   const menuId = useId();
   const from = usePathname();
+  // 메뉴는 루트 레이아웃에 있어 클라이언트 이동 뒤에도 남는다. 경로가 바뀌면 렌더 중에 닫는다.
+  const [lastPath, setLastPath] = useState(from);
+  if (lastPath !== from) {
+    setLastPath(from);
+    setOpen(false);
+  }
   const c = TONE[tone];
   const badge = BADGE[state.status];
 
@@ -44,6 +50,7 @@ export function AccountMenu({ state, tone = 'site' }: { state: SignedIn; tone?: 
       <button
         type="button"
         data-testid="account-chip"
+        aria-label={`계정 메뉴: ${state.name}`}
         aria-expanded={isOpen}
         aria-controls={menuId}
         onClick={() => setOpen((v) => !v)}
@@ -67,10 +74,10 @@ export function AccountMenu({ state, tone = 'site' }: { state: SignedIn; tone?: 
               <p className={`mt-1 text-xs whitespace-nowrap ${c.muted}`}>승인 대기 중 · {dateFormat.format(new Date(state.member.createdAt))} 신청</p>
             ) : null}
           </div>
-          {state.status === 'guest' ? <Link href={AI_JOIN} prefetch={false} className={item}>가입 신청하기</Link> : null}
-          {state.status === 'pending' ? <Link href={AI_JOIN} prefetch={false} className={item}>신청 내용 수정</Link> : null}
-          {state.status === 'admin' || state.status === 'member' ? <Link href={AI_MOTION_ADMIN} prefetch={false} className={item}>모션그래픽 프롬프트</Link> : null}
-          {state.status === 'admin' ? <Link href={AI_MEMBERS} prefetch={false} className={item}>회원 관리{state.pendingCount > 0 ? ` (대기 ${state.pendingCount})` : ''}</Link> : null}
+          {state.status === 'guest' ? <Link href={AI_JOIN} prefetch={false} className={item} onClick={() => setOpen(false)}>가입 신청하기</Link> : null}
+          {state.status === 'pending' ? <Link href={AI_JOIN} prefetch={false} className={item} onClick={() => setOpen(false)}>신청 내용 수정</Link> : null}
+          {state.status === 'admin' || state.status === 'member' ? <Link href={AI_MOTION_ADMIN} prefetch={false} className={item} onClick={() => setOpen(false)}>모션그래픽 프롬프트</Link> : null}
+          {state.status === 'admin' ? <Link href={AI_MEMBERS} prefetch={false} className={item} onClick={() => setOpen(false)}>회원 관리{state.pendingCount > 0 ? ` (대기 ${state.pendingCount})` : ''}</Link> : null}
           <form action={signOutAction}>
             <input type="hidden" name="from" value={from} />
             <button type="submit" className={item}>로그아웃</button>

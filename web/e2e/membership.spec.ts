@@ -19,6 +19,7 @@ test('guest applies and becomes pending without seeing prompts', async ({ contex
   await page.getByRole('button', { name: '신청하기' }).click();
   await expect(page.getByRole('status')).toHaveText('신청을 받았습니다. 관리자가 확인하면 사용할 수 있어요.');
   await expect(page.getByTestId('join-state')).toContainText('승인 대기 중');
+  await expect(page.getByRole('link', { name: '돌아가기' })).toHaveAttribute('href', DETAIL);
   const html = await (await context.request.get(DETAIL)).text();
   expect(html).not.toContain(MARKER);
   expect((await context.request.get('/ai/motion/admin/', { maxRedirects: 0 })).status()).toBe(404);
@@ -39,18 +40,19 @@ test('pending member sees the waiting modal and can edit the application', async
   await expect(page.getByLabel('소속')).toHaveValue('대기중학교2');
 });
 
-test('approved member and admin are sent straight back from /ai/join/', async ({ context, page }) => {
-  await signInAs(context, 'viewer@example.com');
-  await page.goto(`/ai/join/?from=${encodeURIComponent(DETAIL)}`);
-  await expect(page).toHaveURL(new RegExp(`${DETAIL}$`));
-  await page.goto('/ai/join/?from=%2F%2Fevil.com');
-  await expect(page).toHaveURL(/\/ai\/motion\/$/);
-});
+for (const email of ['viewer@example.com', 'admin@example.com']) {
+  test(`${email} is sent straight back from /ai/join/`, async ({ context, page }) => {
+    await signInAs(context, email);
+    await page.goto(`/ai/join/?from=${encodeURIComponent(DETAIL)}`);
+    await expect(page).toHaveURL(new RegExp(`${DETAIL}$`));
+    await page.goto('/ai/join/?from=%2F%2Fevil.com');
+    await expect(page).toHaveURL(/\/ai\/motion\/$/);
+  });
+}
 
-test('approved member posting the join form stays approved', async ({ context, page }) => {
+test('approved member keeps prompt access', async ({ context, page }) => {
   await signInAs(context, 'viewer@example.com');
   await page.goto(DETAIL);
   await expect(page.getByTestId('copy-prompt-en')).toBeEnabled();
-  // 회원은 폼을 볼 수 없으므로 액션을 직접 부르는 대신 상태가 유지되는지만 확인한다.
   expect((await context.request.get('/ai/motion/admin/01-pixel/')).status()).toBe(200);
 });
