@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation';
 import { getMotion, getMotionList } from '@me/content';
 import { AdminDetail } from '@/components/motion-gallery/admin/AdminDetail';
 import { adminOrder } from '@/components/motion-gallery/admin/admin-list';
-import { loadMotionAdmin } from '@/lib/access';
+import { getViewerState, loadMotionAdmin } from '@/lib/access';
 import { getRenderedMotions } from '@/lib/media';
 import { AI_MOTION_ADMIN, aiMotionAdminPath } from '@/lib/ai-paths';
 
@@ -18,6 +18,7 @@ export default async function AdminDetailPage({ params, searchParams }: {
   const motion = getMotion(id);
   if (!motion) notFound();
   const { list } = await loadMotionAdmin(aiMotionAdminPath(id));
+  const account = await getViewerState();
   const data = list?.find((a) => a.id === id) ?? null;
   const card = (await getRenderedMotions()).find((m) => m.id === id) ?? null;
 
@@ -41,6 +42,7 @@ export default async function AdminDetailPage({ params, searchParams }: {
       prevHref={href(order[idx - 1])}
       nextHref={href(order[idx + 1])}
       closeHref={`${AI_MOTION_ADMIN}${suffix}`}
+      account={account}
     />
   );
 }

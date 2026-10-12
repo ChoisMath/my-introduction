@@ -1,9 +1,11 @@
 import type { Locale, Ui } from '@me/content';
 import { localePath } from '@/lib/locale';
 import { SECTION_IDS } from '@/lib/sections';
+import type { ViewerState } from '@/lib/access';
+import { AccountMenu } from './ai-hub/AccountMenu';
 import { LangToggle } from './LangToggle';
 
-export function Nav({ locale, ui, hasMotion }: { locale: Locale; ui: Ui; hasMotion: boolean }) {
+export function Nav({ locale, ui, hasMotion, account }: { locale: Locale; ui: Ui; hasMotion: boolean; account: ViewerState }) {
   const home = localePath(locale);
   const ids = SECTION_IDS.filter((id) => id !== 'hero' && (hasMotion || id !== 'ai'));
   return (
@@ -20,6 +22,7 @@ export function Nav({ locale, ui, hasMotion }: { locale: Locale; ui: Ui; hasMoti
           ))}
         </ul>
         <LangToggle locale={locale} label={ui.lang.switchTo} title={ui.lang.switchLabel} />
+        {account.status === 'signedOut' ? null : <AccountMenu state={account} />}
       </nav>
     </header>
   );

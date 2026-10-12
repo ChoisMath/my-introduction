@@ -4,6 +4,8 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { MotionAdmin, MotionPublic } from '@me/content';
 import { FIELD_KEYS, TOGGLE_KEYS, finalPrompt, isToggleOn, parsePlaceholders, renderLines, type PromptLang, type PromptState } from './placeholders';
+import type { ViewerState } from '@/lib/access';
+import { AccountMenu } from '@/components/ai-hub/AccountMenu';
 import s from './admin.module.css';
 
 const STORAGE_KEY = 'cs.admin.prompt';
@@ -152,7 +154,8 @@ function PromptPane({ item }: { item: MotionAdmin }) {
   );
 }
 
-export function AdminDetail({ motion, data, media, pos, prevHref, nextHref, closeHref }: {
+export function AdminDetail({ motion, data, media, pos, prevHref, nextHref, closeHref, account }: {
+  account: ViewerState;
   motion: MotionPublic;
   data: MotionAdmin | null;
   media: { video: string; poster: string } | null;
@@ -209,6 +212,7 @@ export function AdminDetail({ motion, data, media, pos, prevHref, nextHref, clos
             <span>{sound ? '소리 끄기' : '소리 켜기'}</span>
           </button>
         ) : null}
+        {account.status === 'signedOut' ? null : <AccountMenu state={account} tone="dark" />}
       </div>
       <div className={s.dBody}>
         <div className={s.dLeft}>
