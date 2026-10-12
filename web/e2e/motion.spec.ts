@@ -1,16 +1,20 @@
 import { expect, test } from '@playwright/test';
 
-test('home shows the motion section with rendered cards only', async ({ page }) => {
+test('home shows the AI활용 section with the motion tab and rendered cards only', async ({ page }) => {
   await page.goto('/');
   const section = page.locator('section#ai');
+  await expect(section.getByRole('heading', { level: 2 })).toHaveText('AI활용');
+  await expect(section.getByRole('link', { name: '모션그래픽' })).toHaveAttribute('href', '/ai/motion/');
   await expect(section.getByTestId('motion-card')).toHaveCount(2);
   await expect(section.getByRole('link', { name: /전체 보기/ })).toHaveAttribute('href', '/ai/motion/');
   await expect(page.getByRole('navigation', { name: 'primary' }).getByRole('link', { name: 'AI활용' })).toHaveAttribute('href', '/#ai');
 });
 
-test('english home links english names to the korean gallery', async ({ page }) => {
+test('english home labels the section AI Tools and old #motion anchor still lands in it', async ({ page }) => {
   await page.goto('/en/');
-  await expect(page.locator('section#ai').getByTestId('motion-card')).toHaveCount(2);
+  await expect(page.locator('section#ai').getByRole('heading', { level: 2 })).toHaveText('AI Tools');
+  await page.goto('/#motion');
+  await expect(page.locator('section#ai')).toBeInViewport();
 });
 
 test('gallery filters by group and keeps it in the url', async ({ page }) => {
