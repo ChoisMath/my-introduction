@@ -4,11 +4,16 @@ import { execFileSync } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { slideAdminListSchema, slidePublicListSchema, type SlideAdmin, type SlidePublic } from '../content/slide/schema';
+import { slideAdminListSchema, slidePublicListSchema, slidePublicSchema, type SlideAdmin, type SlidePublic } from '../content/slide/schema';
 import { buildSlideManifest } from './media/manifest';
 
 export type SchoolEntry = Omit<SlidePublic, 'slides'>;
 export type DeckInfo = { pages: number; prompt: string };
+
+// id 가 그대로 rmSync 경로가 되므로 파일을 건드리기 전에 형식을 확인한다.
+export function parseSchoolManifest(raw: unknown): SchoolEntry[] {
+  return slidePublicSchema.omit({ slides: true }).array().parse(raw);
+}
 
 export function buildSlideData(entries: SchoolEntry[], decks: Map<string, DeckInfo>): { publicList: SlidePublic[]; adminList: SlideAdmin[] } {
   const ready = entries.flatMap((e) => {
@@ -45,7 +50,7 @@ function renderDeck(pdf: string, dir: string, tmp: string, cards: number[]): num
 async function main() {
   const src = process.env.SLIDE_SRC ?? '/Volumes/Chois_SD2/dev/motion/slide/school';
   const out = path.resolve('.media-out');
-  const entries = JSON.parse(readFileSync(path.join(src, 'manifest.json'), 'utf8')) as SchoolEntry[];
+  const entries = parseSchoolManifest(JSON.parse(readFileSync(path.join(src, 'manifest.json'), 'utf8')));
   const decks = new Map<string, DeckInfo>();
   for (const e of entries) {
     const pdf = path.join(src, e.id, 'deck.pdf');

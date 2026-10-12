@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { arrange, parseQuery, pickOrder, stepSlide, stepStyle, toSearch, type GalleryQuery } from './slide-order';
+import { arrange, opensOutsideFilter, parseQuery, stepSlide, stepStyle, toSearch, type GalleryQuery } from './slide-order';
 
 const items = [
   { id: '24', no: 24, family: 'hand' as const, added: '2026-10-01' },
@@ -34,11 +34,13 @@ describe('arrange', () => {
   });
 });
 
-describe('pickOrder', () => {
-  it('uses the filtered order when the style is in it, the full order otherwise', () => {
+describe('opensOutsideFilter', () => {
+  it('is true only for an existing style the filter hides', () => {
     const q = { ...all, family: 'toon' as const };
-    expect(pickOrder(items, q, '04').map((i) => i.id)).toEqual(['04']);
-    expect(pickOrder(items, q, '59').map((i) => i.id)).toEqual(['24', '59', '04']);
+    expect(opensOutsideFilter(items, q, '04')).toBe(false);
+    expect(opensOutsideFilter(items, q, '59')).toBe(true);
+    expect(opensOutsideFilter(items, q, '999')).toBe(false);
+    expect(opensOutsideFilter(items, all, '59')).toBe(false);
   });
 });
 

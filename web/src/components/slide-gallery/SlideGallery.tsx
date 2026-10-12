@@ -8,7 +8,7 @@ import { SlideCard } from './SlideCard';
 import { SlideSortMenu } from './SlideSortMenu';
 import { SlideViewer } from './SlideViewer';
 import { setHashId, useHashId } from './slide-hash';
-import { arrange, parseQuery, pickOrder, toSearch, type GalleryQuery, type ViewerPos } from './slide-order';
+import { arrange, opensOutsideFilter, parseQuery, toSearch, type GalleryQuery, type ViewerPos } from './slide-order';
 
 type Family = { readonly key: SlideFamily; readonly label: string };
 type Props = { items: SlideCardData[]; families: readonly Family[]; access: SlidePromptAccess };
@@ -22,17 +22,20 @@ export function SlideGallery({ items, families, access }: Props) {
   const query = parseQuery(useSearchParams(), present.map((f) => f.key));
   const shown = arrange(items, query);
   const hashId = useHashId();
-  const [slideOf, setSlideOf] = useState<{ id: string; k: number }>({ id: '', k: 0 });
+  // 상세 창 한 번(열기~닫기) 동안의 상태. 순서 범위는 열 때 한 번만 정해야 넘기다 거르기 안 스타일에 닿아도 전체 순서를 잃지 않는다.
+  const [session, setSession] = useState<{ isAll: boolean; id: string; k: number } | null>(null);
+  if (hashId && !session) setSession({ isAll: opensOutsideFilter(items, query, hashId), id: hashId, k: 0 });
+  if (!hashId && session) setSession(null);
 
-  const order = pickOrder(items, query, hashId);
+  const order = session?.isAll ? arrange(items, { ...query, family: null }) : shown;
   const styleIndex = order.findIndex((s) => s.id === hashId);
-  const pos: ViewerPos | null = styleIndex < 0 ? null : { style: styleIndex, slide: slideOf.id === hashId ? slideOf.k : 0 };
+  const pos: ViewerPos | null = styleIndex < 0 ? null : { style: styleIndex, slide: session?.id === hashId ? session.k : 0 };
 
   const update = (patch: Partial<GalleryQuery>) => {
     history.replaceState(null, '', `${location.pathname}${toSearch({ ...query, ...patch })}`);
   };
   const open = (id: string, k = 0) => {
-    setSlideOf({ id, k });
+    setSession((prev) => ({ isAll: prev?.isAll ?? false, id, k }));
     setHashId(id);
   };
   const labelOf = (key: SlideFamily) => families.find((f) => f.key === key)?.label ?? key;

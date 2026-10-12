@@ -71,6 +71,12 @@ test('hash deep links open the style, even when filtered out, and bad hashes are
   const target = rendered.find((s) => s.family === 'work')!;
   await page.goto(`${PAGE}?f=hand#${target.id}`);
   await expect(page.getByTestId('slide-viewer').getByRole('heading', { name: target.name })).toBeVisible();
+  // 필터 밖에서 연 상세 창은 닫을 때까지 전체 순서를 유지해야 한다.
+  const viewer = page.getByTestId('slide-viewer');
+  for (let i = 0; i < target.slides; i++) await page.keyboard.press('ArrowRight');
+  await expect(viewer.getByTestId('slide-style-count')).toHaveText(`1 / ${rendered.length}`);
+  await viewer.getByRole('button', { name: '이전 스타일' }).click();
+  await expect(viewer.getByRole('heading', { name: target.name })).toBeVisible();
   for (const bad of ['#999', '#%E0']) {
     await page.goto(`${PAGE}${bad}`);
     await expect(cards(page).first()).toBeVisible();

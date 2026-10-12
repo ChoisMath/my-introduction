@@ -35,10 +35,9 @@ export function arrange<T extends Orderable>(items: readonly T[], q: GalleryQuer
   return shown;
 }
 
-// #번호로 연 스타일이 지금 거르기에 없으면 거르기를 무시한 순서로 넘긴다.
-export function pickOrder<T extends Orderable>(items: readonly T[], q: GalleryQuery, id: string): T[] {
-  const shown = arrange(items, q);
-  return shown.some((i) => i.id === id) ? shown : arrange(items, { ...q, family: null });
+// #번호로 연 스타일이 지금 거르기에 없으면, 상세 창을 닫을 때까지 거르기를 무시한 순서로 넘긴다.
+export function opensOutsideFilter(items: readonly Orderable[], q: GalleryQuery, id: string): boolean {
+  return items.some((i) => i.id === id) && !arrange(items, q).some((i) => i.id === id);
 }
 
 export function stepSlide(pos: ViewerPos, dir: 1 | -1, counts: readonly number[]): ViewerPos {
