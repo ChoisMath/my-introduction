@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { SignInDialog, type DialogState } from '@/components/ai-hub/SignInDialog';
+import { writeClipboard } from '@/components/ai-hub/clipboard';
 import type { MemberSummary } from '@/lib/access';
 import { aiMotionAdminPath, aiMotionPath } from '@/lib/ai-paths';
 
@@ -11,19 +12,6 @@ type Props =
   | { id: string; status: 'allowed'; prompts: Record<Lang, string> | null };
 
 const LABEL: Record<Lang, string> = { en: '프롬프트 복사 (영문)', ko: '프롬프트 복사 (국문)' };
-
-async function writeClipboard(text: string) {
-  try {
-    await navigator.clipboard.writeText(text);
-  } catch {
-    const ta = document.createElement('textarea');
-    ta.value = text;
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand('copy');
-    ta.remove();
-  }
-}
 
 export function PromptCopy(props: Props) {
   const [isOpen, setOpen] = useState(false);
