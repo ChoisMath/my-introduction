@@ -5,6 +5,7 @@ import type { MotionAdmin } from '@me/content';
 import { auth } from '@/auth';
 import { isAdminEmail } from './admin-emails';
 import { joinPath } from './ai-paths';
+import { errorTag } from './log';
 import { canUsePrompts, normalizeEmail, resolveRole, type MemberLookup, type MemberRole } from './member-role';
 import { countPending, lookupMember, type MemberRow } from './members';
 import { readMotionAdmin } from './motion-admin';
@@ -32,7 +33,7 @@ export const getAccess = cache(async (rawEmail: string | null | undefined): Prom
     member = await lookupMember(email);
     lookup = member ? { status: member.status } : null;
   } catch (error) {
-    console.error('[members] lookup failed', error);
+    console.error('[members] lookup failed', errorTag(error));
     lookup = 'error';
   }
   return { role: resolveRole(false, lookup), member };
@@ -78,7 +79,7 @@ export const getViewerState = cache(async (): Promise<ViewerState> => {
     try {
       pendingCount = await countPending();
     } catch (error) {
-      console.error('[members] count failed', error);
+      console.error('[members] count failed', errorTag(error));
     }
   }
   return { status: role, email, name: member?.name ?? session.user.name ?? email, image: session.user.image ?? null, member: summary(member), pendingCount };

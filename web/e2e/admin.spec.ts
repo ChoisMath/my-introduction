@@ -112,3 +112,11 @@ test.describe('members', () => {
     await expect(page.getByTestId('member-row').filter({ hasText: 'pending2@example.com' })).toHaveCount(1);
   });
 });
+
+test('members page shows the redirect error alerts', async ({ context, page }) => {
+  await signInAs(context, 'admin@example.com');
+  await page.goto('/ai/admin/members/?error=db');
+  await expect(page.getByRole('alert').filter({ hasText: 'DB' })).toHaveText('DB 오류로 처리하지 못했습니다. 잠시 후 다시 시도하세요.');
+  await page.goto('/ai/admin/members/?error=input');
+  await expect(page.getByRole('alert').filter({ hasText: '이름·' })).toHaveText('이름·소속을 확인하세요 (이름 1–30자, 소속 1–50자).');
+});

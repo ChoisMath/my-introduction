@@ -1,8 +1,10 @@
 'use server';
 import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
 import { isAdminEmail } from '@/lib/admin-emails';
 import { requireAdmin } from '@/lib/access';
 import { AI_MEMBERS } from '@/lib/ai-paths';
+import { errorTag } from '@/lib/log';
 import { adminAddSchema, applySchema, memberIdSchema } from '@/lib/member-input';
 import { addApprovedMember, deletePendingMember, setMemberStatus, updateMemberProfile } from '@/lib/members';
 
@@ -22,7 +24,7 @@ export async function addMemberAction(_prev: MemberFormState, formData: FormData
   try {
     outcome = await addApprovedMember({ ...parsed.data, by });
   } catch (error) {
-    console.error('[members] add failed', error);
+    console.error('[members] add failed', errorTag(error));
     return fail('DB 오류로 등록하지 못했습니다.');
   }
   if (outcome.result === 'duplicate') return fail(`이미 있는 회원입니다(상태: ${STATUS_LABEL[outcome.status]})`);
@@ -34,8 +36,15 @@ async function withId(formData: FormData, run: (id: number, by: string) => Promi
   const by = await requireAdmin(AI_MEMBERS);
   const id = memberIdSchema.safeParse(formData.get('id'));
   if (!id.success) return;
-  // 다른 탭에서 이미 처리된 행이면 0건으로 끝나고 화면만 새로 그린다.
-  await run(id.data, by);
+  let failed = false;
+  try {
+    // 다른 탭에서 이미 처리된 행이면 0건으로 끝나고 화면만 새로 그린다.
+    await run(id.data, by);
+  } catch (error) {
+    console.error('[members] update failed', errorTag(error));
+    failed = true;
+  }
+  if (failed) redirect(`${AI_MEMBERS}?error=db`);
   revalidatePath(AI_MEMBERS);
 }
 
@@ -53,6 +62,6 @@ export async function deleteAction(formData: FormData): Promise<void> {
 
 export async function updateProfileAction(formData: FormData): Promise<void> {
   const parsed = applySchema.safeParse({ name: String(formData.get('name') ?? ''), affiliation: String(formData.get('affiliation') ?? '') });
-  if (!parsed.success) return;
+  if (!parsed.success) redirect(`${AI_MEMBERS}?error=input`);
   await withId(formData, (id) => updateMemberProfile(id, parsed.data));
 }

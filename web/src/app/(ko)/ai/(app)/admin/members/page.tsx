@@ -6,6 +6,7 @@ import { MemberAddForm } from '@/components/ai-hub/MemberAddForm';
 import s from '@/components/motion-gallery/admin/admin.module.css';
 import { getViewerState, requireAdmin } from '@/lib/access';
 import { AI_MEMBERS, AI_MOTION_ADMIN } from '@/lib/ai-paths';
+import { errorTag } from '@/lib/log';
 import { listMembers, type MemberRow } from '@/lib/members';
 import { approveAction, suspendAction, updateProfileAction } from './actions';
 
@@ -23,11 +24,13 @@ export default async function MembersPage({ searchParams }: { searchParams: Prom
   try {
     members = await listMembers();
   } catch (error) {
-    console.error('[members] list failed', error);
+    console.error('[members] list failed', errorTag(error));
   }
   const pending = members?.filter((m) => m.status === 'PENDING') ?? [];
   const approved = members?.filter((m) => m.status === 'APPROVED') ?? [];
-  const raw = (await searchParams).s;
+  const params = await searchParams;
+  const raw = params.s;
+  const error = params.error;
   const asked = (Array.isArray(raw) ? raw[0] : raw) as Filter | undefined;
   const filter: Filter = asked && FILTERS.some(([f]) => f === asked) ? asked : pending.length > 0 ? 'pending' : 'approved';
   const rows = filter === 'pending' ? pending : filter === 'approved' ? approved : (members ?? []);
@@ -54,6 +57,8 @@ export default async function MembersPage({ searchParams }: { searchParams: Prom
             </Link>
           ))}
         </nav>
+        {error === 'db' ? <p role="alert" className={s.alert}>DB 오류로 처리하지 못했습니다. 잠시 후 다시 시도하세요.</p> : null}
+        {error === 'input' ? <p role="alert" className={s.alert}>이름·소속을 확인하세요 (이름 1–30자, 소속 1–50자).</p> : null}
         {members === null ? (
           <p role="alert" className={s.alert}>회원 목록을 불러오지 못했습니다. <code>DATABASE_URL</code> 과 DB 상태를 확인하세요.</p>
         ) : rows.length === 0 ? (
