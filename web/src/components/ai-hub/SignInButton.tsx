@@ -1,0 +1,18 @@
+'use client';
+import { usePathname } from 'next/navigation';
+import { useState } from 'react';
+import type { ViewerState } from '@/lib/access';
+import { SignInDialog } from './SignInDialog';
+
+export function SignInButton({ label }: { state: ViewerState; label: string }) {
+  const [isOpen, setOpen] = useState(false);
+  const from = usePathname();
+  return (
+    <>
+      <button type="button" data-testid="hub-signin" onClick={() => setOpen(true)} className="inline-flex min-h-11 items-center rounded-full bg-accent px-4 text-sm font-semibold whitespace-nowrap text-bg">
+        {label}
+      </button>
+      {isOpen ? <SignInDialog open onClose={() => setOpen(false)} state="signedOut" from={from} member={null} /> : null}
+    </>
+  );
+}

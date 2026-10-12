@@ -1,0 +1,14 @@
+import { describe, expect, it } from 'vitest';
+import { AI_TABS, activeTabId } from './ai-tabs';
+
+describe('AI_TABS', () => {
+  it('starts with motion and every href lives under /ai/', () => {
+    expect(AI_TABS[0]?.id).toBe('motion');
+    for (const t of AI_TABS) expect(t.href).toMatch(/^\/ai\/[a-z0-9-]+\/$/);
+  });
+  it('finds the active tab by path prefix', () => {
+    expect(activeTabId('/ai/motion/')).toBe('motion');
+    expect(activeTabId('/ai/motion/01-pixel/')).toBe('motion');
+    expect(activeTabId('/ai/join/')).toBeNull();
+  });
+});

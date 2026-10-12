@@ -1,10 +1,10 @@
-import { signInWithGoogle } from '@/app/(ko)/motion/actions';
+import { signInWithGoogle } from '@/app/(ko)/ai/actions';
 
-export function GoogleSignInButton({ redirectTo, label = 'Google로 로그인' }: { redirectTo: string; label?: string }) {
+export function GoogleSignInButton({ from, label = 'Google로 로그인', testId = 'google-signin' }: { from: string; label?: string; testId?: string }) {
   return (
     <form action={signInWithGoogle}>
-      <input type="hidden" name="redirectTo" value={redirectTo} />
-      <button type="submit" data-testid="google-signin" className="inline-flex min-h-11 items-center gap-2 rounded-full border border-line bg-bg px-4 text-sm font-semibold whitespace-nowrap text-fg hover:border-accent">
+      <input type="hidden" name="from" value={from} />
+      <button type="submit" data-testid={testId} className="inline-flex min-h-11 items-center gap-2 rounded-full border border-line bg-bg px-4 text-sm font-semibold whitespace-nowrap text-fg hover:border-accent">
         <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden>
           <path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.5l6.7-6.7C35.6 2.4 30.2 0 24 0 14.6 0 6.6 5.4 2.7 13.3l7.8 6C12.4 13.6 17.7 9.5 24 9.5z" />
           <path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4.1 7.1-10.1 7.1-17.5z" />

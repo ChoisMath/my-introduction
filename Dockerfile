@@ -21,5 +21,5 @@ COPY --from=build /app/web/.next/standalone ./
 COPY --from=build /app/web/prisma.config.ts web/prisma.config.ts
 COPY --from=build /app/web/prisma web/prisma
 # railway.json 은 이 서비스에 적용되지 않는다(배포 manifest 의 configFile·preDeployCommand 가 비어 있음).
-# 그래서 시작할 때 마이그레이션한다. 실패해도 서버는 띄운다: 관리자 화면은 DB 없이 동작하고 열람자 기능만 fail-closed 된다.
+# 그래서 시작할 때 마이그레이션한다. 실패해도 서버는 띄운다: 관리자 화면은 DB 없이 동작하고 회원 기능만 fail-closed 된다.
 CMD ["sh", "-c", "prisma migrate deploy --config web/prisma.config.ts || echo '[migrate] prisma migrate deploy failed' >&2; exec node web/server.js"]
