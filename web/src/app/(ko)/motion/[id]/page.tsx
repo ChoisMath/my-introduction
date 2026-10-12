@@ -5,7 +5,7 @@ import { getContent } from '@me/content';
 import { KeyNav } from '@/components/motion-gallery/KeyNav';
 import { PromptCopy } from '@/components/motion-gallery/PromptCopy';
 import { finalPrompt, type PromptState } from '@/components/motion-gallery/admin/placeholders';
-import { getPromptAccess } from '@/lib/admin-session';
+import { getPromptAccess } from '@/lib/access';
 import { getRenderedMotions } from '@/lib/media';
 
 export const dynamic = 'force-dynamic';
@@ -63,7 +63,7 @@ export default async function MotionDetailPage({ params }: Props) {
             prompts={access.data ? { en: finalPrompt(access.data, 'en', DEFAULT_PROMPT), ko: finalPrompt(access.data, 'ko', DEFAULT_PROMPT) } : null}
           />
         ) : (
-          <PromptCopy id={item.id} status={access.status} />
+          <PromptCopy id={item.id} status={access.status} member={access.member} />
         )}
         <nav className="mt-6 flex flex-wrap items-center gap-2" aria-label="motion">
           {prev ? <Link href={href(prev)!} className={navLink}>← {ui.motion.prev}</Link> : null}

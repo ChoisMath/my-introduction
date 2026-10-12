@@ -1,7 +1,7 @@
 import { MOTION_GROUPS, getMotionList } from '@me/content';
 import { AdminGallery } from '@/components/motion-gallery/admin/AdminGallery';
 import type { AdminListItem } from '@/components/motion-gallery/admin/admin-list';
-import { loadMotionAdmin } from '@/lib/admin-session';
+import { loadMotionAdmin } from '@/lib/access';
 import { getRenderedMotions } from '@/lib/media';
 
 export const dynamic = 'force-dynamic';

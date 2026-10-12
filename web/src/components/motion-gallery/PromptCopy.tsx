@@ -6,7 +6,7 @@ import { GoogleSignInButton } from './GoogleSignInButton';
 
 type Lang = 'en' | 'ko';
 type Props =
-  | { id: string; status: 'signedOut' | 'denied' }
+  | { id: string; status: 'signedOut' | 'guest' | 'pending' | 'unavailable'; member?: unknown }
   | { id: string; status: 'allowed'; prompts: Record<Lang, string> | null };
 
 const LABEL: Record<Lang, string> = { en: '프롬프트 복사 (영문)', ko: '프롬프트 복사 (국문)' };
@@ -70,11 +70,11 @@ export function PromptCopy(props: Props) {
         >
           <div className="flex flex-col gap-3 p-3 sm:p-5">
             <h2 id="signin-dialog-title" className="text-lg font-bold">
-              {props.status === 'denied' ? '등록되지 않은 계정입니다.' : '로그인하여 프롬프트를 복사하세요.'}
+              {props.status !== 'signedOut' ? '등록되지 않은 계정입니다.' : '로그인하여 프롬프트를 복사하세요.'}
             </h2>
             <p className="text-sm text-muted">{CONTACT_NOTE}</p>
             <div className="mt-1 flex flex-wrap gap-2">
-              <GoogleSignInButton redirectTo={`/motion/${props.id}/`} label={props.status === 'denied' ? '다른 Google 계정으로 로그인' : 'Google로 로그인'} />
+              <GoogleSignInButton from={`/motion/${props.id}/`} label={props.status !== 'signedOut' ? '다른 Google 계정으로 로그인' : 'Google로 로그인'} />
               <button type="button" onClick={() => dialog.current?.close()} className="inline-flex min-h-11 items-center rounded-full border border-line px-4 text-sm whitespace-nowrap">닫기</button>
             </div>
           </div>

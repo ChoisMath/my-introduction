@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation';
 import { getMotion, getMotionList } from '@me/content';
 import { AdminDetail } from '@/components/motion-gallery/admin/AdminDetail';
 import { adminOrder } from '@/components/motion-gallery/admin/admin-list';
-import { loadMotionAdmin } from '@/lib/admin-session';
+import { loadMotionAdmin } from '@/lib/access';
 import { getRenderedMotions } from '@/lib/media';
 
 export const dynamic = 'force-dynamic';
