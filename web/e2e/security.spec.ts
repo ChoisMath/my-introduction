@@ -10,7 +10,7 @@ test('guest and pending pages never carry admin data', async ({ browser }) => {
   for (const email of ['stranger@example.com', 'pending2@example.com']) {
     const ctx = await browser.newContext();
     await signInAs(ctx, email);
-    for (const p of ['/ai/motion/', '/ai/motion/01-pixel/', '/ai/join/', '/']) {
+    for (const p of ['/ai/motion/', '/ai/motion/01-pixel/', '/ai/slide/', '/ai/join/', '/']) {
       const html = await (await ctx.request.get(p)).text();
       expect(html, `${email} ${p}`).not.toContain(MARKER);
       expect(html, `${email} ${p}`).not.toContain('{{Channel name=');
@@ -23,7 +23,7 @@ test('guest and pending pages never carry admin data', async ({ browser }) => {
 });
 
 test('no admin text leaks into public html or build output', async ({ request }) => {
-  for (const p of ['/', '/en/', '/ai/motion/', '/ai/motion/01-pixel/', '/ai/motion/17-embroidery/']) {
+  for (const p of ['/', '/en/', '/ai/motion/', '/ai/motion/01-pixel/', '/ai/motion/17-embroidery/', '/ai/slide/']) {
     const html = await (await request.get(p)).text();
     expect(html, p).not.toContain(MARKER);
     expect(html, p).not.toContain('{{Channel name=');
@@ -38,7 +38,7 @@ test('no admin text leaks into public html or build output', async ({ request })
 });
 
 test('private files and traversal attempts are not served', async ({ request }) => {
-  for (const p of ['/media/private/motion-admin.json', '/media/motion/..%2F..%2Fprivate%2Fmotion-admin.json', '/media/motion/manifest.json']) {
+  for (const p of ['/media/private/motion-admin.json', '/media/motion/..%2F..%2Fprivate%2Fmotion-admin.json', '/media/motion/manifest.json', '/media/private/slide-admin.json', '/media/slide/manifest.json', '/media/slide/24/..%2F..%2Fprivate%2Fslide-admin.json', '/media/slide/24/1.png']) {
     expect((await request.get(p)).status(), p).toBe(404);
   }
 });
@@ -49,4 +49,6 @@ test('upload and manifest apis reject missing or wrong tokens', async ({ request
   expect((await request.get('/api/media/manifest')).status()).toBe(401);
   const ok = await request.get('/api/media/manifest', { headers: { authorization: 'Bearer e2e-upload-token' } });
   expect(Object.keys(await ok.json())).toContain('media/motion/01-pixel/video.mp4');
+  const slide = await request.get('/api/media/manifest?set=slide', { headers: { authorization: 'Bearer e2e-upload-token' } });
+  expect(Object.keys(await slide.json())).toContain('media/slide/24/1.webp');
 });

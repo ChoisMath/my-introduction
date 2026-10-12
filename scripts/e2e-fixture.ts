@@ -1,9 +1,9 @@
 // e2e 서버가 읽을 Volume 을 만든다: 01-pixel·17-embroidery 두 개만 렌더된 상태 + 표식이 든 관리자 데이터.
 import { execFileSync } from 'node:child_process';
-import { copyFileSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
+import { copyFileSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import pg from 'pg';
-import { buildManifest } from './media/manifest';
+import { buildManifest, buildSlideManifest } from './media/manifest';
 
 const web = path.resolve(import.meta.dirname, '../web');
 const root = path.join(web, 'e2e/.volume');
@@ -31,6 +31,19 @@ writeFileSync(path.join(root, 'private/motion-admin.json'), JSON.stringify(RENDE
   shots: [['0.0–1.0', 'E2E-ADMIN-MARKER 장면', '이유']],
   cues: [['0.000', 'E2E-ADMIN-MARKER kick', 'first frame']],
 }))));
+export const SLIDE_RENDERED = ['24', '63'];
+const slideList = JSON.parse(readFileSync(path.resolve(import.meta.dirname, '../content/slide/public.json'), 'utf8')) as { id: string; slides: number; cover: number; body: number }[];
+for (const s of slideList.filter((x) => SLIDE_RENDERED.includes(x.id))) {
+  const dir = path.join(root, 'media/slide', s.id);
+  for (const sub of ['', 's', 't']) mkdirSync(path.join(dir, sub), { recursive: true });
+  for (let k = 1; k <= s.slides; k++) {
+    copyFileSync(path.join(fixtures, 'tiny.webp'), path.join(dir, `${k}.webp`));
+    copyFileSync(path.join(fixtures, 'tiny.webp'), path.join(dir, 's', `${k}.webp`));
+  }
+  for (const k of new Set([s.cover, s.body])) copyFileSync(path.join(fixtures, 'tiny.webp'), path.join(dir, 't', `${k}.webp`));
+}
+writeFileSync(path.join(root, 'media/slide/manifest.json'), JSON.stringify(await buildSlideManifest(root)));
+writeFileSync(path.join(root, 'private/slide-admin.json'), JSON.stringify(SLIDE_RENDERED.map((id) => ({ id, prompt: `E2E-ADMIN-MARKER slide ${id} style prompt` }))));
 console.info(`e2e volume ready: ${root}`);
 
 // 열람자 DB 는 E2E_DATABASE_URL 로만 받는다. .env.local 이나 셸의 DATABASE_URL(운영일 수 있음)은 절대 쓰지 않는다.

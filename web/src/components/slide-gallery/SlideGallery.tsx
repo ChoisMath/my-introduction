@@ -41,7 +41,7 @@ export function SlideGallery({ items, families, access }: Props) {
   return (
     <div data-testid="slide-gallery">
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-        <div role="toolbar" aria-label="분류로 거르기" data-testid="slide-chips" className="-mx-2 flex min-w-0 flex-1 gap-2 overflow-x-auto px-2 pb-1">
+        <div role="toolbar" aria-label="분류로 거르기" data-testid="slide-chips" className="-mx-2 flex w-[calc(100%+1rem)] min-w-0 gap-2 overflow-x-auto px-2 pb-1 sm:w-auto sm:flex-1">
           {[null, ...present].map((f) => {
             const key = f?.key ?? null;
             const isOn = query.family === key;
@@ -52,7 +52,7 @@ export function SlideGallery({ items, families, access }: Props) {
             );
           })}
         </div>
-        <div className="flex shrink-0 items-center gap-2">
+        <div className="ml-auto flex shrink-0 items-center gap-2">
           <SlideSortMenu value={query.sort} onChange={(sort) => update({ sort })} />
           <div role="group" aria-label="목록에 보여 줄 장" data-testid="slide-view" className="flex rounded-full border border-line p-0.5">
             {VIEWS.map((v) => (
