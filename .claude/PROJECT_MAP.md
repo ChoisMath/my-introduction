@@ -31,7 +31,7 @@
 │   ├── src/app/
 │   │   ├── (ko)/ layout.tsx, page.tsx      # /
 │   │   ├── (en)/en/ layout.tsx, page.tsx   # /en/
-│   │   ├── (ko)/motion/ page.tsx, [id]/page.tsx, admin/{layout,page,[id]/page}.tsx, admin/viewers/{page.tsx,actions.ts}  # 갤러리·상세·관리자/열람자(Google 로그인)
+│   │   ├── (ko)/motion/ page.tsx, [id]/page.tsx, actions.ts, signin-error/page.tsx, admin/{layout,page,[id]/page}.tsx, admin/viewers/{page.tsx,actions.ts}  # 갤러리·상세(프롬프트 복사)·로그인 오류 안내·관리자/열람자(Google 로그인)
 │   │   ├── media/[...path]/route.ts        # Volume 영상 스트리밍(Range)
 │   │   ├── api/ health, media (PUT 업로드), media/manifest, auth/[...nextauth]
 │   │   ├── globals.css            # Tailwind 진입 + 히어로/표 공용 CSS
@@ -41,11 +41,11 @@
 │   │   ├── RootShell, Nav, LangToggle, Section, HomePage, HeroVideo, VideoDialog
 │   │   ├── motion/  HeroStage, hero-cycle, Typewriter, GridBackground, Reveal, CountUp
 │   │   └── sections/ Hero, Stats, Timeline, Pillars, Projects, Books, Lectures, Contact
-│   ├── src/components/motion-gallery/  MotionGallery, MotionCard, KeyNav, admin/{AdminGallery,AdminDetail,ViewerForm,admin.module.css,admin-list,placeholders}
+│   ├── src/components/motion-gallery/  MotionGallery, MotionCard, KeyNav, PromptCopy, GoogleSignInButton, contact.ts, admin/{AdminGallery,AdminDetail,ViewerForm,admin.module.css,admin-list,placeholders}
 │   ├── src/components/sections/Motion.tsx  # 홈 #motion 섹션
-│   ├── src/auth.ts                # NextAuth v5 (Google, signIn 은 getMotionRole: 관리자 또는 등록 열람자)
+│   ├── src/auth.ts                # NextAuth v5 (Google, signIn 은 getMotionRole: 관리자 또는 등록 열람자, pages.error → /motion/signin-error/)
 │   ├── src/lib/  locale, metadata, sections, volume, media, media-serve, media-upload, range, motion-admin, admin-emails, admin-session, motion-viewers, prisma, viewer-input (+ *.test.ts)
-│   ├── e2e/ smoke, platform, motion, admin, security .spec.ts  # Playwright (standalone 서버 포트 3100, e2e/.volume 픽스처)
+│   ├── e2e/ smoke, platform, motion, admin, security, prompt-copy .spec.ts + session.ts(signInAs·MARKER 공용)  # Playwright (standalone 서버 포트 3100, e2e/.volume 픽스처)
 │   └── public/  robots.txt, sitemap.xml, img/, video/
 ├── video/                         # Remotion
 │   ├── remotion.config.ts         # Playwright Chromium 사용, @me/content alias
@@ -87,7 +87,8 @@
 | `/` | `web/src/app/(ko)/page.tsx` | 한국어 홈 (`RootShell locale="ko"`) |
 | `/en/` | `web/src/app/(en)/en/page.tsx` | 영어 홈. `LangToggle` 이 현재 `#hash` 를 유지한 채 전환 |
 | `/motion/` | `web/src/app/(ko)/motion/page.tsx` | 모션 갤러리(그룹 필터 `?g=`) |
-| `/motion/[id]/` | `.../motion/[id]/page.tsx` | 상세(영상·키보드 좌우 이동). 렌더 안 된 id 는 404 |
+| `/motion/[id]/` | `.../motion/[id]/page.tsx` | 상세(영상·키보드 좌우 이동). 렌더 안 된 id 는 404. 「프롬프트 복사 (영문)」「(국문)」 — `getPromptAccess(id)` 가 allowed 일 때만 프롬프트를 props 로 실음, allowed 는 「빈칸 편집·장면표」→ `/motion/admin/<id>/`. 비로그인·미등록은 로그인 모달 |
+| `/motion/signin-error/` | `.../motion/signin-error/page.tsx` | auth.ts `pages.error`. AccessDenied(미등록 계정)를 한국어로 안내, noindex |
 | `/motion/admin/`, `/motion/admin/[id]/` | `.../motion/admin/` | Google 로그인 + 관리자(`ADMIN_EMAILS`) 또는 등록 열람자. 프롬프트·장면표·소리 큐. 목록 머리글 「열람자」 링크는 관리자만 |
 | `/motion/admin/viewers/` | `.../motion/admin/viewers/{page.tsx,actions.ts}` | 관리자만. 열람자 목록·추가·삭제 — Server Actions `addViewerAction`/`removeViewerAction` |
 | `GET/HEAD /media/[...path]` | `web/src/app/media/[...path]/route.ts` | `media/motion/<id>/(video.mp4\|preview.mp4\|poster.webp)` 만 Range 스트리밍. 그 외 404 |
@@ -154,7 +155,11 @@ zod 스키마로 검증되는 JSON. `getContent(locale)` 이 파싱·캐시, `np
 | `locale.ts` | `web/src/lib/locale.ts` | `localePath`, `otherLocale`, `toggleHref` |
 | `metadata.ts` | `web/src/lib/metadata.ts` | `SITE_URL`, `buildMetadata(locale)` (canonical/hreflang/OG) |
 | `motion-viewers.ts` | `web/src/lib/motion-viewers.ts` | `getMotionRole`(env `ADMIN_EMAILS` 먼저 → 'admin', 아니면 Prisma 동적 import 로 DB 조회 → 'viewer', 오류는 null = fail-closed), `listViewers`/`addViewer`/`removeViewer` |
-| `admin-session.ts` | `web/src/lib/admin-session.ts` | `requireViewer`, `requireAdmin`(관리자 이메일 반환), `loadMotionAdmin`(→ {role, list}). 미로그인 redirect, 권한 없음 404 |
+| `admin-session.ts` | `web/src/lib/admin-session.ts` | `requireViewer`, `requireAdmin`(관리자 이메일 반환), `loadMotionAdmin`(→ {role, list}). 미로그인 redirect, 권한 없음 404. `getPromptAccess(id)` 는 공개 상세용 — redirect 없이 `signedOut`/`denied`/`allowed`+data(권한 있을 때만 Volume 읽음) |
+| `PromptCopy` | `web/src/components/motion-gallery/PromptCopy.tsx` | 'use client'. 복사 버튼 2개(영문·국문). allowed 면 받은 en/ko 를 바로 복사, 아니면 모달: 비로그인 「로그인하여 프롬프트를 복사하세요.」 + `CONTACT_NOTE` + Google 로그인, 미등록 「등록되지 않은 계정입니다.」 |
+| `GoogleSignInButton` | `web/src/components/motion-gallery/GoogleSignInButton.tsx` | Server Action `app/(ko)/motion/actions.ts` `signInWithGoogle` 호출 — `signIn('google', {redirectTo})`, 돌아갈 곳은 `/^\/motion\/(?:[a-z0-9-]+\/)?$/` 만 허용(아니면 `/motion/`) |
+| `contact.ts` | `web/src/components/motion-gallery/contact.ts` | `CONTACT_NOTE` = 「로그인을 위한 아이디 등록은 최재혁T에게 문의하세요.」 |
+| `placeholders.ts` | `web/src/components/motion-gallery/admin/placeholders.ts` | `finalPrompt(data, locale, PromptState)` — 관리자 상세 복사와 공개 상세 복사(`{values:{},toggles:{},withTables:true}` = 빈칸 기본값 + 장면표·소리 큐)가 공유 |
 | `prisma.ts` | `web/src/lib/prisma.ts` | PrismaClient 싱글턴(adapter-pg). `DATABASE_URL` 없으면 throw, 연결 대기 5초 |
 | `viewer-input.ts` | `web/src/lib/viewer-input.ts` (+test) | zod `viewerInputSchema`(email trim·소문자 정규화, note ≤100), `viewerIdSchema` |
 | `ViewerForm` | `web/src/components/motion-gallery/admin/ViewerForm.tsx` | 클라이언트 열람자 추가 폼(`useActionState`) |
@@ -210,10 +215,11 @@ zod 스키마로 검증되는 JSON. `getContent(locale)` 이 파싱·캐시, `np
   - [ ] GitHub Pages 비활성화(저장소 Settings → Pages)
   - [ ] `railway.json` → `.railway/railway.ts` 이전 — Railway CLI 경고: Config as Code 는 2026-12-01 까지만 지원(`railway config migrate`)
   - [x] 모션 21–30, 31–50 업로드(2026-10-12) — 50개 전부 공개. 스타일을 다시 렌더하면 같은 세 명령만 반복
-  - [ ] 마이그레이션 핫픽스(fix/migrate-on-start) 배포 후: 로그에 migrate 적용 확인, 운영에서 Server Action(CSRF) 으로 열람자 추가·삭제, 등록한 비관리자 계정으로 실제 Google 로그인 확인
+  - [x] 마이그레이션 핫픽스(fix/migrate-on-start) 배포 후 migrate 적용 확인(2026-10-12, 운영 로그)
+  - [ ] 운영에서 Server Action(CSRF) 으로 열람자 추가·삭제, 등록한 비관리자 계정으로 실제 Google 로그인 확인
 
 ## 주의사항 / 특이 패턴
-- **관리자 데이터는 Volume 에만**: 프롬프트·장면표·소리 큐(`motion-admin.json`)는 git·빌드 산출물·공개 HTML 어디에도 들어가면 안 된다. `web/e2e/security.spec.ts` 가 마커(`E2E-ADMIN-MARKER`)와 `{{Channel name=` 유출, `/media` 경로 우회, 토큰 없는 업로드를 검사.
+- **관리자 데이터는 Volume 에만**: 프롬프트·장면표·소리 큐(`motion-admin.json`)는 git·빌드 산출물·공개 HTML 어디에도 들어가면 안 된다. 공개 상세 `/motion/[id]/` 는 서버가 `getPromptAccess` 로 판정해 allowed(관리자·등록 열람자) 응답에만 프롬프트를 싣는다 — 비로그인·미등록 HTML 에는 프롬프트 없음(`prompt-copy.spec.ts` 가 검사). `web/e2e/security.spec.ts` 가 마커(`E2E-ADMIN-MARKER`)와 `{{Channel name=` 유출, `/media` 경로 우회, 토큰 없는 업로드를 검사.
 - **standalone 은 server.js 폴더로 chdir** → 상대 `RAILWAY_VOLUME_MOUNT_PATH` 는 엉뚱한 곳을 가리킨다. 항상 절대경로(e2e 는 `web/e2e/.volume` 절대경로).
 - **`skipTrailingSlashRedirect: true`**: Google OAuth 콜백과 스트림 본문 PUT 이 308 리다이렉트를 따라가지 못해서. `trailingSlash` 는 유지하되 슬래시 없는 API 경로도 응답.
 - **모션 페이지는 `force-dynamic`**: 렌더 여부를 Volume 에서 읽기 때문. 관리자 표 `.prose-cell` 의 어절 단위 줄바꿈은 긴 장면 설명용 의도된 반응형 규칙 예외.
@@ -236,7 +242,7 @@ zod 스키마로 검증되는 JSON. `getContent(locale)` 이 파싱·캐시, `np
 - **HyperFrames 렌더 브라우저**: `~/.cache/hyperframes` 의 chrome-headless-shell 을 쓴다(Remotion 의 Playwright Chromium 과 별개). `npx hyperframes lint` 의 sub-composition 분할 경고는 "단일 HTML" 요구사항 때문에 의도적으로 무시.
 - **연차("N년차")는 요청 시각 기준**(`computeStats`, 3월 임용 기준) → 홈이 force-dynamic 이라 요청마다 계산되므로 재배포 없이 자동 갱신된다.
 - **반응형 규칙 적용 지점**: 표는 `.data-table`(globals.css, sticky header/col + nowrap), body `word-break: keep-all`, 히어로 높이 `100dvh - var(--nav-h)`, 터치 타겟 `min-h-11`.
-- 테스트: vitest 23개 파일 109 tests(`vitest.config.ts` include 참고), Playwright 5 파일(smoke, platform, motion, admin, security — 40개, admin.spec 에 열람자 2개). `check` 는 e2e 를 돌리지 않고 CI 워크플로가 build 후 따로 실행.
+- 테스트: vitest 23개 파일 109 tests(`vitest.config.ts` include 참고), Playwright 6 파일(smoke, platform, motion, admin, security, prompt-copy — 45개, admin.spec 에 열람자 2개, prompt-copy 5개). 세션 쿠키 헬퍼는 `e2e/session.ts`. `check` 는 e2e 를 돌리지 않고 CI 워크플로가 build 후 따로 실행.
 - 문서 불일치 메모: `video/public/audio/README.md` 는 BGM 볼륨 0.6 이라 적혀 있으나 실제 `Intro.tsx` `BGM_LEVEL` 은 0.22.
 
 ---
