@@ -12,8 +12,8 @@ const btn = 'inline-flex min-h-11 items-center rounded-full border border-line p
 const dateFormat = new Intl.DateTimeFormat('ko-KR', { dateStyle: 'medium', timeZone: 'Asia/Seoul' });
 
 const TITLE: Record<DialogState, string> = {
-  signedOut: '로그인하여 프롬프트를 복사하세요.',
-  guest: '아직 가입 신청을 하지 않은 계정입니다.',
+  signedOut: '로그인 하여 AI활용 방법을 알아보세요',
+  guest: '아직 승인신청을 하지 않은 계정입니다.',
   pending: '승인 대기 중입니다.',
   unavailable: '잠시 후 다시 시도해 주세요.',
 };
@@ -44,7 +44,7 @@ export function SignInDialog({ open, onClose, state, from, member }: {
     >
       <div className="flex flex-col gap-3 p-3 sm:p-5">
         <h2 id="signin-dialog-title" className="text-lg font-bold">{TITLE[state]}</h2>
-        {state === 'signedOut' ? <p className="text-sm text-muted">승인된 교사만 프롬프트를 쓸 수 있어요. 처음이면 가입 신청을 해 주세요.</p> : null}
+        {state === 'signedOut' ? <p className="text-sm text-muted">승인된 교사만 프롬프트를 쓸 수 있어요. 처음이면 승인신청을 해 주세요.</p> : null}
         {state === 'pending' ? (
           <>
             <p className="text-sm text-muted">관리자가 확인하면 사용할 수 있어요.</p>
@@ -62,12 +62,12 @@ export function SignInDialog({ open, onClose, state, from, member }: {
           {state === 'signedOut' ? (
             <>
               <GoogleSignInButton from={from} />
-              <GoogleSignInButton from={from} label="가입 신청 (교사)" testId="join-signin" />
+              <GoogleSignInButton from={from} label="승인신청" testId="join-signin" />
             </>
           ) : null}
           {state === 'guest' ? (
             <>
-              <Link href={joinPath(from)} className={`${btn} bg-accent font-semibold text-bg`}>가입 신청하기</Link>
+              <Link href={joinPath(from)} className={`${btn} bg-accent font-semibold text-bg`}>승인신청하기</Link>
               <GoogleSignInButton from={from} label="다른 Google 계정으로 로그인" />
             </>
           ) : null}

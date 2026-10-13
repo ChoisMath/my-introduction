@@ -10,8 +10,8 @@ test('guest applies and becomes pending without seeing prompts', async ({ contex
   await page.goto(DETAIL);
   await page.getByTestId('copy-prompt-en').click();
   const dialog = page.getByTestId('signin-dialog');
-  await expect(dialog).toContainText('아직 가입 신청을 하지 않은 계정입니다.');
-  await dialog.getByRole('link', { name: '가입 신청하기' }).click();
+  await expect(dialog).toContainText('아직 승인신청을 하지 않은 계정입니다.');
+  await dialog.getByRole('link', { name: '승인신청하기' }).click();
   await expect(page).toHaveURL(/\/ai\/join\/\?from=/);
   await expect(page.getByTestId('join-email')).toHaveText(email);
   await page.getByLabel('이름').fill('  새교사 ');

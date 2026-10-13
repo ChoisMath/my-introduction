@@ -8,7 +8,8 @@ test('hub header and tab show on gallery and detail', async ({ page }) => {
     await expect(header.getByRole('heading', { level: 1 })).toHaveText('AI활용');
     const tab = header.getByRole('link', { name: '모션그래픽' });
     await expect(tab).toHaveAttribute('aria-current', 'page');
-    await expect(header.getByTestId('hub-signin')).toHaveText('로그인 · 가입 신청');
+    await expect(header.getByTestId('hub-signin')).toHaveCount(0);
+    await expect(page.getByRole('navigation', { name: 'primary' }).getByTestId('hub-signin')).toHaveText('로그인 · 승인신청');
   }
 });
 

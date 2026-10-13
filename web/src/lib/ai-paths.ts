@@ -9,11 +9,12 @@ export const AI_SIGNIN_ERROR = '/ai/signin-error/';
 export const aiMotionPath = (id: string) => `${AI_MOTION}${id}/`;
 export const aiMotionAdminPath = (id: string) => `${AI_MOTION_ADMIN}${id}/`;
 
-// 로그인 뒤 돌아갈 곳은 허브 안 경로만 허용한다(열린 리다이렉트 방지). 권한은 도착한 페이지가 다시 판정한다.
+// 로그인 뒤 돌아갈 곳은 허브 안 경로와 홈만 허용한다(열린 리다이렉트 방지). 권한은 도착한 페이지가 다시 판정한다.
 const RETURN_PATH = /^\/ai\/(?:[a-z0-9-]+\/){0,3}$/;
+const HOME_PATH = /^\/(?:en\/)?$/;
 
 export function safeReturnPath(raw: unknown): string {
-  return typeof raw === 'string' && RETURN_PATH.test(raw) ? raw : AI_MOTION;
+  return typeof raw === 'string' && (RETURN_PATH.test(raw) || HOME_PATH.test(raw)) ? raw : AI_MOTION;
 }
 
 export function joinPath(from?: unknown): string {

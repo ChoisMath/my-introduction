@@ -6,7 +6,7 @@ import { getViewerState } from '@/lib/access';
 import { AI_JOIN, safeReturnPath } from '@/lib/ai-paths';
 
 export const dynamic = 'force-dynamic';
-export const metadata: Metadata = { title: '가입 신청', robots: { index: false, follow: false } };
+export const metadata: Metadata = { title: '승인신청', robots: { index: false, follow: false } };
 
 const dateFormat = new Intl.DateTimeFormat('ko-KR', { dateStyle: 'medium', timeZone: 'Asia/Seoul' });
 
@@ -19,7 +19,7 @@ export default async function JoinPage({ searchParams }: { searchParams: Promise
   return (
     <section className="px-2 py-6 sm:px-3 md:px-4 lg:px-6">
       <div className="mx-auto flex w-full max-w-md flex-col gap-4 rounded-[var(--radius-card)] border border-line p-3 sm:p-6">
-        <h2 className="text-xl font-bold whitespace-nowrap">교사 가입 신청</h2>
+        <h2 className="text-xl font-bold whitespace-nowrap">교사 승인신청</h2>
         {state.status === 'signedOut' ? (
           <>
             <p className="text-sm text-muted">본인 Google 계정으로 로그인한 뒤 이름과 소속을 적어 주세요. 관리자가 확인하면 프롬프트를 쓸 수 있어요.</p>

@@ -50,6 +50,7 @@ test.describe('members', () => {
     await signInAs(teacher, 'pending@example.com');
 
     await page.goto('/ai/admin/members/');
+    await expect(page.getByRole('link', { name: 'AI활용으로' })).toHaveAttribute('href', '/ai/');
     const pending = page.getByTestId('member-row').filter({ hasText: 'pending@example.com' });
     await expect(pending).toHaveAttribute('data-status', 'PENDING');
     expect((await teacher.request.get('/ai/motion/admin/', { maxRedirects: 0 })).status()).toBe(404);

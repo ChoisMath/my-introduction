@@ -5,7 +5,7 @@ import { ConfirmDelete } from '@/components/ai-hub/ConfirmDelete';
 import { MemberAddForm } from '@/components/ai-hub/MemberAddForm';
 import s from '@/components/motion-gallery/admin/admin.module.css';
 import { getViewerState, requireAdmin } from '@/lib/access';
-import { AI_MEMBERS, AI_MOTION_ADMIN } from '@/lib/ai-paths';
+import { AI_HOME, AI_MEMBERS } from '@/lib/ai-paths';
 import { errorTag } from '@/lib/log';
 import { listMembers, type MemberRow } from '@/lib/members';
 import { approveAction, suspendAction, updateProfileAction } from './actions';
@@ -39,7 +39,7 @@ export default async function MembersPage({ searchParams }: { searchParams: Prom
   return (
     <div className={s.app}>
       <header className={s.dTop}>
-        <Link href={AI_MOTION_ADMIN} prefetch={false} className={s.ib} aria-label="프롬프트 목록으로">
+        <Link href={AI_HOME} prefetch={false} className={s.ib} aria-label="AI활용으로">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden><path d="m15 18-6-6 6-6" /></svg>
         </Link>
         <div className={s.crumb}><b>회원 관리</b> · 승인된 교사는 AI활용의 모든 프롬프트를 쓸 수 있습니다</div>

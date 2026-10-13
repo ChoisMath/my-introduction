@@ -1,10 +1,9 @@
 'use client';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
-import type { ViewerState } from '@/lib/access';
 import { SignInDialog } from './SignInDialog';
 
-export function SignInButton({ label }: { state: ViewerState; label: string }) {
+export function SignInButton({ label }: { label: string }) {
   const [isOpen, setOpen] = useState(false);
   const from = usePathname();
   return (

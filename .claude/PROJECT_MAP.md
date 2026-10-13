@@ -35,7 +35,7 @@
 │   │   ├── (ko)/ layout.tsx, page.tsx      # /
 │   │   ├── (en)/en/ layout.tsx, page.tsx   # /en/
 │   │   ├── (ko)/ai/ page.tsx(첫 탭으로 redirect), actions.ts(signInWithGoogle·signOutAction)
-│   │   │   ├── (hub)/ layout.tsx(AI활용 헤더+탭), motion/{page,[id]/page}.tsx, slide/page.tsx, join/{page,actions}.tsx, signin-error/page.tsx  # 갤러리·상세(프롬프트 복사)·슬라이드 갤러리·가입 신청·로그인 오류 안내
+│   │   │   ├── (hub)/ layout.tsx(AI활용 헤더+탭), motion/{page,[id]/page}.tsx, slide/page.tsx, join/{page,actions}.tsx, signin-error/page.tsx  # 갤러리·상세(프롬프트 복사)·슬라이드 갤러리·승인신청·로그인 오류 안내
 │   │   │   └── (app)/ motion/admin/{layout,page,[id]/page}.tsx, admin/members/{page,actions}.tsx  # 전체 화면 앱: 프롬프트 편집기·회원 관리
 │   │   ├── media/[...path]/route.ts        # Volume 영상 스트리밍(Range)
 │   │   ├── api/ health, media (PUT 업로드), media/manifest, auth/[...nextauth]
@@ -97,7 +97,7 @@
 | `/ai/motion/` | `.../ai/(hub)/motion/page.tsx` | (hub) 그룹 — AI활용 헤더+탭. 모션 갤러리(그룹 필터 `?g=`) |
 | `/ai/motion/[id]/` | `.../ai/(hub)/motion/[id]/page.tsx` | 상세(영상·키보드 좌우 이동). 렌더 안 된 id 는 404. 「프롬프트 복사 (영문)」「(국문)」 — `getPromptAccess(id)` 가 allowed(관리자·승인 회원)일 때만 프롬프트를 props 로 실음, allowed 는 「빈칸 편집·장면표」→ `/ai/motion/admin/<id>/`. 비로그인·대기·guest 는 로그인/가입 안내 모달 |
 | `/ai/slide/` | `.../ai/(hub)/slide/page.tsx` | 슬라이드 갤러리(`force-dynamic`, Volume manifest 에 그림이 다 있는 덱만). 분류 칩 `?f=`, 정렬 `?s=pop\|no\|new`(기본 pop=배열 순서), 표지/본문 `?v=body`, 상세 창은 `#<id>` 해시(별도 상세 라우트 없음). 프롬프트는 `getSlidePromptAccess()` 가 allowed(관리자·승인 회원)일 때만 props 로 실음 |
-| `/ai/join/` | `.../ai/(hub)/join/{page,actions}.tsx` | 가입 신청(이름·소속). Server Action `applyAction` → PENDING 생성/갱신 |
+| `/ai/join/` | `.../ai/(hub)/join/{page,actions}.tsx` | 승인신청(이름·소속). Server Action `applyAction` → PENDING 생성/갱신 |
 | `/ai/signin-error/` | `.../ai/(hub)/signin-error/page.tsx` | auth.ts `pages.error` 안내, noindex |
 | `/ai/motion/admin/`, `/ai/motion/admin/[id]/` | `.../ai/(app)/motion/admin/` | (app) 전체 화면 어두운 앱. `requireMember` — 관리자(`ADMIN_EMAILS`) 또는 승인 회원. 프롬프트·장면표·소리 큐. 목록 머리글 「회원 관리」 링크는 관리자만 |
 | `/ai/admin/members/` | `.../ai/(app)/admin/members/{page,actions}.tsx` | 관리자만(`requireAdmin`). 회원 목록·대기 승인·보류·대기 삭제·추가·이름/소속 수정 — Server Actions `approveAction`/`suspendAction`/`deleteAction`/`addMemberAction`/`updateProfileAction` |
@@ -155,8 +155,8 @@ zod 스키마로 검증되는 JSON. `getContent(locale)` 이 파싱·캐시, `np
 |---|---|---|
 | `RootShell` | `web/src/components/RootShell.tsx` | html/body, 폰트 import, Nav + main. footer 는 렌더하지 않음(페이지별 `SiteFooter`) |
 | `HomePage` | `web/src/components/HomePage.tsx` | 서버 컴포넌트. getContent + computeStats → 섹션 8개 + `LegacyAiAnchor` + `SiteFooter`(`ui.footer`). 모션 데이터는 읽지 않음 |
-| `Nav` | `web/src/components/Nav.tsx` | `SECTION_IDS`(hero 제외) 앵커 + 마지막 항목 AI활용(`ui.nav.ai`) → `/ai/`(`AI_HOME`) + 계정 메뉴 |
-| `Contact` | `web/src/components/sections/Contact.tsx` | 연락처 + AI활용 링크(`/ai/`, 라벨은 `AI_TABS` 의 locale 별 탭 이름). `locale` prop 필요 |
+| `Nav` | `web/src/components/Nav.tsx` | `SECTION_IDS`(hero 제외) 앵커 + 마지막 항목 AI활용(`ui.nav.ai`) → `/ai/`(`AI_HOME`). 비로그인이면 AI활용은 `aria-disabled` span(흐리게)이고 우측 상단에 `SignInButton`(「로그인 · 승인신청」, `ui.ai.signIn`), 로그인하면 링크 활성 + 계정 메뉴 |
+| `Contact` | `web/src/components/sections/Contact.tsx` | 연락처 + AI활용 링크(`/ai/`, 라벨은 `AI_TABS` 의 locale 별 탭 이름). 비로그인이면 비활성 span. `locale`·`isSignedIn` prop(HomePage 가 `getViewerState` 로 판정) |
 | `SiteFooter` | `web/src/components/SiteFooter.tsx` | 화면 바닥 고정 footer(높이 `--footer-h`, globals.css) + 같은 높이 spacer. 문구가 달라 페이지별로 렌더: 홈은 `ui.footer`, `ai/(hub)/layout.tsx` 는 oppadu.com/ai 2차 저작물 고지(링크). (app) 전체 화면 앱은 없음 |
 | `LegacyAiAnchor` | `web/src/components/LegacyAiAnchor.tsx` | 'use client'. 해시 `#ai`/`#motion` 이면 `location.replace('/ai/')` — 해시는 서버로 안 가서 `redirects()` 로 못 잡음 |
 | `Section` | `web/src/components/Section.tsx` | 섹션 래퍼 (id, title, dark, nav 높이 scroll-mt) |
@@ -175,7 +175,7 @@ zod 스키마로 검증되는 JSON. `getContent(locale)` 이 파싱·캐시, `np
 | `members.ts` | `web/src/lib/members.ts` | Member 저장소: `lookupMember`/`listMembers`/`countPending`/`applyMember`/`setMemberStatus`/`deletePendingMember`/`updateMemberProfile`/`addApprovedMember` |
 | `member-input.ts` | `web/src/lib/member-input.ts` (+test) | zod `applySchema`·`adminAddSchema`·`memberIdSchema` (이메일 trim·소문자) |
 | `access.ts` | `web/src/lib/access.ts` | 요청별 권한. `getAccess`(env `ADMIN_EMAILS` 먼저 → admin, 아니면 DB 조회, DB 오류는 `unavailable` = fail-closed), `requireMember`/`requireAdmin`(미로그인 redirect, 권한 없음 404), `getPromptAccess(id)`(공개 상세용 — 권한 있을 때만 Volume 읽음), `loadMotionAdmin`, `getViewerState`(헤더·계정 메뉴용) |
-| `ai-paths.ts` | `web/src/lib/ai-paths.ts` (+test) | `/ai/…` 경로 상수와 `aiMotionPath`/`aiMotionAdminPath`, `safeReturnPath`·`joinPath`·`signOutReturnPath`(open redirect 방지) |
+| `ai-paths.ts` | `web/src/lib/ai-paths.ts` (+test) | `/ai/…` 경로 상수와 `aiMotionPath`/`aiMotionAdminPath`, `safeReturnPath`(`/ai/…` 와 홈 `/`·`/en/` 만)·`joinPath`·`signOutReturnPath`(open redirect 방지) |
 | `ai-tabs.ts` | `web/src/lib/ai-tabs.ts` (+test) | `AI_TABS` — 새 허브 탭은 여기 한 항목 + `(hub)/<id>/` 라우트 추가 |
 | `log.ts` | `web/src/lib/log.ts` (+test) | `errorTag` — 오류를 태그로만 로그(이메일 등 개인정보 미기록) |
 | `slides.ts` | `web/src/lib/slides.ts` (+test) | server-only. `slideRel`, `renderedSlides`/`getRenderedSlides`(manifest 기준 `?v=sha8` 붙은 URL, 빠진 그림 있는 덱 제외), `readSlideAdmin`(mtime 캐시) |
@@ -185,14 +185,14 @@ zod 스키마로 검증되는 JSON. `getContent(locale)` 이 파싱·캐시, `np
 | `SlideViewer`, `SlidePrompt` | `web/src/components/slide-gallery/` | 상세 창(장·스타일 넘김, 썸네일 띠) / 프롬프트 복사(권한 없으면 `SignInDialog`) |
 | `slide-order.ts`, `slide-hash.ts` | `web/src/components/slide-gallery/` (+test) | `parseQuery`·`toSearch`·`arrange`·`pickOrder`·`stepSlide`·`stepStyle` / `useHashId`(useSyncExternalStore)·`setHashId`(replaceState + 자체 이벤트) |
 | `clipboard.ts` | `web/src/components/ai-hub/clipboard.ts` | `writeClipboard` — clipboard API 실패 시 textarea 폴백. PromptCopy·SlidePrompt 공용 |
-| `PromptCopy` | `web/src/components/motion-gallery/PromptCopy.tsx` | 'use client'. 복사 버튼 2개(영문·국문). allowed 면 받은 en/ko 를 바로 복사, 아니면 모달: 비로그인 「로그인하여 프롬프트를 복사하세요.」 + `CONTACT_NOTE` + Google 로그인, 미등록 「등록되지 않은 계정입니다.」 |
-| `GoogleSignInButton` | `web/src/components/motion-gallery/GoogleSignInButton.tsx` | Server Action `app/(ko)/ai/actions.ts` `signInWithGoogle` 호출 — `signIn('google', {redirectTo})`, 돌아갈 곳은 `safeReturnPath` 로 `/ai/…` 만 허용 |
+| `PromptCopy` | `web/src/components/motion-gallery/PromptCopy.tsx` | 'use client'. 복사 버튼 2개(영문·국문). allowed 면 받은 en/ko 를 바로 복사, 아니면 모달: 비로그인 「로그인 하여 AI활용 방법을 알아보세요」 + `CONTACT_NOTE` + Google 로그인·「승인신청」, 미등록 「등록되지 않은 계정입니다.」 |
+| `GoogleSignInButton` | `web/src/components/motion-gallery/GoogleSignInButton.tsx` | Server Action `app/(ko)/ai/actions.ts` `signInWithGoogle` 호출 — `signIn('google', {redirectTo})`, 돌아갈 곳은 `safeReturnPath` 로 `/ai/…`·홈만 허용 |
 | `contact.ts` | `web/src/components/motion-gallery/contact.ts` | `CONTACT_NOTE` 문의 안내 문구 |
 | `placeholders.ts` | `web/src/components/motion-gallery/admin/placeholders.ts` | `finalPrompt(data, locale, PromptState)` — 관리자 상세 복사와 공개 상세 복사(`{values:{},toggles:{},withTables:true}` = 빈칸 기본값 + 장면표·소리 큐)가 공유 |
 | `prisma.ts` | `web/src/lib/prisma.ts` | PrismaClient 싱글턴(adapter-pg). `DATABASE_URL` 없으면 throw, 연결 대기 5초 |
-| `AiHeader`, `AiTabs` | `web/src/components/ai-hub/` | (hub) 레이아웃의 AI활용 머리글과 탭 |
-| `SignInButton`, `SignInDialog` | `web/src/components/ai-hub/` | 로그인 버튼/모달(대기·guest 안내 포함) |
-| `JoinForm` | `web/src/components/ai-hub/JoinForm.tsx` | 가입 신청 폼(`useActionState` + `applyAction`) |
+| `AiHeader`, `AiTabs` | `web/src/components/ai-hub/` | (hub) 레이아웃의 AI활용 머리글과 탭(로그인 버튼은 사이트 Nav 로 옮김, 머리글엔 관리자 대기 배지만) |
+| `SignInButton`, `SignInDialog` | `web/src/components/ai-hub/` | 로그인 버튼(사이트 Nav 우측 상단, 비로그인 시)/모달(대기·guest 안내 포함) |
+| `JoinForm` | `web/src/components/ai-hub/JoinForm.tsx` | 승인신청 폼(`useActionState` + `applyAction`) |
 | `AccountMenu` | `web/src/components/ai-hub/AccountMenu.tsx` | 계정 칩+메뉴+로그아웃. 사이트 Nav 와 편집기·회원 관리 바(dark tone)에서 공용 |
 | `MemberAddForm`, `ConfirmDelete` | `web/src/components/ai-hub/` | 관리자 회원 추가 폼 / 삭제 확인 |
 | `timeline.ts` | `video/src/timeline.ts` | FPS/WIDTH/HEIGHT, `buildScenes`(manifest 길이 기반), `timelineSchedule`, `projectSchedule`, `HERO_LOOP_DURATION` |

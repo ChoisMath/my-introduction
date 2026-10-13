@@ -10,9 +10,9 @@ test('anonymous visitor gets the sign-in modal with a join button and no prompt 
   await page.getByTestId('copy-prompt-en').click();
   const dialog = page.getByTestId('signin-dialog');
   await expect(dialog).toBeVisible();
-  await expect(dialog).toContainText('로그인하여 프롬프트를 복사하세요.');
+  await expect(dialog).toContainText('로그인 하여 AI활용 방법을 알아보세요');
   await expect(dialog).toContainText('승인된 교사만 프롬프트를 쓸 수 있어요.');
-  await expect(dialog.getByRole('button')).toHaveText(['Google로 로그인', '가입 신청 (교사)', '닫기']);
+  await expect(dialog.getByRole('button')).toHaveText(['Google로 로그인', '승인신청', '닫기']);
   await dialog.getByRole('button', { name: '닫기' }).click();
   await expect(dialog).toBeHidden();
 });

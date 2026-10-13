@@ -1,14 +1,28 @@
 import { expect, test } from '@playwright/test';
+import { signInAs } from './session';
 
-test('home has no AI활용 section; nav (last item) and contact link to the hub', async ({ page }) => {
+test('home has no AI활용 section; AI links stay disabled until sign-in', async ({ page }) => {
   await page.goto('/');
   await expect(page.locator('section#ai')).toHaveCount(0);
   await expect(page.getByTestId('motion-card')).toHaveCount(0);
-  const navLinks = page.getByRole('navigation', { name: 'primary' }).getByRole('listitem');
-  await expect(navLinks.last().getByRole('link')).toHaveText('AI활용');
-  await expect(navLinks.last().getByRole('link')).toHaveAttribute('href', '/ai/');
-  await expect(page.locator('section#contact').getByRole('link', { name: /AI활용/ })).toHaveAttribute('href', '/ai/');
-  await navLinks.last().getByRole('link').click();
+  const nav = page.getByRole('navigation', { name: 'primary' });
+  await expect(nav.getByTestId('hub-signin')).toHaveText('로그인 · 승인신청');
+  await expect(nav.getByRole('listitem').last().getByTestId('nav-ai')).toHaveText('AI활용');
+  for (const id of ['nav-ai', 'contact-ai']) {
+    await expect(page.getByTestId(id)).toHaveAttribute('aria-disabled', 'true');
+    await expect(page.getByTestId(id)).not.toHaveAttribute('href');
+  }
+  await nav.getByTestId('hub-signin').click();
+  await expect(page.getByTestId('signin-dialog')).toBeVisible();
+});
+
+test('signed-in home enables the AI links to the hub', async ({ context, page }) => {
+  await signInAs(context, 'admin@example.com');
+  await page.goto('/');
+  await expect(page.getByTestId('hub-signin')).toHaveCount(0);
+  await expect(page.getByTestId('contact-ai')).toHaveAttribute('href', '/ai/');
+  await expect(page.getByTestId('nav-ai')).toHaveAttribute('href', '/ai/');
+  await page.getByTestId('nav-ai').click();
   await expect(page).toHaveURL(/\/ai\/motion\/$/);
 });
 

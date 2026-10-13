@@ -5,7 +5,8 @@ import { Section } from '../Section';
 
 const item = 'inline-flex min-h-11 items-center gap-2 rounded-full border border-line px-4 text-sm whitespace-nowrap hover:border-accent';
 
-export function Contact({ profile, ui, locale }: { profile: Profile; ui: Ui; locale: Locale }) {
+export function Contact({ profile, ui, locale, isSignedIn }: { profile: Profile; ui: Ui; locale: Locale; isSignedIn: boolean }) {
+  const aiTabs = AI_TABS.map((t) => t.label[locale]).join(' · ');
   return (
     <Section id="contact" title={ui.sections.contact}>
       <div className="flex flex-wrap gap-2">
@@ -14,7 +15,11 @@ export function Contact({ profile, ui, locale }: { profile: Profile; ui: Ui; loc
         {profile.links.sites.map((s) => (
           <a key={s.url} href={s.url} target="_blank" rel="noreferrer" className={item}><span className="text-muted">{ui.contact.sites}</span>{s.label} ↗</a>
         ))}
-        <a href={AI_HOME} className={`${item} max-w-full`}><span className="text-muted">{ui.nav.ai}</span><span className="truncate">{AI_TABS.map((t) => t.label[locale]).join(' · ')}</span>→</a>
+        {isSignedIn ? (
+          <a href={AI_HOME} data-testid="contact-ai" className={`${item} max-w-full`}><span className="text-muted">{ui.nav.ai}</span><span className="truncate">{aiTabs}</span>→</a>
+        ) : (
+          <span aria-disabled="true" data-testid="contact-ai" className="inline-flex max-w-full min-h-11 cursor-not-allowed items-center gap-2 rounded-full border border-line px-4 text-sm whitespace-nowrap opacity-40"><span className="text-muted">{ui.nav.ai}</span><span className="truncate">{aiTabs}</span></span>
+        )}
       </div>
     </Section>
   );

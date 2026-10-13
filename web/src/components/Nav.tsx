@@ -4,6 +4,7 @@ import { localePath } from '@/lib/locale';
 import { SECTION_IDS } from '@/lib/sections';
 import type { ViewerState } from '@/lib/access';
 import { AccountMenu } from './ai-hub/AccountMenu';
+import { SignInButton } from './ai-hub/SignInButton';
 import { LangToggle } from './LangToggle';
 
 export function Nav({ locale, ui, account }: { locale: Locale; ui: Ui; account: ViewerState }) {
@@ -22,13 +23,19 @@ export function Nav({ locale, ui, account }: { locale: Locale; ui: Ui; account: 
             </li>
           ))}
           <li>
-            <a href={AI_HOME} className="min-h-11 inline-flex items-center rounded-full px-3 text-sm text-muted hover:text-fg">
-              {ui.nav.ai}
-            </a>
+            {account.status === 'signedOut' ? (
+              <span aria-disabled="true" data-testid="nav-ai" className="min-h-11 inline-flex cursor-not-allowed items-center rounded-full px-3 text-sm text-muted opacity-40">
+                {ui.nav.ai}
+              </span>
+            ) : (
+              <a href={AI_HOME} data-testid="nav-ai" className="min-h-11 inline-flex items-center rounded-full px-3 text-sm text-muted hover:text-fg">
+                {ui.nav.ai}
+              </a>
+            )}
           </li>
         </ul>
         <LangToggle locale={locale} label={ui.lang.switchTo} title={ui.lang.switchLabel} />
-        {account.status === 'signedOut' ? null : <AccountMenu state={account} />}
+        {account.status === 'signedOut' ? <SignInButton label={ui.ai.signIn} /> : <AccountMenu state={account} />}
       </nav>
     </header>
   );

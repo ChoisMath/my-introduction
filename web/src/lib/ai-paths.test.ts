@@ -7,6 +7,8 @@ describe('safeReturnPath', () => {
     expect(safeReturnPath('/ai/motion/admin/01-pixel/')).toBe('/ai/motion/admin/01-pixel/');
     expect(safeReturnPath('/ai/')).toBe('/ai/');
     expect(safeReturnPath('/ai/slide/')).toBe('/ai/slide/');
+    expect(safeReturnPath('/')).toBe('/');
+    expect(safeReturnPath('/en/')).toBe('/en/');
   });
   it('falls back for anything else', () => {
     for (const bad of ['//evil.com', 'https://evil.com/ai/', '/ai/../admin/', '/motion/', '/ai/motion', '/ai/Motion/', null, 42, '/ai/a/b/c/d/']) {
