@@ -54,13 +54,13 @@ export function AccountMenu({ state, tone = 'site' }: { state: SignedIn; tone?: 
         aria-expanded={isOpen}
         aria-controls={menuId}
         onClick={() => setOpen((v) => !v)}
-        className={`inline-flex min-h-11 items-center gap-2 rounded-full border py-1 pr-3 pl-1 text-sm whitespace-nowrap ${c.chip}`}
+        className={`relative before:absolute before:inset-x-0 before:-inset-y-1.5 before:content-[''] inline-flex h-8 items-center gap-2 rounded-full border pr-3 pl-0.5 text-sm whitespace-nowrap ${c.chip}`}
       >
         {state.image ? (
           // eslint-disable-next-line @next/next/no-img-element -- Google 프로필 주소라 next/image 대상이 아니다
-          <img src={state.image} alt="" width={32} height={32} referrerPolicy="no-referrer" className="h-8 w-8 rounded-full" />
+          <img src={state.image} alt="" width={26} height={26} referrerPolicy="no-referrer" className="size-[26px] rounded-full" />
         ) : (
-          <span aria-hidden className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-accent text-sm font-bold text-bg">{state.name.slice(0, 1)}</span>
+          <span aria-hidden className="inline-flex size-[26px] items-center justify-center rounded-full bg-accent text-xs font-bold text-bg">{state.name.slice(0, 1)}</span>
         )}
         <span className="hidden max-w-[10rem] overflow-hidden text-ellipsis sm:inline">{state.name}</span>
         {badge ? <span className={`rounded-full px-2 text-xs font-semibold ${c.badge}`}>{badge}</span> : null}

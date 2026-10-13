@@ -2,7 +2,7 @@
 @import "./tokens.css";
 
 :root {
-  --nav-h: 3rem;
+  --nav-h: 2.75rem;
   --footer-h: 2.25rem;
   color-scheme: light;
 }

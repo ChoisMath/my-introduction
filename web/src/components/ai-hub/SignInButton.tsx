@@ -8,7 +8,7 @@ export function SignInButton({ label }: { label: string }) {
   const from = usePathname();
   return (
     <>
-      <button type="button" data-testid="hub-signin" onClick={() => setOpen(true)} className="inline-flex min-h-11 items-center rounded-full bg-accent px-4 text-sm font-semibold whitespace-nowrap text-bg">
+      <button type="button" data-testid="hub-signin" onClick={() => setOpen(true)} className="relative before:absolute before:inset-x-0 before:-inset-y-1.5 before:content-[''] inline-flex h-8 items-center rounded-full bg-accent px-3 text-sm font-semibold whitespace-nowrap text-bg">
         {label}
       </button>
       {isOpen ? <SignInDialog open onClose={() => setOpen(false)} state="signedOut" from={from} member={null} /> : null}

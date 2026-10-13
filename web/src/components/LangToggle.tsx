@@ -16,7 +16,7 @@ export function LangToggle({ locale, label, title }: { locale: Locale; label: st
       href={href}
       aria-label={title}
       data-testid="lang-toggle"
-      className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-line px-3 font-mono text-xs whitespace-nowrap"
+      className="relative before:absolute before:inset-x-0 before:-inset-y-1.5 before:content-[''] inline-flex h-8 min-w-8 items-center justify-center rounded-full border border-line px-2 font-mono text-xs whitespace-nowrap"
     >
       {label}
     </a>
