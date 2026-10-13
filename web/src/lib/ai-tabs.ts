@@ -1,4 +1,4 @@
-import { AI_MOTION, AI_SLIDE } from './ai-paths';
+import { AI_BRAND, AI_MOTION, AI_SLIDE } from './ai-paths';
 
 export type AiTab = { id: string; label: { ko: string; en: string }; href: string };
 
@@ -6,6 +6,7 @@ export type AiTab = { id: string; label: { ko: string; en: string }; href: strin
 export const AI_TABS: readonly AiTab[] = [
   { id: 'motion', label: { ko: '모션그래픽', en: 'Motion graphics' }, href: AI_MOTION },
   { id: 'slide', label: { ko: '슬라이드 디자인', en: 'Slide design' }, href: AI_SLIDE },
+  { id: 'brand', label: { ko: '브랜드 룩북', en: 'Brand lookbook' }, href: AI_BRAND },
 ];
 
 export function activeTabId(pathname: string): string | null {

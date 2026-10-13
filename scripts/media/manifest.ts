@@ -46,3 +46,17 @@ export async function buildSlideManifest(root: string): Promise<MediaManifest> {
   }
   return mediaManifestSchema.parse(Object.fromEntries(Object.entries(out).sort(([a], [b]) => a.localeCompare(b))));
 }
+
+export async function buildBrandManifest(root: string): Promise<MediaManifest> {
+  const base = path.join(root, 'private/brand');
+  if (!existsSync(base)) return {};
+  const entries = await readdir(base, { recursive: true, withFileTypes: true });
+  const out: MediaManifest = {};
+  for (const d of entries.filter((e) => e.isFile() && e.name !== 'manifest.json')) {
+    const file = path.join(d.parentPath, d.name);
+    const rel = path.relative(root, file).split(path.sep).join('/');
+    const info = await stat(file);
+    out[rel] = { size: info.size, sha256: await sha256File(file), updatedAt: info.mtime.toISOString() };
+  }
+  return mediaManifestSchema.parse(Object.fromEntries(Object.entries(out).sort(([a], [b]) => a.localeCompare(b))));
+}

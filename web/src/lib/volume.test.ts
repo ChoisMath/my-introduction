@@ -1,6 +1,6 @@
 import path from 'node:path';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { ADMIN_PATH, MANIFEST_PATH, SLIDE_ADMIN_PATH, SLIDE_MANIFEST_PATH, VolumeError, isServablePath, isUploadablePath, resolveIn, volumeRoot } from './volume';
+import { ADMIN_PATH, BRAND_MANIFEST_PATH, MANIFEST_PATH, SLIDE_ADMIN_PATH, SLIDE_MANIFEST_PATH, VolumeError, isBrandFile, isServablePath, isUploadablePath, resolveIn, volumeRoot } from './volume';
 
 describe('volume paths', () => {
   it('serves only motion media files', () => {
@@ -36,6 +36,16 @@ describe('volume paths', () => {
     expect(isUploadablePath('media/slide/24/t/1.webp')).toBe(true);
     expect(isUploadablePath(SLIDE_MANIFEST_PATH)).toBe(true);
     expect(isUploadablePath(SLIDE_ADMIN_PATH)).toBe(true);
+  });
+  it('allows only the brand copy files the page reads, and never serves them as public media', () => {
+    for (const rel of ['index.html', 'brand/claude.html', 'assets/app.js', 'assets/tokens.css', 'assets/fonts/PretendardVariable.woff2', 'data/brands-index.json', 'data/hero/11st.json', 'data/detail/coca-cola.json']) {
+      expect(isBrandFile(rel), rel).toBe(true);
+      expect(isUploadablePath(`private/brand/${rel}`), rel).toBe(true);
+      expect(isServablePath(`private/brand/${rel}`), rel).toBe(false);
+    }
+    for (const rel of ['manifest.json', 'data/detail/../../manifest.json', 'data/detail/x.html', 'assets/other.js', 'brand/sub/x.html', 'README.md']) expect(isBrandFile(rel), rel).toBe(false);
+    expect(isUploadablePath(BRAND_MANIFEST_PATH)).toBe(true);
+    expect(isUploadablePath('private/brand/README.md')).toBe(false);
   });
   it('refuses to resolve outside the root', () => {
     expect(resolveIn('/data', 'media/motion/11-rpg/video.mp4')).toBe(path.join('/data', 'media/motion/11-rpg/video.mp4'));

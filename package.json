@@ -16,6 +16,7 @@
     "tokens:css": "tsx scripts/gen-tokens-css.ts",
     "motion:import": "tsx scripts/motion-import.ts",
     "slide:import": "tsx scripts/slide-import.ts",
+    "brand:import": "tsx scripts/brand-import.ts",
     "media:prepare": "tsx scripts/media-prepare.ts",
     "media:push": "tsx scripts/media-push.ts",
     "assets": "bash scripts/prepare-assets.sh",

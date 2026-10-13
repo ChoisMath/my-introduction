@@ -11,8 +11,9 @@ describe('AI_TABS', () => {
     expect(activeTabId('/ai/motion/01-pixel/')).toBe('motion');
     expect(activeTabId('/ai/join/')).toBeNull();
   });
-  it('has the slide tab after motion', () => {
-    expect(AI_TABS.map((t) => t.id)).toEqual(['motion', 'slide']);
+  it('has the slide and brand tabs after motion', () => {
+    expect(AI_TABS.map((t) => t.id)).toEqual(['motion', 'slide', 'brand']);
     expect(activeTabId('/ai/slide/')).toBe('slide');
+    expect(activeTabId('/ai/brand/')).toBe('brand');
   });
 });

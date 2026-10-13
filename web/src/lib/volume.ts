@@ -7,12 +7,16 @@ export const MANIFEST_PATH = 'media/motion/manifest.json';
 export const ADMIN_PATH = 'private/motion-admin.json';
 export const SLIDE_MANIFEST_PATH = 'media/slide/manifest.json';
 export const SLIDE_ADMIN_PATH = 'private/slide-admin.json';
+export const BRAND_DIR = 'private/brand/';
+export const BRAND_MANIFEST_PATH = 'private/brand/manifest.json';
 
 const SERVABLE = [
   /^media\/motion\/\d{2}-[a-z0-9-]+\/(video\.mp4|preview\.mp4|poster\.webp)$/,
   /^media\/slide\/\d{2,3}\/(?:[st]\/)?\d{1,2}\.webp$/,
 ];
-const UPLOADABLE_JSON = [MANIFEST_PATH, ADMIN_PATH, SLIDE_MANIFEST_PATH, SLIDE_ADMIN_PATH];
+// 브랜드 룩북 사본(build 산출물) 중 페이지가 실제로 읽는 파일만. 회원 전용이라 /media 가 아니라 private/ 에 둔다.
+const BRAND_FILE = /^(?:index\.html|brand\/[a-z0-9-]+\.html|assets\/(?:app|ai-hub-static|shell)\.js|assets\/(?:app|ai-hub|shell|tokens)\.css|assets\/fonts\/PretendardVariable\.woff2|data\/brands-index\.json|data\/(?:hero|detail)\/[a-z0-9-]+\.json)$/;
+const UPLOADABLE_JSON = [MANIFEST_PATH, ADMIN_PATH, SLIDE_MANIFEST_PATH, SLIDE_ADMIN_PATH, BRAND_MANIFEST_PATH];
 
 export function volumeRoot(): string {
   const root = process.env.RAILWAY_VOLUME_MOUNT_PATH;
@@ -26,8 +30,12 @@ export function isServablePath(rel: string): boolean {
   return SERVABLE.some((re) => re.test(rel));
 }
 
+export function isBrandFile(rel: string): boolean {
+  return BRAND_FILE.test(rel);
+}
+
 export function isUploadablePath(rel: string): boolean {
-  return isServablePath(rel) || UPLOADABLE_JSON.includes(rel);
+  return isServablePath(rel) || UPLOADABLE_JSON.includes(rel) || (rel.startsWith(BRAND_DIR) && isBrandFile(rel.slice(BRAND_DIR.length)));
 }
 
 export function resolveIn(root: string, rel: string): string {

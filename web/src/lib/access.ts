@@ -19,6 +19,9 @@ export type ViewerState =
 export type PromptAccess =
   | { status: 'signedOut' | 'guest' | 'pending' | 'unavailable'; member: MemberSummary | null }
   | { status: 'allowed'; data: MotionAdmin | null };
+export type BrandAccess =
+  | { status: 'signedOut' | 'guest' | 'pending' | 'unavailable'; member: MemberSummary | null }
+  | { status: 'allowed' };
 export type SlidePromptAccess =
   | { status: 'signedOut' | 'guest' | 'pending' | 'unavailable'; member: MemberSummary | null }
   | { status: 'allowed'; prompts: Record<string, string> | null };
@@ -76,6 +79,14 @@ export async function getSlidePromptAccess(): Promise<SlidePromptAccess> {
   if (!canUsePrompts(role)) return { status: role, member: summary(member) };
   const list = await readSlideAdmin(volumeRoot());
   return { status: 'allowed', prompts: list ? Object.fromEntries(list.map((a) => [a.id, a.prompt])) : null };
+}
+
+// 브랜드 룩북은 페이지 전체가 회원 전용이다. 탭 페이지와 사본 파일 라우트가 매 요청 이걸로 판정한다.
+export async function getBrandAccess(): Promise<BrandAccess> {
+  const session = await auth();
+  if (!session?.user?.email) return { status: 'signedOut', member: null };
+  const { role, member } = await getAccess(session.user.email);
+  return canUsePrompts(role) ? { status: 'allowed' } : { status: role, member: summary(member) };
 }
 
 export async function loadMotionAdmin(path: string): Promise<{ role: 'admin' | 'member'; list: MotionAdmin[] | null }> {

@@ -44,6 +44,11 @@ for (const s of slideList.filter((x) => SLIDE_RENDERED.includes(x.id))) {
 }
 writeFileSync(path.join(root, 'media/slide/manifest.json'), JSON.stringify(await buildSlideManifest(root)));
 writeFileSync(path.join(root, 'private/slide-admin.json'), JSON.stringify(SLIDE_RENDERED.map((id) => ({ id, prompt: `E2E-ADMIN-MARKER slide ${id} style prompt` }))));
+export const BRAND_MARKER = 'E2E-BRAND-MARKER';
+mkdirSync(path.join(root, 'private/brand/data'), { recursive: true });
+writeFileSync(path.join(root, 'private/brand/index.html'), `<!doctype html><title>brand</title><body><h1>${BRAND_MARKER}</h1></body>`);
+writeFileSync(path.join(root, 'private/brand/data/brands-index.json'), JSON.stringify({ brands: [] }));
+writeFileSync(path.join(root, 'private/brand/manifest.json'), '{}');
 console.info(`e2e volume ready: ${root}`);
 
 // 열람자 DB 는 E2E_DATABASE_URL 로만 받는다. .env.local 이나 셸의 DATABASE_URL(운영일 수 있음)은 절대 쓰지 않는다.

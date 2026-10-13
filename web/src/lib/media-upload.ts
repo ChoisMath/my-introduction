@@ -7,7 +7,7 @@ import { Readable, Transform } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
 import type { ReadableStream as NodeReadableStream } from 'node:stream/web';
 import { mediaManifestSchema, motionAdminListSchema, slideAdminListSchema } from '@me/content';
-import { ADMIN_PATH, MANIFEST_PATH, SLIDE_ADMIN_PATH, SLIDE_MANIFEST_PATH, isUploadablePath, resolveIn } from './volume';
+import { ADMIN_PATH, BRAND_MANIFEST_PATH, MANIFEST_PATH, SLIDE_ADMIN_PATH, SLIDE_MANIFEST_PATH, isUploadablePath, resolveIn } from './volume';
 
 export const MAX_UPLOAD_BYTES = 100 * 1024 * 1024;
 
@@ -18,6 +18,7 @@ const JSON_SCHEMAS: Record<string, { parse(value: unknown): unknown }> = {
   [ADMIN_PATH]: motionAdminListSchema,
   [SLIDE_MANIFEST_PATH]: mediaManifestSchema,
   [SLIDE_ADMIN_PATH]: slideAdminListSchema,
+  [BRAND_MANIFEST_PATH]: mediaManifestSchema,
 };
 
 const fail = (status: number, error: string) => Response.json({ error }, { status });

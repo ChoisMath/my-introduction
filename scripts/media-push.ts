@@ -1,4 +1,4 @@
-// .media-out/ 을 서버 Volume 과 비교해 바뀐 파일만 업로드한다. 관리자 데이터와 manifest 는 마지막에 항상 올린다.
+// .media-out/ 을 서버 Volume 과 비교해 바뀐 파일만 업로드한다. 관리자 데이터(있으면)와 manifest 는 마지막에 항상 올린다.
 import { createReadStream, existsSync, statSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
@@ -12,9 +12,10 @@ const OUT = path.resolve('.media-out');
 const SETS = {
   motion: { manifest: 'media/motion/manifest.json', admin: 'private/motion-admin.json', importCmd: 'motion:import' },
   slide: { manifest: 'media/slide/manifest.json', admin: 'private/slide-admin.json', importCmd: 'slide:import' },
+  brand: { manifest: 'private/brand/manifest.json', admin: null, importCmd: 'brand:import' },
 } as const;
 const setArg = process.argv.includes('--set') ? process.argv[process.argv.indexOf('--set') + 1] : 'motion';
-if (setArg !== 'motion' && setArg !== 'slide') throw new Error(`--set must be motion or slide, got ${setArg}`);
+if (setArg !== 'motion' && setArg !== 'slide' && setArg !== 'brand') throw new Error(`--set must be motion, slide or brand, got ${setArg}`);
 const { manifest: MANIFEST, admin: ADMIN, importCmd } = SETS[setArg];
 
 if (!TOKEN) throw new Error('MEDIA_UPLOAD_TOKEN is not set');
@@ -32,7 +33,7 @@ async function put(rel: string) {
   console.info(`uploaded ${rel}`);
 }
 
-if (!existsSync(path.join(OUT, ADMIN))) throw new Error(`${ADMIN} missing — run npm run ${importCmd} first`);
+if (!existsSync(path.join(OUT, ADMIN ?? MANIFEST))) throw new Error(`${ADMIN ?? MANIFEST} missing — run npm run ${importCmd} first`);
 const local = mediaManifestSchema.parse(JSON.parse(await readFile(path.join(OUT, MANIFEST), 'utf8')));
 const remoteRes = await fetch(`${BASE}/api/media/manifest?set=${setArg}`, { headers: auth });
 if (!remoteRes.ok) throw new Error(`manifest fetch failed: ${remoteRes.status}`);
@@ -40,6 +41,6 @@ const remote = mediaManifestSchema.parse(await remoteRes.json());
 const changed = diffManifest(local, remote);
 console.info(`${changed.length} changed of ${Object.keys(local).length}`);
 for (const rel of changed) await put(rel);
-await put(ADMIN);
+if (ADMIN) await put(ADMIN);
 await put(MANIFEST);
 console.info('done');

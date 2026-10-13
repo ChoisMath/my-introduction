@@ -1,6 +1,8 @@
 export const AI_HOME = '/ai/';
 export const AI_MOTION = '/ai/motion/';
 export const AI_SLIDE = '/ai/slide/';
+export const AI_BRAND = '/ai/brand/';
+export const AI_BRAND_SITE = '/ai/brand/site/';
 export const AI_MOTION_ADMIN = '/ai/motion/admin/';
 export const AI_JOIN = '/ai/join/';
 export const AI_MEMBERS = '/ai/admin/members/';
