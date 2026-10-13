@@ -25,7 +25,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
       <Projects projects={content.projects} ui={ui} />
       <Books profile={profile} ui={ui} />
       <Lectures profile={profile} ui={ui} />
-      <Contact profile={profile} ui={ui} locale={locale} isSignedIn={isSignedIn} />
+      <Contact profile={profile} ui={ui} isSignedIn={isSignedIn} />
       <LegacyAiAnchor />
       <SiteFooter>{ui.footer}</SiteFooter>
     </>
