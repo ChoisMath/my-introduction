@@ -18,6 +18,7 @@ async function expectCopy(ctx: BrowserContext, label: string) {
   await expect(frame.locator('.aih-side'), label).toBeHidden();
   await expect(frame.locator('.otl-band--content'), label).toBeHidden();
   await expect(frame.locator('#sidebar'), label).toBeVisible();
+  await expect(page.getByTestId('site-footer'), label).toHaveText('© 이 페이지는 oppadu.com/ai에서 옮겨온 자료입니다.');
   const json = await ctx.request.get(`${SITE}data/brands-index.json`);
   expect(json.status(), label).toBe(200);
   expect(json.headers()['content-type'], label).toContain('application/json');
