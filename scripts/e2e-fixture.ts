@@ -46,7 +46,7 @@ writeFileSync(path.join(root, 'media/slide/manifest.json'), JSON.stringify(await
 writeFileSync(path.join(root, 'private/slide-admin.json'), JSON.stringify(SLIDE_RENDERED.map((id) => ({ id, prompt: `E2E-ADMIN-MARKER slide ${id} style prompt` }))));
 export const BRAND_MARKER = 'E2E-BRAND-MARKER';
 mkdirSync(path.join(root, 'private/brand/data'), { recursive: true });
-writeFileSync(path.join(root, 'private/brand/index.html'), `<!doctype html><title>brand</title><body><h1>${BRAND_MARKER}</h1></body>`);
+writeFileSync(path.join(root, 'private/brand/index.html'), `<!doctype html><html><head><title>brand</title></head><body data-view="index"><aside class="aih-side">E2E-SHELL</aside><div class="otl-band otl-band--content"><h1 class="otl-band-title">브랜드 룩북</h1></div><main><aside id="sidebar" class="sidebar">FILTER</aside><h1>${BRAND_MARKER}</h1></main></body></html>`);
 writeFileSync(path.join(root, 'private/brand/data/brands-index.json'), JSON.stringify({ brands: [] }));
 writeFileSync(path.join(root, 'private/brand/manifest.json'), '{}');
 console.info(`e2e volume ready: ${root}`);

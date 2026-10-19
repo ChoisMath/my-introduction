@@ -12,7 +12,12 @@ async function expectCopy(ctx: BrowserContext, label: string) {
   await page.goto(PAGE);
   await expect(page.getByRole('link', { name: '브랜드', exact: true }), label).toHaveAttribute('aria-current', 'page');
   await expect(page.getByTestId('brand-gate'), label).toHaveCount(0);
-  await expect(page.frameLocator('[data-testid="brand-frame"]').getByRole('heading', { name: MARKER }), label).toBeVisible();
+  const frame = page.frameLocator('[data-testid="brand-frame"]');
+  await expect(frame.getByRole('heading', { name: MARKER }), label).toBeVisible();
+  // 사본의 허브 셸(왼쪽 메뉴·제목 띠)은 숨기고 필터는 남긴다 — brand-embed.ts
+  await expect(frame.locator('.aih-side'), label).toBeHidden();
+  await expect(frame.locator('.otl-band--content'), label).toBeHidden();
+  await expect(frame.locator('#sidebar'), label).toBeVisible();
   const json = await ctx.request.get(`${SITE}data/brands-index.json`);
   expect(json.status(), label).toBe(200);
   expect(json.headers()['content-type'], label).toContain('application/json');

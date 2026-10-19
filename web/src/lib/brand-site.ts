@@ -1,6 +1,7 @@
 import 'server-only';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
+import { embedBrandHtml } from './brand-embed';
 import { BRAND_DIR, isBrandFile, resolveIn } from './volume';
 
 const CONTENT_TYPES: Record<string, string> = {
@@ -13,7 +14,7 @@ const CONTENT_TYPES: Record<string, string> = {
 
 const notFound = () => new Response('Not found', { status: 404 });
 
-// 권한 확인은 호출하는 라우트가 한다. 회원 전용 내용이라 공유 캐시(CDN)에 남지 않게 private 으로 둔다.
+// HTML 은 셸 숨김 스타일을 끼워 보낸다(brand-embed.ts). 캐시는 사본 갱신이 바로 보이도록 private 으로 둔다.
 export async function serveBrandFile(root: string, rel: string): Promise<Response> {
   if (!isBrandFile(rel)) return notFound();
   let body: Buffer;
@@ -23,7 +24,8 @@ export async function serveBrandFile(root: string, rel: string): Promise<Respons
     return notFound();
   }
   const ext = path.extname(rel);
-  return new Response(new Uint8Array(body), {
+  const payload = ext === '.html' ? embedBrandHtml(body.toString('utf8')) : new Uint8Array(body);
+  return new Response(payload, {
     headers: {
       'Content-Type': CONTENT_TYPES[ext] ?? 'application/octet-stream',
       'Cache-Control': ext === '.html' ? 'private, no-cache' : 'private, max-age=600',

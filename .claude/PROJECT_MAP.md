@@ -51,7 +51,7 @@
 │   ├── src/components/motion-gallery/  MotionGallery, MotionCard, KeyNav, PromptCopy, GoogleSignInButton, contact.ts, admin/{AdminGallery,AdminDetail,admin.module.css,admin-list,placeholders}
 │   ├── src/components/slide-gallery/  SlideGallery, SlideCard, SlideSortMenu, SlideViewer, SlidePrompt, slide-order.ts, slide-hash.ts (+test 2)
 │   ├── src/auth.ts                # NextAuth v5 (Google, signIn 은 검증된(email_verified) 구글 계정이면 통과 — 권한은 요청마다 access.ts, pages.error → /ai/signin-error/)
-│   ├── src/lib/  locale, metadata, sections, volume, media, media-serve, media-upload, brand-site, range, motion-admin, slides, admin-emails, prisma, member-role, member-input, members, access, ai-paths, ai-tabs(라벨·href·탭별 intro, `aiTab(id)`), log (+ *.test.ts)
+│   ├── src/lib/  locale, metadata, sections, volume, media, media-serve, media-upload, brand-site, range, motion-admin, slides, admin-emails, prisma, member-role, member-input, members, access, ai-paths, ai-tabs(라벨·href·탭별 intro, `aiTab(id)`), brand-embed(사본 셸 숨김 스타일), log (+ *.test.ts)
 │   ├── e2e/ smoke, platform, motion, slide, brand, admin, security, prompt-copy, redirects, hub, membership, account, desktop .spec.ts + session.ts(signInAs·MARKER 공용)  # Playwright (standalone 서버 포트 3100, e2e/.volume 픽스처)
 │   └── public/  robots.txt, sitemap.xml, img/, video/
 ├── video/                         # Remotion
@@ -100,7 +100,7 @@
 | `/ai/motion/[id]/` | `.../ai/(hub)/motion/[id]/page.tsx` | 상세(영상·키보드 좌우 이동, 1280px 이상 2단: 영상 왼쪽·정보 오른쪽 sticky). 렌더 안 된 id 는 404. 「프롬프트 복사 (영문)」「(국문)」 — 프롬프트는 누구에게나 props 로 실음(`readMotionAdmin` + `finalPrompt`, 2026-10-19 공개). 「빈칸 편집·장면표」→ `/ai/motion/admin/<id>/` 링크만 `isMember(getViewerState())` 일 때 |
 | `/ai/slide/` | `.../ai/(hub)/slide/page.tsx` | 슬라이드 갤러리(`force-dynamic`, Volume manifest 에 그림이 다 있는 덱만). 분류 칩 `?f=`, 정렬 `?s=pop\|no\|new`(기본 pop=배열 순서), 표지/본문 `?v=body`, 상세 창은 `#<id>` 해시(별도 상세 라우트 없음). 프롬프트는 `readSlideAdmin` 으로 누구에게나 props 로 실음(2026-10-19 공개) |
 | `/ai/brand/` | `.../ai/(hub)/brand/page.tsx` | 브랜드 룩북. 누구나(2026-10-19 공개) iframe(`data-testid=brand-frame`, 높이 `calc(100dvh - nav - footer)`)으로 `/ai/brand/site/` 를 띄움. 사본이라 noindex, robots.txt `Disallow: /ai/brand/` 유지 |
-| `GET /ai/brand/site/[[...path]]` | `.../ai/(hub)/brand/site/[[...path]]/route.ts` | 권한 확인 없이(2026-10-19 공개) Volume `private/brand/<rel>` 을 `serveBrandFile` 로 응답(Cache-Control private, X-Robots-Tag noindex). 허용 rel 은 `volume.ts` `isBrandFile` |
+| `GET /ai/brand/site/[[...path]]` | `.../ai/(hub)/brand/site/[[...path]]/route.ts` | 권한 확인 없이(2026-10-19 공개) Volume `private/brand/<rel>` 을 `serveBrandFile` 로 응답. `.html` 에는 `brand-embed.ts` 의 덮어쓰기 `<style>` 을 `</head>` 앞에 끼워 사본의 허브 셸(`.aih-side`·`.aih-mnav`·`.aihx-crumb`·목록의 `.otl-band--content`)을 숨기고 필터·결과만 남김(사본 파일은 그대로)(Cache-Control private, X-Robots-Tag noindex). 허용 rel 은 `volume.ts` `isBrandFile` |
 | `/ai/join/` | `.../ai/(hub)/join/{page,actions}.tsx` | 승인신청(이름·소속). Server Action `applyAction` → PENDING 생성/갱신 |
 | `/ai/signin-error/` | `.../ai/(hub)/signin-error/page.tsx` | auth.ts `pages.error` 안내, noindex |
 | `/ai/motion/admin/`, `/ai/motion/admin/[id]/` | `.../ai/(app)/motion/admin/` | (app) 전체 화면 어두운 앱. `requireMember` — 관리자(`ADMIN_EMAILS`) 또는 승인 회원. 프롬프트·장면표·소리 큐. 목록 머리글 「회원 관리」 링크는 관리자만 |
