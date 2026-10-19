@@ -66,7 +66,7 @@ export function SlideGallery({ items, families, prompts }: Props) {
         </div>
       </div>
       <p role="status" className="sr-only">{`${shown.length}개 스타일`}</p>
-      <ol className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <ol data-testid="slide-grid" className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {shown.map((s) => (
           <li key={s.id}>
             <SlideCard item={s} view={query.view} familyLabel={labelOf(s.family)} onOpen={() => open(s.id)} />

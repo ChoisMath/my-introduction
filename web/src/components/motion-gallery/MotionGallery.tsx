@@ -29,7 +29,7 @@ export function MotionGallery({ items, groups, allLabel }: Props) {
           </button>
         ))}
       </div>
-      <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3 lg:grid-cols-4">
+      <ul data-testid="motion-grid" className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
         {shown.map((m) => (
           <li key={m.id}>
             <MotionCard item={m} label={m.name} />
