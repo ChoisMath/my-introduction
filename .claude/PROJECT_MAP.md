@@ -36,7 +36,7 @@
 │   │   ├── (ko)/ layout.tsx, page.tsx      # /
 │   │   ├── (en)/en/ layout.tsx, page.tsx   # /en/
 │   │   ├── (ko)/ai/ page.tsx(첫 탭으로 redirect), actions.ts(signInWithGoogle·signOutAction)
-│   │   │   ├── (hub)/ layout.tsx(AI활용 헤더+탭), motion/{page,[id]/page}.tsx, slide/page.tsx, brand/{page.tsx,site/[[...path]]/route.ts}, join/{page,actions}.tsx, signin-error/page.tsx  # 갤러리·상세(프롬프트 복사)·슬라이드 갤러리·브랜드 룩북(iframe+Volume 서빙)·승인신청·로그인 오류 안내
+│   │   │   ├── (hub)/ layout.tsx(AI활용 헤더: 제목 옆 얇은 탭 모션·슬라이드·브랜드 + 허락 문구·탭별 소개 한 줄 `AiIntro`), motion/{page,[id]/page}.tsx, slide/page.tsx, brand/{page.tsx,site/[[...path]]/route.ts}, join/{page,actions}.tsx, signin-error/page.tsx  # 갤러리·상세(프롬프트 복사)·슬라이드 갤러리·브랜드 룩북(iframe+Volume 서빙)·승인신청·로그인 오류 안내
 │   │   │   └── (app)/ motion/admin/{layout,page,[id]/page}.tsx, admin/members/{page,actions}.tsx  # 전체 화면 앱: 프롬프트 편집기·회원 관리
 │   │   ├── media/[...path]/route.ts        # Volume 영상 스트리밍(Range)
 │   │   ├── api/ health, media (PUT 업로드), media/manifest, auth/[...nextauth]
@@ -51,7 +51,7 @@
 │   ├── src/components/motion-gallery/  MotionGallery, MotionCard, KeyNav, PromptCopy, GoogleSignInButton, contact.ts, admin/{AdminGallery,AdminDetail,admin.module.css,admin-list,placeholders}
 │   ├── src/components/slide-gallery/  SlideGallery, SlideCard, SlideSortMenu, SlideViewer, SlidePrompt, slide-order.ts, slide-hash.ts (+test 2)
 │   ├── src/auth.ts                # NextAuth v5 (Google, signIn 은 검증된(email_verified) 구글 계정이면 통과 — 권한은 요청마다 access.ts, pages.error → /ai/signin-error/)
-│   ├── src/lib/  locale, metadata, sections, volume, media, media-serve, media-upload, brand-site, range, motion-admin, slides, admin-emails, prisma, member-role, member-input, members, access, ai-paths, ai-tabs, log (+ *.test.ts)
+│   ├── src/lib/  locale, metadata, sections, volume, media, media-serve, media-upload, brand-site, range, motion-admin, slides, admin-emails, prisma, member-role, member-input, members, access, ai-paths, ai-tabs(라벨·href·탭별 intro, `aiTab(id)`), log (+ *.test.ts)
 │   ├── e2e/ smoke, platform, motion, slide, brand, admin, security, prompt-copy, redirects, hub, membership, account, desktop .spec.ts + session.ts(signInAs·MARKER 공용)  # Playwright (standalone 서버 포트 3100, e2e/.volume 픽스처)
 │   └── public/  robots.txt, sitemap.xml, img/, video/
 ├── video/                         # Remotion

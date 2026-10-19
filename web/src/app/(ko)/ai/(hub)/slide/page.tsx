@@ -3,13 +3,14 @@ import { Suspense } from 'react';
 import { SLIDE_FAMILIES, getContent } from '@me/content';
 import { SlideGallery } from '@/components/slide-gallery/SlideGallery';
 import { AI_SLIDE } from '@/lib/ai-paths';
+import { aiTab } from '@/lib/ai-tabs';
 import { getRenderedSlides, readSlideAdmin } from '@/lib/slides';
 import { volumeRoot } from '@/lib/volume';
 
 export const dynamic = 'force-dynamic';
 
 const TITLE = '슬라이드 디자인';
-const INTRO = 'NotebookLM·이미지 생성 AI로 수업 자료와 학교 행사 슬라이드를 만들 때 쓰는 스타일 프롬프트 모음입니다. 예시 슬라이드는 모두 학교 상황으로 새로 만들었습니다.';
+const INTRO = aiTab('slide').intro.ko;
 const { ui } = getContent('ko');
 
 export const metadata: Metadata = {
@@ -25,8 +26,6 @@ export default async function SlidePage() {
   return (
     <section className="gutter pt-4 pb-8">
       <div className="mx-auto w-full max-w-site">
-        <h2 className="mb-2 text-2xl font-bold tracking-tight sm:text-3xl">{TITLE}</h2>
-        <p className="mb-4 text-muted">{INTRO}</p>
         {items.length > 0 ? (
           <Suspense>
             <SlideGallery items={items} families={SLIDE_FAMILIES} prompts={prompts} />

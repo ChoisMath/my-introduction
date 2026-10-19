@@ -13,7 +13,7 @@ const cards = (page: Page) => page.getByTestId(/^slide-card-\d+$/);
 
 test('hub tab shows and only rendered styles are listed', async ({ page }) => {
   await page.goto(PAGE);
-  await expect(page.getByRole('link', { name: '슬라이드 디자인' })).toHaveAttribute('aria-current', 'page');
+  await expect(page.getByRole('link', { name: '슬라이드', exact: true })).toHaveAttribute('aria-current', 'page');
   await expect(cards(page)).toHaveCount(rendered.length);
 });
 

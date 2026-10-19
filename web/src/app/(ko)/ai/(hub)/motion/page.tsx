@@ -20,8 +20,6 @@ export default async function MotionPage() {
   return (
     <section className="gutter pt-4 pb-8">
       <div className="mx-auto w-full max-w-site">
-        <h2 className="mb-2 text-2xl font-bold tracking-tight sm:text-3xl">{ui.motion.title}</h2>
-        <p className="mb-4 text-muted">{ui.motion.intro}</p>
         {items.length > 0 ? (
           <Suspense>
             <MotionGallery items={items} groups={MOTION_GROUPS} allLabel={ui.motion.all} />

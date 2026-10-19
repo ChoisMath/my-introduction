@@ -1,11 +1,12 @@
 import type { Metadata } from 'next';
 import { getContent } from '@me/content';
 import { AI_BRAND, AI_BRAND_SITE } from '@/lib/ai-paths';
+import { aiTab } from '@/lib/ai-tabs';
 
 export const dynamic = 'force-dynamic';
 
 const TITLE = '브랜드 룩북';
-const INTRO = '브랜드 290곳의 디자인 시스템(색·글꼴·컴포넌트)을 웹페이지 예시와 함께 보고, AI에 줄 디자인 가이드를 복사할 수 있습니다.';
+const INTRO = aiTab('brand').intro.ko;
 const SOURCE = 'https://www.oppadu.com/ai/design-systems-site/';
 const { ui } = getContent('ko');
 
@@ -17,7 +18,7 @@ export const metadata: Metadata = {
   robots: { index: false },
 };
 
-// 누구나 볼 수 있다(오빠두엑셀 허락). 원본 페이지가 같은 제목·소개를 갖고 있어 iframe 높이를 아끼려고 출처 한 줄만 둔다.
+// 누구나 볼 수 있다(오빠두엑셀 허락). 제목·소개는 허브 머리글이 보여 주므로 출처 한 줄만 둔다.
 export default function BrandPage() {
   return (
     <section className="gutter pt-2 pb-2 md:pt-4">

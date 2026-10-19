@@ -10,7 +10,7 @@ const BLOCKED = ['manifest.json', 'data/brands-index.txt', '..%2F..%2Fmotion-adm
 async function expectCopy(ctx: BrowserContext, label: string) {
   const page = await ctx.newPage();
   await page.goto(PAGE);
-  await expect(page.getByRole('link', { name: '브랜드 룩북', exact: true }), label).toHaveAttribute('aria-current', 'page');
+  await expect(page.getByRole('link', { name: '브랜드', exact: true }), label).toHaveAttribute('aria-current', 'page');
   await expect(page.getByTestId('brand-gate'), label).toHaveCount(0);
   await expect(page.frameLocator('[data-testid="brand-frame"]').getByRole('heading', { name: MARKER }), label).toBeVisible();
   const json = await ctx.request.get(`${SITE}data/brands-index.json`);
