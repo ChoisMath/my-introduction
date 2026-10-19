@@ -51,28 +51,31 @@ export default async function MotionDetailPage({ params }: Props) {
   const data = list?.find((a) => a.id === item.id) ?? null;
   const href = (m: { id: string } | null) => (m ? aiMotionPath(m.id) : null);
   return (
-    <article className="px-2 py-6 sm:px-3 md:px-4 lg:px-6">
-      <div className="mx-auto w-full max-w-5xl">
+    <article className="gutter py-6">
+      {/* 1280px 이상은 영상 왼쪽·정보 오른쪽 2단. 그 아래는 DOM 순서대로 1단. */}
+      <div className="mx-auto grid w-full max-w-site gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(22rem,28rem)] xl:gap-8">
         <video data-testid="motion-video" src={item.video} poster={item.poster} controls playsInline preload="metadata" className="aspect-video w-full rounded-[var(--radius-card)] bg-black" />
-        <header className="mt-4 flex items-baseline gap-x-3">
-          <span className="shrink-0 font-mono text-sm text-muted">{String(item.no).padStart(2, '0')}</span>
-          <h2 className="min-w-0 overflow-hidden text-2xl font-bold tracking-tight text-ellipsis whitespace-nowrap sm:text-3xl" title={item.name}>{item.name}</h2>
-          <span className="min-w-0 shrink overflow-hidden text-sm text-ellipsis whitespace-nowrap text-muted" title={item.en}>{item.en}</span>
-        </header>
-        <p className="mt-1 text-sm text-muted">{item.use}</p>
-        <p className="mt-4 leading-relaxed">{item.concept}</p>
-        <PromptCopy
-          id={item.id}
-          canEdit={isMember(viewer)}
-          prompts={data ? { en: finalPrompt(data, 'en', DEFAULT_PROMPT), ko: finalPrompt(data, 'ko', DEFAULT_PROMPT) } : null}
-        />
-        <nav className="mt-6 flex flex-wrap items-center gap-2" aria-label="motion">
-          {prev ? <Link href={href(prev)!} className={navLink}>← {ui.motion.prev}</Link> : null}
-          <Link href={AI_MOTION} className={navLink}>{ui.motion.back}</Link>
-          {next ? <Link href={href(next)!} className={navLink}>{ui.motion.next} →</Link> : null}
-        </nav>
-        <KeyNav prevHref={href(prev)} nextHref={href(next)} />
+        <div className="xl:sticky xl:top-[calc(var(--nav-h)+1rem)] xl:self-start">
+          <header className="flex items-baseline gap-x-3">
+            <span className="shrink-0 font-mono text-sm text-muted">{String(item.no).padStart(2, '0')}</span>
+            <h2 className="min-w-0 overflow-hidden text-2xl font-bold tracking-tight text-ellipsis whitespace-nowrap sm:text-3xl" title={item.name}>{item.name}</h2>
+            <span className="min-w-0 shrink overflow-hidden text-sm text-ellipsis whitespace-nowrap text-muted" title={item.en}>{item.en}</span>
+          </header>
+          <p className="mt-1 text-sm text-muted">{item.use}</p>
+          <p className="mt-4 leading-relaxed">{item.concept}</p>
+          <PromptCopy
+            id={item.id}
+            canEdit={isMember(viewer)}
+            prompts={data ? { en: finalPrompt(data, 'en', DEFAULT_PROMPT), ko: finalPrompt(data, 'ko', DEFAULT_PROMPT) } : null}
+          />
+          <nav className="mt-6 flex flex-wrap items-center gap-2" aria-label="motion">
+            {prev ? <Link href={href(prev)!} className={navLink}>← {ui.motion.prev}</Link> : null}
+            <Link href={AI_MOTION} className={navLink}>{ui.motion.back}</Link>
+            {next ? <Link href={href(next)!} className={navLink}>{ui.motion.next} →</Link> : null}
+          </nav>
+        </div>
       </div>
+      <KeyNav prevHref={href(prev)} nextHref={href(next)} />
     </article>
   );
 }
