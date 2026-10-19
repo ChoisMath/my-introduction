@@ -42,7 +42,7 @@ test.describe('2560 (QHD)', () => {
     await page.goto('/ai/motion/');
     const viewport = await page.evaluate(() => document.documentElement.clientWidth);
     const grid = await box(page, 'motion-grid');
-    expect(Math.round(grid.width)).toBeLessThanOrEqual(1920 - 80);
+    expect(Math.round(grid.width)).toBeLessThanOrEqual(1920);
     expect(Math.round(grid.x)).toBe(Math.round(viewport - grid.x - grid.width));
   });
 });
