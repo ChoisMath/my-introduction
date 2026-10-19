@@ -23,7 +23,7 @@ export function joinPath(from?: unknown): string {
   return `${AI_JOIN}?from=${encodeURIComponent(safeReturnPath(from))}`;
 }
 
-const PUBLIC_AI = /^\/ai\/(?:motion\/(?:[a-z0-9-]+\/)?|slide\/)$/;
+const PUBLIC_AI = /^\/ai\/(?:motion\/(?:[a-z0-9-]+\/)?|slide\/|brand\/)$/;
 
 // 공개 화면에서 로그아웃하면 그 자리에 남고, 권한이 필요한 화면에서는 갤러리로 나간다.
 export function signOutReturnPath(raw: unknown): string {

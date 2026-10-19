@@ -1,5 +1,7 @@
 # AI활용 허브 · 교사 가입 신청 설계
 
+> **2026-10-19 갱신 — AI활용 탭 공개 전환.** 오빠두엑셀(oppadu.com)로부터 자료를 자유롭게 사용해도 좋다는 허락을 받아, 이 문서의 「프롬프트 admin·member」·「브랜드 룩북 승인 회원 전용」 게이트를 걷어냈다. 모션 상세 프롬프트·슬라이드 스타일 프롬프트·브랜드 룩북은 비로그인 방문자도 본다. 로그인·승인신청·회원 관리와 회원 기능(프롬프트 편집기 `/ai/motion/admin/`)은 그대로 두어 앞으로 제한이 필요한 페이지에 쓴다. 현재 권한 표는 `.claude/PROJECT_MAP.md` 가 기준이다.
+
 - 날짜: 2026-10-12
 - 대상 저장소: `/Volumes/Chois_SD2/dev/my_intoduction` (`web` 워크스페이스, Railway 서비스 `my-introduction` + `Postgres`)
 - 선행 작업: 모션 챕터(`2026-10-12-motion-chapter-railway-design.md`), 모션 열람자(`.plans/2026-10-12-motion-viewers-final.md`)

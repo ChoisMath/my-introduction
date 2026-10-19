@@ -2,9 +2,9 @@ import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import { SLIDE_FAMILIES, getContent } from '@me/content';
 import { SlideGallery } from '@/components/slide-gallery/SlideGallery';
-import { getSlidePromptAccess } from '@/lib/access';
 import { AI_SLIDE } from '@/lib/ai-paths';
-import { getRenderedSlides } from '@/lib/slides';
+import { getRenderedSlides, readSlideAdmin } from '@/lib/slides';
+import { volumeRoot } from '@/lib/volume';
 
 export const dynamic = 'force-dynamic';
 
@@ -19,7 +19,9 @@ export const metadata: Metadata = {
 };
 
 export default async function SlidePage() {
-  const [items, access] = await Promise.all([getRenderedSlides(), getSlidePromptAccess()]);
+  // 스타일 프롬프트는 누구나 볼 수 있다(오빠두엑셀 허락). 상세 창은 해시로 열리므로 목록 요청에서 한 번에 싣는다.
+  const [items, admin] = await Promise.all([getRenderedSlides(), readSlideAdmin(volumeRoot())]);
+  const prompts = admin ? Object.fromEntries(admin.map((a) => [a.id, a.prompt])) : null;
   return (
     <section className="px-2 pt-4 pb-8 sm:px-3 md:px-4 lg:px-6">
       <div className="mx-auto w-full max-w-6xl">
@@ -27,7 +29,7 @@ export default async function SlidePage() {
         <p className="mb-4 text-muted">{INTRO}</p>
         {items.length > 0 ? (
           <Suspense>
-            <SlideGallery items={items} families={SLIDE_FAMILIES} access={access} />
+            <SlideGallery items={items} families={SLIDE_FAMILIES} prompts={prompts} />
           </Suspense>
         ) : (
           <p data-testid="slide-empty" className="text-muted">예시 슬라이드를 준비하고 있어요.</p>

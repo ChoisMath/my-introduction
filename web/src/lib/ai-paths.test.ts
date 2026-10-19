@@ -32,9 +32,11 @@ describe('signOutReturnPath', () => {
     expect(signOutReturnPath('/ai/motion/')).toBe('/ai/motion/');
     expect(signOutReturnPath('/ai/motion/01-pixel/')).toBe('/ai/motion/01-pixel/');
   });
-  it('stays on the public slide gallery', () => {
+  it('stays on the public slide gallery and brand lookbook', () => {
     expect(signOutReturnPath('/ai/slide/')).toBe('/ai/slide/');
     expect(signOutReturnPath('/ai/slide/x/')).toBe('/ai/motion/');
+    expect(signOutReturnPath('/ai/brand/')).toBe('/ai/brand/');
+    expect(signOutReturnPath('/ai/brand/site/')).toBe('/ai/motion/');
   });
   it('leaves protected pages for the gallery', () => {
     expect(signOutReturnPath('/ai/motion/admin/')).toBe('/ai/motion/');

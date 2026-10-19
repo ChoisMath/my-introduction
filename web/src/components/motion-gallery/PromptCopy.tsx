@@ -1,29 +1,21 @@
 'use client';
 import Link from 'next/link';
 import { useState } from 'react';
-import { SignInDialog, type DialogState } from '@/components/ai-hub/SignInDialog';
 import { writeClipboard } from '@/components/ai-hub/clipboard';
-import type { MemberSummary } from '@/lib/access';
-import { aiMotionAdminPath, aiMotionPath } from '@/lib/ai-paths';
+import { aiMotionAdminPath } from '@/lib/ai-paths';
 
 type Lang = 'en' | 'ko';
-type Props =
-  | { id: string; status: DialogState; member: MemberSummary | null }
-  | { id: string; status: 'allowed'; prompts: Record<Lang, string> | null };
+type Props = { id: string; prompts: Record<Lang, string> | null; canEdit: boolean };
 
 const LABEL: Record<Lang, string> = { en: '프롬프트 복사 (영문)', ko: '프롬프트 복사 (국문)' };
 
-export function PromptCopy(props: Props) {
-  const [isOpen, setOpen] = useState(false);
+// 프롬프트는 누구나 복사할 수 있다(오빠두엑셀 허락). 빈칸 편집기(/ai/motion/admin/)는 회원 기능이라 링크만 회원에게 보인다.
+export function PromptCopy({ id, prompts, canEdit }: Props) {
   const [copied, setCopied] = useState<Lang | null>(null);
-  const prompts = props.status === 'allowed' ? props.prompts : null;
-  const isUnavailable = props.status === 'allowed' && !prompts;
+  const isUnavailable = !prompts;
 
   const onCopy = async (lang: Lang) => {
-    if (!prompts) {
-      setOpen(true);
-      return;
-    }
+    if (!prompts) return;
     await writeClipboard(prompts[lang]);
     setCopied(lang);
     setTimeout(() => setCopied(null), 1500);
@@ -43,15 +35,12 @@ export function PromptCopy(props: Props) {
           {copied === lang ? '복사됨' : LABEL[lang]}
         </button>
       ))}
-      {props.status === 'allowed' ? (
-        <Link href={aiMotionAdminPath(props.id)} prefetch={false} className="inline-flex min-h-11 items-center rounded-full border border-line px-4 text-sm whitespace-nowrap hover:border-accent">
+      {canEdit ? (
+        <Link href={aiMotionAdminPath(id)} prefetch={false} className="inline-flex min-h-11 items-center rounded-full border border-line px-4 text-sm whitespace-nowrap hover:border-accent">
           빈칸 편집·장면표
         </Link>
       ) : null}
       {isUnavailable ? <span className="text-sm whitespace-nowrap text-muted">프롬프트 데이터 준비 중</span> : null}
-      {props.status === 'allowed' ? null : (
-        <SignInDialog open={isOpen} onClose={() => setOpen(false)} state={props.status} from={aiMotionPath(props.id)} member={props.member} />
-      )}
     </div>
   );
 }

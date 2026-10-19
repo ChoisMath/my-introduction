@@ -84,12 +84,16 @@ test('hash deep links open the style, even when filtered out, and bad hashes are
   }
 });
 
-test('anonymous copy opens the sign-in dialog and html has no prompt', async ({ page }) => {
-  expect(await (await page.request.get(PAGE)).text()).not.toContain(MARKER);
+// 스타일 프롬프트는 오빠두엑셀의 허락을 받아 공개(2026-10-19). 로그인 없이 보이고 복사된다.
+test('anonymous visitor sees and copies the prompt without a sign-in dialog', async ({ context, page }) => {
+  await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+  expect(await (await page.request.get(PAGE)).text()).toContain(MARKER);
   await page.goto(`${PAGE}#${rendered[0]!.id}`);
-  await expect(page.getByTestId('slide-prompt-locked')).toBeVisible();
+  await expect(page.getByTestId('slide-prompt')).toContainText(MARKER);
   await page.getByTestId('copy-slide-prompt').click();
-  await expect(page.getByTestId('signin-dialog')).toBeVisible();
+  await expect(page.getByTestId('copy-slide-prompt')).toHaveText('복사됨');
+  expect(await page.evaluate(() => navigator.clipboard.readText())).toContain(MARKER);
+  await expect(page.getByTestId('signin-dialog')).toHaveCount(0);
 });
 
 test('approved member sees and copies the prompt', async ({ browser }) => {

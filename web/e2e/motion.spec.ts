@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { signInAs } from './session';
 
-test('home has no AI활용 section; AI links stay disabled until sign-in', async ({ page }) => {
+test('home has no AI활용 section; AI links are open to signed-out visitors', async ({ page }) => {
   await page.goto('/');
   await expect(page.locator('section#ai')).toHaveCount(0);
   await expect(page.getByTestId('motion-card')).toHaveCount(0);
@@ -9,14 +9,17 @@ test('home has no AI활용 section; AI links stay disabled until sign-in', async
   await expect(nav.getByTestId('hub-signin')).toHaveText('로그인 · 승인신청');
   await expect(nav.getByRole('listitem').last().getByTestId('nav-ai')).toHaveText('AI활용');
   for (const id of ['nav-ai', 'contact-ai']) {
-    await expect(page.getByTestId(id)).toHaveAttribute('aria-disabled', 'true');
-    await expect(page.getByTestId(id)).not.toHaveAttribute('href');
+    await expect(page.getByTestId(id)).toHaveAttribute('href', '/ai/');
+    await expect(page.getByTestId(id)).not.toHaveAttribute('aria-disabled');
   }
   await nav.getByTestId('hub-signin').click();
   await expect(page.getByTestId('signin-dialog')).toBeVisible();
+  await page.getByTestId('signin-dialog').getByRole('button', { name: '닫기' }).click();
+  await page.getByTestId('nav-ai').click();
+  await expect(page).toHaveURL(/\/ai\/motion\/$/);
 });
 
-test('signed-in home enables the AI links to the hub', async ({ context, page }) => {
+test('signed-in home keeps the AI links and hides the sign-in button', async ({ context, page }) => {
   await signInAs(context, 'admin@example.com');
   await page.goto('/');
   await expect(page.getByTestId('hub-signin')).toHaveCount(0);

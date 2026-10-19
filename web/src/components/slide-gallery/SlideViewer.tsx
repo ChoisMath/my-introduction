@@ -1,7 +1,6 @@
 'use client';
 import { useEffect, useRef } from 'react';
 import type { SlideFamily } from '@me/content';
-import type { SlidePromptAccess } from '@/lib/access';
 import type { SlideCardData } from '@/lib/slides';
 import { SlidePrompt } from './SlidePrompt';
 import { stepSlide, stepStyle, type ViewerPos } from './slide-order';
@@ -12,14 +11,14 @@ type Props = {
   onMove: (pos: ViewerPos) => void;
   onClose: () => void;
   familyLabel: (key: SlideFamily) => string;
-  access: SlidePromptAccess;
+  prompts: Record<string, string> | null;
 };
 
 const SWIPE_PX = 40;
 const iconBtn = 'inline-flex min-h-11 min-w-11 items-center justify-center rounded-full text-lg hover:bg-white/10';
 const navBtn = 'absolute top-1/2 inline-flex min-h-11 min-w-11 -translate-y-1/2 items-center justify-center rounded-full bg-black/50 text-2xl text-white';
 
-export function SlideViewer({ list, pos, onMove, onClose, familyLabel, access }: Props) {
+export function SlideViewer({ list, pos, onMove, onClose, familyLabel, prompts }: Props) {
   const dialog = useRef<HTMLDialogElement>(null);
   const stage = useRef<HTMLDivElement>(null);
   const swipeStart = useRef<number | null>(null);
@@ -114,7 +113,7 @@ export function SlideViewer({ list, pos, onMove, onClose, familyLabel, access }:
           <p className="text-sm leading-relaxed">{style.look}</p>
           <p className="text-sm"><span className="mr-2 font-semibold whitespace-nowrap">이럴 때 좋아요</span>{style.use}</p>
           <p className="text-sm"><span className="mr-2 font-semibold whitespace-nowrap">예시 주제</span>{style.topic}</p>
-          <SlidePrompt id={style.id} access={access} />
+          <SlidePrompt id={style.id} prompt={prompts?.[style.id] ?? null} />
         </aside>
       </div>
     </dialog>

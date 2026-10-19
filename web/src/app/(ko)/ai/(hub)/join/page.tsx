@@ -22,7 +22,7 @@ export default async function JoinPage({ searchParams }: { searchParams: Promise
         <h2 className="text-xl font-bold whitespace-nowrap">교사 승인신청</h2>
         {state.status === 'signedOut' ? (
           <>
-            <p className="text-sm text-muted">본인 Google 계정으로 로그인한 뒤 이름과 소속을 적어 주세요. 관리자가 확인하면 프롬프트를 쓸 수 있어요.</p>
+            <p className="text-sm text-muted">본인 Google 계정으로 로그인한 뒤 이름과 소속을 적어 주세요. 관리자가 확인하면 회원 기능(모션그래픽 프롬프트 편집기)을 쓸 수 있어요.</p>
             <GoogleSignInButton from={from === AI_JOIN ? '/ai/motion/' : from} />
           </>
         ) : state.status === 'unavailable' ? (

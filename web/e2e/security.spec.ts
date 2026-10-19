@@ -4,15 +4,18 @@ import { expect, test } from '@playwright/test';
 import { signInAs } from './session';
 
 const MARKER = 'E2E-ADMIN-MARKER';
+// 완성 프롬프트(MARKER 포함)는 공개다(2026-10-19). 프롬프트를 싣지 않는 화면과 원문 빈칸 템플릿·빌드 산출물만 검사한다.
+const NO_PROMPT_PAGES = ['/', '/en/', '/ai/motion/', '/ai/join/'];
+const PROMPT_PAGES = ['/ai/motion/01-pixel/', '/ai/motion/17-embroidery/', '/ai/slide/'];
 
-test('guest and pending pages never carry admin data', async ({ browser }) => {
+test('guest and pending accounts read prompts but never reach member screens', async ({ browser }) => {
   test.skip(!process.env.E2E_DATABASE_URL, 'DB 필요');
   for (const email of ['stranger@example.com', 'pending2@example.com']) {
     const ctx = await browser.newContext();
     await signInAs(ctx, email);
-    for (const p of ['/ai/motion/', '/ai/motion/01-pixel/', '/ai/slide/', '/ai/join/', '/']) {
+    for (const p of [...NO_PROMPT_PAGES, ...PROMPT_PAGES]) {
       const html = await (await ctx.request.get(p)).text();
-      expect(html, `${email} ${p}`).not.toContain(MARKER);
+      if (NO_PROMPT_PAGES.includes(p)) expect(html, `${email} ${p}`).not.toContain(MARKER);
       expect(html, `${email} ${p}`).not.toContain('{{Channel name=');
     }
     for (const p of ['/ai/motion/admin/', '/ai/motion/admin/01-pixel/', '/ai/admin/members/']) {
@@ -22,11 +25,12 @@ test('guest and pending pages never carry admin data', async ({ browser }) => {
   }
 });
 
-test('no admin text leaks into public html or build output', async ({ request }) => {
-  for (const p of ['/', '/en/', '/ai/motion/', '/ai/motion/01-pixel/', '/ai/motion/17-embroidery/', '/ai/slide/']) {
-    const html = await (await request.get(p)).text();
-    expect(html, p).not.toContain(MARKER);
-    expect(html, p).not.toContain('{{Channel name=');
+test('no raw template or admin text leaks into public html or build output', async ({ request }) => {
+  for (const p of NO_PROMPT_PAGES) {
+    expect(await (await request.get(p)).text(), p).not.toContain(MARKER);
+  }
+  for (const p of [...NO_PROMPT_PAGES, ...PROMPT_PAGES]) {
+    expect(await (await request.get(p)).text(), p).not.toContain('{{Channel name=');
   }
   const walk = (dir: string): string[] => readdirSync(dir).flatMap((n) => {
     const f = path.join(dir, n);

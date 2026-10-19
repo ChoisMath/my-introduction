@@ -9,22 +9,12 @@ import { errorTag } from './log';
 import { canUsePrompts, normalizeEmail, resolveRole, type MemberLookup, type MemberRole } from './member-role';
 import { countPending, lookupMember, type MemberRow } from './members';
 import { readMotionAdmin } from './motion-admin';
-import { readSlideAdmin } from './slides';
 import { volumeRoot } from './volume';
 
 export type MemberSummary = { name: string; affiliation: string; createdAt: string };
 export type ViewerState =
   | { status: 'signedOut' }
   | { status: MemberRole; email: string; name: string; image: string | null; member: MemberSummary | null; pendingCount: number };
-export type PromptAccess =
-  | { status: 'signedOut' | 'guest' | 'pending' | 'unavailable'; member: MemberSummary | null }
-  | { status: 'allowed'; data: MotionAdmin | null };
-export type BrandAccess =
-  | { status: 'signedOut' | 'guest' | 'pending' | 'unavailable'; member: MemberSummary | null }
-  | { status: 'allowed' };
-export type SlidePromptAccess =
-  | { status: 'signedOut' | 'guest' | 'pending' | 'unavailable'; member: MemberSummary | null }
-  | { status: 'allowed'; prompts: Record<string, string> | null };
 
 const summary = (m: MemberRow | null): MemberSummary | null =>
   m ? { name: m.name, affiliation: m.affiliation, createdAt: m.createdAt.toISOString() } : null;
@@ -61,33 +51,9 @@ export async function requireAdmin(path: string): Promise<string> {
   return email;
 }
 
-// 공개 상세용: 리다이렉트하지 않고 상태만 돌려준다. 권한이 있을 때만 Volume 의 프롬프트를 읽는다.
-export async function getPromptAccess(id: string): Promise<PromptAccess> {
-  const session = await auth();
-  if (!session?.user?.email) return { status: 'signedOut', member: null };
-  const { role, member } = await getAccess(session.user.email);
-  if (!canUsePrompts(role)) return { status: role, member: summary(member) };
-  const list = await readMotionAdmin(volumeRoot());
-  return { status: 'allowed', data: list?.find((a) => a.id === id) ?? null };
-}
-
-// 슬라이드는 한 페이지 안의 상세 창이라 공개 상세 라우트가 없다. 목록 요청에서 한 번 판정해 권한이 있을 때만 프롬프트를 싣는다.
-export async function getSlidePromptAccess(): Promise<SlidePromptAccess> {
-  const session = await auth();
-  if (!session?.user?.email) return { status: 'signedOut', member: null };
-  const { role, member } = await getAccess(session.user.email);
-  if (!canUsePrompts(role)) return { status: role, member: summary(member) };
-  const list = await readSlideAdmin(volumeRoot());
-  return { status: 'allowed', prompts: list ? Object.fromEntries(list.map((a) => [a.id, a.prompt])) : null };
-}
-
-// 브랜드 룩북은 페이지 전체가 회원 전용이다. 탭 페이지와 사본 파일 라우트가 매 요청 이걸로 판정한다.
-export async function getBrandAccess(): Promise<BrandAccess> {
-  const session = await auth();
-  if (!session?.user?.email) return { status: 'signedOut', member: null };
-  const { role, member } = await getAccess(session.user.email);
-  return canUsePrompts(role) ? { status: 'allowed' } : { status: role, member: summary(member) };
-}
+// AI활용 탭(모션·슬라이드 프롬프트, 브랜드 룩북)은 오빠두엑셀의 허락을 받아 누구에게나 공개한다(2026-10-19).
+// 회원 판정은 편집기(/ai/motion/admin/)·회원 관리 같은 회원 기능과, 앞으로 제한이 필요한 페이지에만 쓴다.
+export const isMember = (state: ViewerState): boolean => state.status === 'admin' || state.status === 'member';
 
 export async function loadMotionAdmin(path: string): Promise<{ role: 'admin' | 'member'; list: MotionAdmin[] | null }> {
   const { role } = await requireMember(path);

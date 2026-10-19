@@ -1,5 +1,4 @@
 import { computeStats, getContent, type Locale } from '@me/content';
-import { getViewerState } from '@/lib/access';
 import { Hero } from './sections/Hero';
 import { Stats } from './sections/Stats';
 import { Timeline } from './sections/Timeline';
@@ -15,7 +14,6 @@ export async function HomePage({ locale }: { locale: Locale }) {
   const content = getContent(locale);
   const { profile, ui } = content;
   const stats = computeStats(content);
-  const isSignedIn = (await getViewerState()).status !== 'signedOut';
   return (
     <>
       <Hero profile={profile} ui={ui} locale={locale} />
@@ -25,7 +23,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
       <Projects projects={content.projects} ui={ui} />
       <Books profile={profile} ui={ui} />
       <Lectures profile={profile} ui={ui} />
-      <Contact profile={profile} ui={ui} isSignedIn={isSignedIn} />
+      <Contact profile={profile} ui={ui} />
       <LegacyAiAnchor />
       <SiteFooter>{ui.footer}</SiteFooter>
     </>

@@ -27,15 +27,9 @@ export function Nav({ locale, ui, account }: { locale: Locale; ui: Ui; account: 
             </li>
           ))}
           <li>
-            {account.status === 'signedOut' ? (
-              <span aria-disabled="true" data-testid="nav-ai" className="min-h-11 inline-flex cursor-not-allowed items-center rounded-full px-3 text-sm text-muted opacity-40">
-                {ui.nav.ai}
-              </span>
-            ) : (
-              <a href={AI_HOME} data-testid="nav-ai" className="min-h-11 inline-flex items-center rounded-full px-3 text-sm text-muted hover:text-fg">
-                {ui.nav.ai}
-              </a>
-            )}
+            <a href={AI_HOME} data-testid="nav-ai" className="min-h-11 inline-flex items-center rounded-full px-3 text-sm text-muted hover:text-fg">
+              {ui.nav.ai}
+            </a>
           </li>
         </ul>
         <LangToggle locale={locale} label={ui.lang.switchTo} title={ui.lang.switchLabel} />

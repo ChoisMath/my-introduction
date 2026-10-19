@@ -2,7 +2,6 @@
 import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import type { SlideFamily } from '@me/content';
-import type { SlidePromptAccess } from '@/lib/access';
 import type { SlideCardData } from '@/lib/slides';
 import { SlideCard } from './SlideCard';
 import { SlideSortMenu } from './SlideSortMenu';
@@ -11,12 +10,12 @@ import { setHashId, useHashId } from './slide-hash';
 import { arrange, opensOutsideFilter, parseQuery, toSearch, type GalleryQuery, type ViewerPos } from './slide-order';
 
 type Family = { readonly key: SlideFamily; readonly label: string };
-type Props = { items: SlideCardData[]; families: readonly Family[]; access: SlidePromptAccess };
+type Props = { items: SlideCardData[]; families: readonly Family[]; prompts: Record<string, string> | null };
 
 const chip = 'min-h-11 shrink-0 rounded-full border px-4 text-sm whitespace-nowrap';
 const VIEWS = [{ key: 'cover', label: '표지' }, { key: 'body', label: '본문' }] as const;
 
-export function SlideGallery({ items, families, access }: Props) {
+export function SlideGallery({ items, families, prompts }: Props) {
   const present = families.filter((f) => items.some((i) => i.family === f.key));
   // URL 이 거르기·정렬·보기의 유일한 진실 공급원이다(새로고침·공유해도 같은 화면).
   const query = parseQuery(useSearchParams(), present.map((f) => f.key));
@@ -84,7 +83,7 @@ export function SlideGallery({ items, families, access }: Props) {
           }}
           onClose={() => setHashId(null)}
           familyLabel={labelOf}
-          access={access}
+          prompts={prompts}
         />
       ) : null}
     </div>

@@ -4,7 +4,7 @@ import { Section } from '../Section';
 
 const item = 'inline-flex min-h-11 items-center gap-2 rounded-full border border-line px-4 text-sm whitespace-nowrap hover:border-accent';
 
-export function Contact({ profile, ui, isSignedIn }: { profile: Profile; ui: Ui; isSignedIn: boolean }) {
+export function Contact({ profile, ui }: { profile: Profile; ui: Ui }) {
   return (
     <Section id="contact" title={ui.sections.contact}>
       <div className="flex flex-wrap gap-2">
@@ -13,11 +13,7 @@ export function Contact({ profile, ui, isSignedIn }: { profile: Profile; ui: Ui;
         {profile.links.sites.map((s) => (
           <a key={s.url} href={s.url} target="_blank" rel="noreferrer" className={item}><span className="text-muted">{ui.contact.sites}</span>{s.label} ↗</a>
         ))}
-        {isSignedIn ? (
-          <a href={AI_HOME} data-testid="contact-ai" className={item}>{ui.nav.ai}→</a>
-        ) : (
-          <span aria-disabled="true" data-testid="contact-ai" className="inline-flex min-h-11 cursor-not-allowed items-center gap-2 rounded-full border border-line px-4 text-sm whitespace-nowrap opacity-40">{ui.nav.ai}</span>
-        )}
+        <a href={AI_HOME} data-testid="contact-ai" className={item}>{ui.nav.ai}→</a>
       </div>
     </Section>
   );

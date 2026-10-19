@@ -5,9 +5,11 @@ import { getContent } from '@me/content';
 import { KeyNav } from '@/components/motion-gallery/KeyNav';
 import { PromptCopy } from '@/components/motion-gallery/PromptCopy';
 import { finalPrompt, type PromptState } from '@/components/motion-gallery/admin/placeholders';
-import { getPromptAccess } from '@/lib/access';
+import { getViewerState, isMember } from '@/lib/access';
 import { getRenderedMotions } from '@/lib/media';
+import { readMotionAdmin } from '@/lib/motion-admin';
 import { AI_MOTION, aiMotionPath } from '@/lib/ai-paths';
+import { volumeRoot } from '@/lib/volume';
 
 export const dynamic = 'force-dynamic';
 
@@ -44,7 +46,9 @@ export default async function MotionDetailPage({ params }: Props) {
   if (!hit) notFound();
   const { ui } = getContent('ko');
   const { item, prev, next } = hit;
-  const access = await getPromptAccess(item.id);
+  // 프롬프트는 공개(오빠두엑셀 허락). 회원 여부는 「빈칸 편집·장면표」 링크를 보일지에만 쓴다.
+  const [viewer, list] = await Promise.all([getViewerState(), readMotionAdmin(volumeRoot())]);
+  const data = list?.find((a) => a.id === item.id) ?? null;
   const href = (m: { id: string } | null) => (m ? aiMotionPath(m.id) : null);
   return (
     <article className="px-2 py-6 sm:px-3 md:px-4 lg:px-6">
@@ -57,15 +61,11 @@ export default async function MotionDetailPage({ params }: Props) {
         </header>
         <p className="mt-1 text-sm text-muted">{item.use}</p>
         <p className="mt-4 leading-relaxed">{item.concept}</p>
-        {access.status === 'allowed' ? (
-          <PromptCopy
-            id={item.id}
-            status="allowed"
-            prompts={access.data ? { en: finalPrompt(access.data, 'en', DEFAULT_PROMPT), ko: finalPrompt(access.data, 'ko', DEFAULT_PROMPT) } : null}
-          />
-        ) : (
-          <PromptCopy id={item.id} status={access.status} member={access.member} />
-        )}
+        <PromptCopy
+          id={item.id}
+          canEdit={isMember(viewer)}
+          prompts={data ? { en: finalPrompt(data, 'en', DEFAULT_PROMPT), ko: finalPrompt(data, 'ko', DEFAULT_PROMPT) } : null}
+        />
         <nav className="mt-6 flex flex-wrap items-center gap-2" aria-label="motion">
           {prev ? <Link href={href(prev)!} className={navLink}>← {ui.motion.prev}</Link> : null}
           <Link href={AI_MOTION} className={navLink}>{ui.motion.back}</Link>
