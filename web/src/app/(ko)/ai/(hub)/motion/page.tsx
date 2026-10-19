@@ -18,8 +18,8 @@ export const metadata: Metadata = {
 export default async function MotionPage() {
   const items = await getRenderedMotions();
   return (
-    <section className="px-2 pt-4 pb-8 sm:px-3 md:px-4 lg:px-6">
-      <div className="mx-auto w-full max-w-6xl">
+    <section className="gutter pt-4 pb-8">
+      <div className="mx-auto w-full max-w-site">
         <h2 className="mb-2 text-2xl font-bold tracking-tight sm:text-3xl">{ui.motion.title}</h2>
         <p className="mb-4 text-muted">{ui.motion.intro}</p>
         {items.length > 0 ? (

@@ -23,8 +23,8 @@ export default async function SlidePage() {
   const [items, admin] = await Promise.all([getRenderedSlides(), readSlideAdmin(volumeRoot())]);
   const prompts = admin ? Object.fromEntries(admin.map((a) => [a.id, a.prompt])) : null;
   return (
-    <section className="px-2 pt-4 pb-8 sm:px-3 md:px-4 lg:px-6">
-      <div className="mx-auto w-full max-w-6xl">
+    <section className="gutter pt-4 pb-8">
+      <div className="mx-auto w-full max-w-site">
         <h2 className="mb-2 text-2xl font-bold tracking-tight sm:text-3xl">{TITLE}</h2>
         <p className="mb-4 text-muted">{INTRO}</p>
         {items.length > 0 ? (
