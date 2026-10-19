@@ -1,5 +1,6 @@
 'use client';
 import { useSearchParams } from 'next/navigation';
+import { FilterPicker } from '@/components/ai-hub/FilterPicker';
 import type { MotionCardData } from '@/lib/media';
 import { MotionCard } from './MotionCard';
 
@@ -16,18 +17,14 @@ export function MotionGallery({ items, groups, allLabel }: Props) {
   };
   return (
     <>
-      <div role="toolbar" aria-label="group filter" className="-mx-2 mb-4 flex gap-2 overflow-x-auto px-2 pb-1">
-        {[null, ...present].map((g) => (
-          <button
-            key={g ?? 'all'}
-            type="button"
-            aria-pressed={group === g}
-            onClick={() => choose(g)}
-            className={`min-h-11 shrink-0 rounded-full border px-4 text-sm whitespace-nowrap ${group === g ? 'border-fg bg-fg text-bg' : 'border-line'}`}
-          >
-            {g ?? allLabel} <span className="font-mono text-xs opacity-70">{g ? items.filter((m) => m.group === g).length : items.length}</span>
-          </button>
-        ))}
+      <div className="mb-3 flex items-center gap-2">
+        <FilterPicker
+          label="분류로 거르기"
+          testId="motion-chips"
+          value={group}
+          onChange={choose}
+          options={[null, ...present].map((g) => ({ value: g, label: g ?? allLabel, count: g ? items.filter((m) => m.group === g).length : items.length }))}
+        />
       </div>
       <ul data-testid="motion-grid" className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
         {shown.map((m) => (

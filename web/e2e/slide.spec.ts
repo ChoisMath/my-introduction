@@ -112,6 +112,12 @@ test('mobile layout has no horizontal page scroll', async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 812 });
   await page.goto(PAGE);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  // 드롭다운·정렬·표지/본문이 한 줄에 나란히
+  const [select, sort, view] = await Promise.all([page.getByTestId('slide-chips-select').boundingBox(), page.getByTestId('slide-sort').boundingBox(), page.getByTestId('slide-view').boundingBox()]);
+  expect(Math.abs(select!.y - sort!.y)).toBeLessThan(4);
+  expect(Math.abs(sort!.y - view!.y)).toBeLessThan(4);
+  await page.getByTestId('slide-chips-select').selectOption({ label: '업무·보고 1' });
+  await expect(page).toHaveURL(/\?f=/);
   await cards(page).first().click();
   await expect(page.getByTestId('slide-viewer-img')).toBeVisible();
   await page.getByTestId('copy-slide-prompt').scrollIntoViewIfNeeded();

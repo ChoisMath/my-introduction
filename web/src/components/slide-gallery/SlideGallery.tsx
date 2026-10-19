@@ -2,6 +2,7 @@
 import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import type { SlideFamily } from '@me/content';
+import { FilterPicker } from '@/components/ai-hub/FilterPicker';
 import type { SlideCardData } from '@/lib/slides';
 import { SlideCard } from './SlideCard';
 import { SlideSortMenu } from './SlideSortMenu';
@@ -12,7 +13,6 @@ import { arrange, opensOutsideFilter, parseQuery, toSearch, type GalleryQuery, t
 type Family = { readonly key: SlideFamily; readonly label: string };
 type Props = { items: SlideCardData[]; families: readonly Family[]; prompts: Record<string, string> | null };
 
-const chip = 'min-h-11 shrink-0 rounded-full border px-4 text-sm whitespace-nowrap';
 const VIEWS = [{ key: 'cover', label: '표지' }, { key: 'body', label: '본문' }] as const;
 
 export function SlideGallery({ items, families, prompts }: Props) {
@@ -42,23 +42,19 @@ export function SlideGallery({ items, families, prompts }: Props) {
 
   return (
     <div data-testid="slide-gallery">
-      <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-        <div role="toolbar" aria-label="분류로 거르기" data-testid="slide-chips" className="-mx-2 flex w-[calc(100%+1rem)] min-w-0 gap-2 overflow-x-auto px-2 pb-1 sm:w-auto sm:flex-1">
-          {[null, ...present].map((f) => {
-            const key = f?.key ?? null;
-            const isOn = query.family === key;
-            return (
-              <button key={key ?? 'all'} type="button" aria-pressed={isOn} onClick={() => update({ family: key })} className={`${chip} ${isOn ? 'border-fg bg-fg text-bg' : 'border-line'}`}>
-                {f?.label ?? '전체'} <span className="font-mono text-xs opacity-70">{countOf(key)}</span>
-              </button>
-            );
-          })}
-        </div>
+      <div className="mb-3 flex items-center gap-2">
+        <FilterPicker
+          label="분류로 거르기"
+          testId="slide-chips"
+          value={query.family}
+          onChange={(family) => update({ family: family as SlideFamily | null })}
+          options={[null, ...present].map((f) => ({ value: f?.key ?? null, label: f?.label ?? '전체', count: countOf(f?.key ?? null) }))}
+        />
         <div className="ml-auto flex shrink-0 items-center gap-2">
           <SlideSortMenu value={query.sort} onChange={(sort) => update({ sort })} />
           <div role="group" aria-label="목록에 보여 줄 장" data-testid="slide-view" className="flex rounded-full border border-line p-0.5">
             {VIEWS.map((v) => (
-              <button key={v.key} type="button" aria-pressed={query.view === v.key} onClick={() => update({ view: v.key })} className={`min-h-11 rounded-full px-4 text-sm whitespace-nowrap ${query.view === v.key ? 'bg-fg text-bg' : ''}`}>
+              <button key={v.key} type="button" aria-pressed={query.view === v.key} onClick={() => update({ view: v.key })} className={`min-h-7 rounded-full px-3 text-sm whitespace-nowrap ${query.view === v.key ? 'bg-fg text-bg' : ''}`}>
                 {v.label}
               </button>
             ))}

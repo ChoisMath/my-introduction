@@ -31,7 +31,7 @@ export function SlideSortMenu({ value, onChange }: { value: SortKey; onChange: (
         aria-haspopup="menu"
         aria-expanded={isOpen}
         onClick={() => setOpen(!isOpen)}
-        className="inline-flex min-h-11 items-center gap-1 rounded-full border border-line px-4 text-sm whitespace-nowrap"
+        className="inline-flex min-h-8 items-center gap-1 rounded-full border border-line px-3 text-sm whitespace-nowrap"
       >
         <span className="sr-only">정렬: </span>
         {LABEL[value]}
@@ -49,7 +49,7 @@ export function SlideSortMenu({ value, onChange }: { value: SortKey; onChange: (
                 onChange(key);
                 setOpen(false);
               }}
-              className="flex min-h-11 items-center gap-2 rounded-lg px-3 text-left text-sm whitespace-nowrap hover:bg-accent-soft aria-checked:font-semibold"
+              className="flex min-h-9 items-center gap-2 rounded-lg px-3 text-left text-sm whitespace-nowrap hover:bg-accent-soft aria-checked:font-semibold"
             >
               <span aria-hidden="true" className="w-3">{value === key ? '✓' : ''}</span>
               {LABEL[key]}

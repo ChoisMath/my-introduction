@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 // 누구나 볼 수 있다(오빠두엑셀 허락). 제목·소개는 허브 머리글이, 출처는 푸터(HubFooterNote)가 맡으므로 iframe 만 둔다.
 export default function BrandPage() {
   return (
-    <section className="gutter pt-2 pb-2 md:pt-4">
+    <section className="gutter pt-1 pb-2 md:pt-4">
       <iframe
         data-testid="brand-frame"
         src={AI_BRAND_SITE}

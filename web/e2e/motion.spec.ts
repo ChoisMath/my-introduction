@@ -93,6 +93,18 @@ test.describe('mobile 375px', () => {
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
     expect(overflow).toBeLessThanOrEqual(0);
   });
+  test('filters through a dropdown and the intro folds behind the divider', async ({ page }) => {
+    await page.goto('/ai/motion/');
+    await expect(page.getByTestId('motion-chips')).toBeHidden();
+    await page.getByTestId('motion-chips-select').selectOption({ label: '종이·공예 1' });
+    await expect(page.getByTestId('motion-card')).toHaveCount(1);
+    await expect(page).toHaveURL(/\?g=/);
+    const intro = page.getByTestId('ai-intro');
+    await expect(intro).toBeHidden();
+    await page.getByTestId('ai-intro-toggle').click();
+    await expect(intro).toBeVisible();
+    await expect(intro).toContainText('HyperFrames');
+  });
   for (const p of ['/ai/motion/01-pixel/', '/ai/slide/']) {
     test(`${p} has no horizontal page scroll`, async ({ page }) => {
       await page.goto(p);

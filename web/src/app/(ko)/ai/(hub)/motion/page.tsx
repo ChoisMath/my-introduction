@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 export default async function MotionPage() {
   const items = await getRenderedMotions();
   return (
-    <section className="gutter pt-4 pb-8">
+    <section className="gutter pt-2 pb-8 md:pt-4">
       <div className="mx-auto w-full max-w-site">
         {items.length > 0 ? (
           <Suspense>
