@@ -6,7 +6,7 @@ const item = 'inline-flex min-h-11 items-center gap-2 rounded-full border border
 
 export function Contact({ profile, ui }: { profile: Profile; ui: Ui }) {
   return (
-    <Section id="contact" title={ui.sections.contact}>
+    <Section id="contact" title={ui.sections.contact} width="wide">
       <div className="flex flex-wrap gap-2">
         <a href={`mailto:${profile.links.email}`} className={item}><span className="text-muted">{ui.contact.email}</span>{profile.links.email}</a>
         <a href={profile.links.github} target="_blank" rel="noreferrer" className={item}><span className="text-muted">{ui.contact.github}</span>ChoisMath ↗</a>

@@ -4,7 +4,7 @@ import { Reveal } from '../motion/Reveal';
 
 export function Pillars({ profile, ui }: { profile: Profile; ui: Ui }) {
   return (
-    <Section id="pillars" title={ui.sections.pillars}>
+    <Section id="pillars" title={ui.sections.pillars} width="wide">
       <div className="grid gap-2 md:grid-cols-3">
         {profile.pillars.map((p, i) => (
           <Reveal key={p.id} delay={i * 0.05} className="h-full">

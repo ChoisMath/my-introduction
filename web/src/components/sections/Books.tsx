@@ -6,7 +6,8 @@ import { Reveal } from '../motion/Reveal';
 export function Books({ profile, ui }: { profile: Profile; ui: Ui }) {
   return (
     <Section id="books" title={ui.sections.books}>
-      <ul className="grid gap-4 sm:grid-cols-3">
+      {/* 3권뿐이라 넓은 화면에서는 6칸 그리드에 3칸만 써서 표지가 과하게 커지지 않게 한다. */}
+      <ul className="grid gap-4 sm:grid-cols-3 xl:grid-cols-6">
         {profile.books.map((b, i) => (
           <li key={b.id}>
             <Reveal delay={i * 0.05}>

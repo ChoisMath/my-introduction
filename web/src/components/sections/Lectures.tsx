@@ -36,7 +36,7 @@ export function Lectures({ profile, ui }: { profile: Profile; ui: Ui }) {
     document.getElementById(`lectures-tab-${next}`)?.focus();
   };
   return (
-    <Section id="lectures" title={ui.sections.lectures}>
+    <Section id="lectures" title={ui.sections.lectures} width="wide">
       <div role="tablist" aria-label={ui.sections.lectures} className="mb-3 flex gap-2">
         {TABS.map((t) => (
           <button

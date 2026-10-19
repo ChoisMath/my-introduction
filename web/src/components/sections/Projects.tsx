@@ -8,7 +8,7 @@ const linkClass = 'inline-flex min-h-11 items-center rounded-full border border-
 export function Projects({ projects, ui }: { projects: Project[]; ui: Ui }) {
   return (
     <Section id="projects" title={ui.sections.projects} dark>
-      <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
         {projects.map((p, i) => (
           <li key={p.id} className="h-full">
           <Reveal delay={i * 0.06} className="h-full">

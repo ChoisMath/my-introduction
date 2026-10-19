@@ -19,7 +19,7 @@ function Item({ item, index = 0 }: { item: TimelineItem; index?: number }) {
 
 export function Timeline({ profile, ui }: { profile: Profile; ui: Ui }) {
   return (
-    <Section id="timeline" title={ui.sections.timeline}>
+    <Section id="timeline" title={ui.sections.timeline} width="wide">
       <div className="grid gap-8 lg:grid-cols-[1fr_320px]">
         <ol className="relative space-y-6 border-l border-line pl-2">
           {profile.career.map((c, i) => <Item key={c.id} item={c} index={i} />)}
@@ -38,13 +38,13 @@ export function Timeline({ profile, ui }: { profile: Profile; ui: Ui }) {
       </div>
       <div className="mt-10">
         <h3 className="mb-3 text-lg font-bold">{ui.sections.groups}</h3>
-        <ol className="grid gap-x-8 gap-y-4 sm:grid-cols-2 lg:grid-cols-3">
+        <ol className="grid gap-x-8 gap-y-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {profile.groups.map((g, i) => <Item key={g.id} item={g} index={i} />)}
         </ol>
       </div>
       <div className="mt-10">
         <h3 className="mb-3 text-lg font-bold">{ui.sections.materials}</h3>
-        <ol className="grid gap-x-8 gap-y-4 sm:grid-cols-2 lg:grid-cols-3">
+        <ol className="grid gap-x-8 gap-y-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {profile.materials.map((m, i) => <Item key={m.id} item={m} index={i} />)}
         </ol>
       </div>
