@@ -52,7 +52,7 @@
 │   ├── src/components/slide-gallery/  SlideGallery, SlideCard, SlideSortMenu, SlideViewer, SlidePrompt, slide-order.ts, slide-hash.ts (+test 2)
 │   ├── src/auth.ts                # NextAuth v5 (Google, signIn 은 검증된(email_verified) 구글 계정이면 통과 — 권한은 요청마다 access.ts, pages.error → /ai/signin-error/)
 │   ├── src/lib/  locale, metadata, sections, volume, media, media-serve, media-upload, brand-site, range, motion-admin, slides, admin-emails, prisma, member-role, member-input, members, access, ai-paths, ai-tabs, log (+ *.test.ts)
-│   ├── e2e/ smoke, platform, motion, slide, brand, admin, security, prompt-copy, redirects, hub, membership, account .spec.ts + session.ts(signInAs·MARKER 공용)  # Playwright (standalone 서버 포트 3100, e2e/.volume 픽스처)
+│   ├── e2e/ smoke, platform, motion, slide, brand, admin, security, prompt-copy, redirects, hub, membership, account, desktop .spec.ts + session.ts(signInAs·MARKER 공용)  # Playwright (standalone 서버 포트 3100, e2e/.volume 픽스처)
 │   └── public/  robots.txt, sitemap.xml, img/, video/
 ├── video/                         # Remotion
 │   ├── remotion.config.ts         # Playwright Chromium 사용, @me/content alias
@@ -97,7 +97,7 @@
 | `/en/` | `web/src/app/(en)/en/page.tsx` | 영어 홈. `LangToggle` 이 현재 `#hash` 를 유지한 채 전환 |
 | `/ai/` | `web/src/app/(ko)/ai/page.tsx` | `AI_TABS[0]`(모션그래픽 탭)으로 redirect |
 | `/ai/motion/` | `.../ai/(hub)/motion/page.tsx` | (hub) 그룹 — AI활용 헤더+탭. 모션 갤러리(그룹 필터 `?g=`) |
-| `/ai/motion/[id]/` | `.../ai/(hub)/motion/[id]/page.tsx` | 상세(영상·키보드 좌우 이동). 렌더 안 된 id 는 404. 「프롬프트 복사 (영문)」「(국문)」 — 프롬프트는 누구에게나 props 로 실음(`readMotionAdmin` + `finalPrompt`, 2026-10-19 공개). 「빈칸 편집·장면표」→ `/ai/motion/admin/<id>/` 링크만 `isMember(getViewerState())` 일 때 |
+| `/ai/motion/[id]/` | `.../ai/(hub)/motion/[id]/page.tsx` | 상세(영상·키보드 좌우 이동, 1280px 이상 2단: 영상 왼쪽·정보 오른쪽 sticky). 렌더 안 된 id 는 404. 「프롬프트 복사 (영문)」「(국문)」 — 프롬프트는 누구에게나 props 로 실음(`readMotionAdmin` + `finalPrompt`, 2026-10-19 공개). 「빈칸 편집·장면표」→ `/ai/motion/admin/<id>/` 링크만 `isMember(getViewerState())` 일 때 |
 | `/ai/slide/` | `.../ai/(hub)/slide/page.tsx` | 슬라이드 갤러리(`force-dynamic`, Volume manifest 에 그림이 다 있는 덱만). 분류 칩 `?f=`, 정렬 `?s=pop\|no\|new`(기본 pop=배열 순서), 표지/본문 `?v=body`, 상세 창은 `#<id>` 해시(별도 상세 라우트 없음). 프롬프트는 `readSlideAdmin` 으로 누구에게나 props 로 실음(2026-10-19 공개) |
 | `/ai/brand/` | `.../ai/(hub)/brand/page.tsx` | 브랜드 룩북. 누구나(2026-10-19 공개) iframe(`data-testid=brand-frame`, 높이 `calc(100dvh - nav - footer)`)으로 `/ai/brand/site/` 를 띄움. 사본이라 noindex, robots.txt `Disallow: /ai/brand/` 유지 |
 | `GET /ai/brand/site/[[...path]]` | `.../ai/(hub)/brand/site/[[...path]]/route.ts` | 권한 확인 없이(2026-10-19 공개) Volume `private/brand/<rel>` 을 `serveBrandFile` 로 응답(Cache-Control private, X-Robots-Tag noindex). 허용 rel 은 `volume.ts` `isBrandFile` |
@@ -159,11 +159,11 @@ zod 스키마로 검증되는 JSON. `getContent(locale)` 이 파싱·캐시, `np
 |---|---|---|
 | `RootShell` | `web/src/components/RootShell.tsx` | html/body, 폰트 import, Nav + main. footer 는 렌더하지 않음(페이지별 `SiteFooter`) |
 | `HomePage` | `web/src/components/HomePage.tsx` | 서버 컴포넌트. getContent + computeStats → 섹션 8개 + `LegacyAiAnchor` + `SiteFooter`(`ui.footer`). 모션 데이터는 읽지 않음 |
-| `Nav` | `web/src/components/Nav.tsx` | `SECTION_IDS`(hero 제외) 앵커 + 마지막 항목 AI활용(`ui.nav.ai`) → `/ai/`(`AI_HOME`), 로그인 여부와 무관하게 항상 링크(2026-10-19 공개; 홈 연락 섹션의 `contact-ai` 도 같음). 우측 상단은 비로그인이면 `SignInButton`(「로그인 · 승인신청」, `ui.ai.signIn`), 로그인하면 계정 메뉴 |
+| `Nav` | `web/src/components/Nav.tsx` | `max-w-site` + `gutter`(2026-10-19 데스크탑 폭 체계). `SECTION_IDS`(hero 제외) 앵커 + 마지막 항목 AI활용(`ui.nav.ai`) → `/ai/`(`AI_HOME`), 로그인 여부와 무관하게 항상 링크(2026-10-19 공개; 홈 연락 섹션의 `contact-ai` 도 같음). 우측 상단은 비로그인이면 `SignInButton`(「로그인 · 승인신청」, `ui.ai.signIn`), 로그인하면 계정 메뉴 |
 | `Contact` | `web/src/components/sections/Contact.tsx` | 연락처 + AI활용 링크(`/ai/`, 라벨은 `ui.nav.ai` 하나 — 탭 이름은 나열하지 않음). 비로그인이면 비활성 span. `isSignedIn` prop(HomePage 가 `getViewerState` 로 판정) |
 | `SiteFooter` | `web/src/components/SiteFooter.tsx` | 화면 바닥 고정 footer(높이 `--footer-h`, globals.css) + 같은 높이 spacer. 문구가 달라 페이지별로 렌더: 홈은 `ui.footer`, `ai/(hub)/layout.tsx` 는 oppadu.com/ai 2차 저작물 고지(링크). (app) 전체 화면 앱은 없음 |
 | `LegacyAiAnchor` | `web/src/components/LegacyAiAnchor.tsx` | 'use client'. 해시 `#ai`/`#motion` 이면 `location.replace('/ai/')` — 해시는 서버로 안 가서 `redirects()` 로 못 잡음 |
-| `Section` | `web/src/components/Section.tsx` | 섹션 래퍼 (id, title, dark, nav 높이 scroll-mt) |
+| `Section` | `web/src/components/Section.tsx` | 섹션 래퍼 (id, title, dark, `width: site \| wide`, `gutter`, nav 높이 scroll-mt). 히어로만 이 래퍼를 쓰지 않는다 |
 | `Hero` | `web/src/components/sections/Hero.tsx` | `HeroStage` 안에 Typewriter 3줄(소속·이름·태그라인) + 픽토그램 + VideoDialog |
 | `HeroStage` | `web/src/components/motion/HeroStage.tsx` | 히어로 20초 주기 제공자. GridBackground + HeroVideo 렌더, 영상 `onLoop` 로 주기 재동기화 |
 | `hero-cycle.ts` | `web/src/components/motion/hero-cycle.ts` | `HERO_CYCLE_MS=20000`, `HeroCycleContext`, `useHeroCycle` |
@@ -268,6 +268,7 @@ zod 스키마로 검증되는 JSON. `getContent(locale)` 이 파싱·캐시, `np
 - **슬라이드 프롬프트도 git·공개 HTML 금지**: `private/slide-admin.json` 은 Volume 에만, 공개 데이터 `content/slide/public.json` 은 `.strict()` 라 프롬프트가 섞이면 파싱 실패. security.spec 이 `/ai/slide/` 와 `/media/private/slide-admin.json`·`/media/slide/manifest.json` 404 도 검사. e2e 픽스처는 슬라이드 `24`·`63` 두 덱만 렌더된 상태.
 - **브랜드 룩북 콘텐츠는 git 금지**: 저장소가 public 이라 oppadu 브랜드 룩북 복사본은 Volume `private/brand/` 에만 둔다(작성자 허락 하 재배포). `/ai/brand/` 는 페이지 전체가 승인 회원 전용이고 파일 라우트도 요청마다 권한 확인. e2e 픽스처(`scripts/e2e-fixture.ts`)는 마커 `E2E-BRAND-MARKER` 를 가진 작은 `private/brand/` 만 쓴다(`brand.spec.ts`).
 - **AI활용 탭은 공개, 회원제는 보관(2026-10-19 결정)**: 오빠두엑셀의 허락으로 AI활용 탭(모션·슬라이드 프롬프트, 브랜드 룩북)은 비로그인 방문자에게도 연다. 로그인(Google)·승인신청(`/ai/join/`)·회원 관리(`/ai/admin/members/`)·프롬프트 편집기(`/ai/motion/admin/`)는 **일부러 그대로 남겨 두었다** — 앞으로 제한이 필요한 페이지를 만들 때 쓰기 위해서다. 그때는 회원제를 다시 설계하지 말고 **그 페이지에만** 판정을 붙인다: 서버 라우트/레이아웃/Server Action 은 `requireMember(path)`(미로그인 → 승인신청으로 redirect, 권한 없음 → 404) 또는 `requireAdmin(path)`, 공개 화면 안에서 회원에게만 보일 UI 는 `isMember(await getViewerState())`. 사이트 전체나 허브 레이아웃에 게이트를 다시 두지 않는다(운영자 1인, 방문자 적음 — main 직접 반영 흐름).
+- **데스크탑 폭 체계(2026-10-19, spec `2026-10-19-desktop-layout-design.md`)**: 폭 숫자는 `web/src/app/globals.css` 의 `@theme` 토큰 `--container-site`(120rem=1920, 셸·갤러리·상세·통계·프로젝트·저서)와 `--container-wide`(96rem=1536, 글이 섞인 3기둥·경력·강의·연락)뿐이다 → 유틸리티 `max-w-site`/`max-w-wide`. 좌우 여백은 `--gutter`(8→12→16→24→32→40px, 미디어 쿼리) 하나와 `gutter` 유틸리티. 새 화면은 `gutter` + `max-w-site|wide` 를 쓰고 `max-w-6xl`·`px-2 sm:px-3 …` 나열은 쓰지 않는다. 홈 섹션은 `Section` 의 `width` prop. 히어로는 `Section` 밖(배경 full-bleed, 내용 `max-w-site`). 그리드 열 수: 모션 2/3/4/5(xl)/6(2xl), 슬라이드 1/2/3/4(xl), 프로젝트 1/2/3/4(xl)/5(2xl), 저서 1/3/6(xl, 3칸만 사용), 타임라인 소그리드 1/2/3/4(xl). 모션 상세는 `xl:` 2단(영상 왼쪽, 정보 오른쪽 sticky). 검사: `web/e2e/desktop.spec.ts`(1920·2560·1024).
 - **로그아웃 복귀 공개 경로**: `ai-paths.ts` `PUBLIC_AI` 에 `/ai/slide/`·`/ai/brand/` 포함 — 새 공개 탭을 만들면 여기도 추가.
 - **로컬 dev Volume**: gitignore 된 `web/.env.development.local` 에 `RAILWAY_VOLUME_MOUNT_PATH=<절대경로>/.local-volume`, `AUTH_SECRET` 을 둔다.
 - **standalone 은 server.js 폴더로 chdir** → 상대 `RAILWAY_VOLUME_MOUNT_PATH` 는 엉뚱한 곳을 가리킨다. 항상 절대경로(e2e 는 `web/e2e/.volume` 절대경로).
