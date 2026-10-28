@@ -7,7 +7,8 @@
 - 모션 챕터 설계/계획: `docs/superpowers/specs/2026-10-12-motion-chapter-railway-design.md`, `docs/superpowers/plans/2026-10-12-motion-chapter-railway.md`.
 - 모션 열람자 계획(이전 단계): `.plans/2026-10-12-motion-viewers-{draft,review,final,post-review}.md`.
 - AI활용 허브·회원제 설계: `docs/superpowers/specs/2026-10-12-ai-hub-membership-design.md` (브랜치 `feat/ai-hub-membership`). **2026-10-19 공개 전환**: 오빠두엑셀의 허락을 받아 AI활용 탭(모션·슬라이드 프롬프트, 브랜드 룩북)을 비로그인 방문자에게도 연다. 로그인·승인신청·회원 관리와 회원 기능(프롬프트 편집기 `/ai/motion/admin/`)은 그대로 — 앞으로 제한이 필요한 페이지에 쓴다.
-- AI활용 「슬라이드 디자인」 탭(브랜치 `feat/ai-slide`): spec `docs/superpowers/specs/2026-10-12-ai-slide-design.md`, plan `docs/superpowers/plans/2026-10-12-ai-slide.md`. 학교 상황으로 새로 만든 예시 덱 갤러리 + 스타일 프롬프트 복사(공개).
+- AI활용 「슬라이드 디자인」 탭(브랜치 `feat/ai-slide`): spec `docs/superpowers/specs/2026-10-12-ai-slide-design.md`, plan `docs/superpowers/plans/2026-10-12-ai-slide.md`. 학교 상황으로 새로 만든 예시 덱 갤러리 + 스타일 프롬프트 복사(공개). 2026-10-28 부터 학교 덱이 아직 없는 스타일은 오빠두 원본 예시를 출처와 함께 싣는다(아래 「오빠두 원본 병행」).
+- **오빠두 원본 병행(2026-10-28, 브랜치 `feat/ai-oppadu-originals`)**: 오빠두엑셀이 이메일로 oppadu.com/ai 웹 자료 전부를 출처 표기 조건으로 써도 된다고 허락. 정책: 다시 만든 판(모션 = Chois HyperFrames 렌더, 슬라이드 = 학교 덱)이 있으면 그것을, 없으면 오빠두 원본을 출처와 함께 보여 주고, 다시 만드는 대로 원본을 하나씩 교체한다. 공개 데이터의 `source` 필드(`chois`/`school` vs `oppadu`)로 구분.
 - AI활용 「브랜드 룩북」 탭(세 번째): oppadu.com 브랜드 룩북(design-systems-site)을 작성자 허락을 받아 그대로 재배포. 누구나 볼 수 있는 iframe(2026-10-19 공개), 콘텐츠는 Volume `private/brand/` 에만(git 미포함).
 - 설계/계획 문서: `docs/superpowers/specs/2026-10-09-my-introduction-design.md`, `docs/superpowers/plans/2026-10-09-my-introduction.md`, 약력 초안 `docs/content/profile-draft.md`.
 
@@ -18,7 +19,7 @@
 ├── Dockerfile, railway.json       # Railway 빌드(Dockerfile CMD 가 시작 시 migrate deploy). railway.json 은 현재 서비스에 미적용
 ├── .plans/                        # 작업 계획 문서 (모션 열람자 등)
 ├── content/                       # @me/content 워크스페이스 (TS 소스 그대로 import)
-│   ├── motion/ schema.ts, index.ts, public.json  # 모션 스타일 공개 데이터(커밋) + 관리자 스키마
+│   ├── motion/ schema.ts, index.ts, public.json  # 모션 스타일 공개 데이터(커밋, 106개 = chois 50 + oppadu 56) + 관리자 스키마
 │   ├── slide/ schema.ts, index.ts, public.json   # 슬라이드 스타일 공개 데이터(커밋, 배열 순서=인기순, .strict()) + 관리자 스키마 (+schema.test.ts)
 │   ├── schema.ts                  # zod 스키마·타입 (profile/projects/ui/tokens/narration)
 │   ├── index.ts                   # getContent(locale)/getNarration/checkParity/idsOf/tokens
@@ -47,7 +48,7 @@
 │   │   ├── RootShell, Nav, LangToggle, Section, HomePage, HeroVideo, VideoDialog, SiteFooter, LegacyAiAnchor
 │   │   ├── motion/  HeroStage, hero-cycle, Typewriter, GridBackground, Reveal, CountUp
 │   │   └── sections/ Hero, Stats, Timeline, Pillars, Projects, Books, Lectures, Contact
-│   ├── src/components/ai-hub/  AiHeader, AiTabs, SignInButton, SignInDialog, JoinForm, AccountMenu, MemberAddForm, ConfirmDelete, clipboard.ts
+│   ├── src/components/ai-hub/  AiHeader, AiTabs, HubFooterNote, OriginalSource, SignInButton, SignInDialog, JoinForm, AccountMenu, MemberAddForm, ConfirmDelete, clipboard.ts
 │   ├── src/components/motion-gallery/  MotionGallery, MotionCard, KeyNav, PromptCopy, GoogleSignInButton, contact.ts, admin/{AdminGallery,AdminDetail,admin.module.css,admin-list,placeholders}
 │   ├── src/components/slide-gallery/  SlideGallery, SlideCard, SlideSortMenu, SlideViewer, SlidePrompt, slide-order.ts, slide-hash.ts (+test 2)
 │   ├── src/auth.ts                # NextAuth v5 (Google, signIn 은 검증된(email_verified) 구글 계정이면 통과 — 권한은 요청마다 access.ts, pages.error → /ai/signin-error/)
@@ -74,8 +75,8 @@
 │       ├── package.json (hyperframes@0.8.145 핀), hyperframes.json, meta.json, CLAUDE.md, AGENTS.md
 │       └── node_modules/, snapshots/, renders/   # gitignore
 ├── scripts/                       # 루트 npm 스크립트 구현 (+ __tests__)
-│   ├── motion-import.ts, media-prepare.ts, media-push.ts, media/manifest.ts, e2e-fixture.ts, copy-standalone-assets.mjs  # 모션 챕터
-│   ├── slide-import.ts            # 슬라이드 원천(school/) → content/slide/public.json + .media-out (+test)
+│   ├── motion-import.ts, media-prepare.ts, media-push.ts, media/manifest.ts, e2e-fixture.ts, copy-standalone-assets.mjs  # 모션 챕터 (Chois판 + 오빠두 원본)
+│   ├── slide-import.ts            # 슬라이드 원천(school/) + 오빠두 원본(`OPPADU_SLIDE_SRC`) → content/slide/public.json + .media-out (+test)
 │   ├── brand-import.ts            # 브랜드 룩북 원천(BRAND_SRC) → .media-out/private/brand/ + manifest (git 미포함)
 │   ├── validate-content.ts        # ko/en id 패리티 검사
 │   ├── gen-tokens-css.ts          # tokens.json → web/src/app/tokens.css (@theme)
@@ -97,8 +98,8 @@
 | `/en/` | `web/src/app/(en)/en/page.tsx` | 영어 홈. `LangToggle` 이 현재 `#hash` 를 유지한 채 전환 |
 | `/ai/` | `web/src/app/(ko)/ai/page.tsx` | `AI_TABS[0]`(모션그래픽 탭)으로 redirect |
 | `/ai/motion/` | `.../ai/(hub)/motion/page.tsx` | (hub) 그룹 — AI활용 헤더+탭. 모션 갤러리(그룹 필터 `?g=`) |
-| `/ai/motion/[id]/` | `.../ai/(hub)/motion/[id]/page.tsx` | 상세(영상·키보드 좌우 이동, 1280px 이상 2단: 영상 왼쪽·정보 오른쪽 sticky). 렌더 안 된 id 는 404. 「프롬프트 복사 (영문)」「(국문)」 — 프롬프트는 누구에게나 props 로 실음(`readMotionAdmin` + `finalPrompt`, 2026-10-19 공개). 「빈칸 편집·장면표」→ `/ai/motion/admin/<id>/` 링크만 `isMember(getViewerState())` 일 때 |
-| `/ai/slide/` | `.../ai/(hub)/slide/page.tsx` | 슬라이드 갤러리(`force-dynamic`, Volume manifest 에 그림이 다 있는 덱만). 분류 칩 `?f=`, 정렬 `?s=pop\|no\|new`(기본 pop=배열 순서), 표지/본문 `?v=body`, 상세 창은 `#<id>` 해시(별도 상세 라우트 없음). 프롬프트는 `readSlideAdmin` 으로 누구에게나 props 로 실음(2026-10-19 공개) |
+| `/ai/motion/[id]/` | `.../ai/(hub)/motion/[id]/page.tsx` | 상세(영상·키보드 좌우 이동, 1280px 이상 2단: 영상 왼쪽·정보 오른쪽 sticky). 렌더 안 된 id 는 404. 「프롬프트 복사 (영문)」「(국문)」 — 프롬프트는 누구에게나 props 로 실음(`readMotionAdmin` + `finalPrompt`, 2026-10-19 공개). 「빈칸 편집·장면표」→ `/ai/motion/admin/<id>/` 링크만 `isMember(getViewerState())` 일 때. `source: 'oppadu'` 면 개념 설명 아래 `OriginalCredit`(오빠두 「모션 스타일 갤러리」 링크) |
+| `/ai/slide/` | `.../ai/(hub)/slide/page.tsx` | 슬라이드 갤러리(`force-dynamic`, Volume manifest 에 그림이 다 있는 덱만). 분류 칩 `?f=`, 정렬 `?s=pop\|no\|new`(기본 pop=배열 순서), 표지/본문 `?v=body`, 상세 창은 `#<id>` 해시(별도 상세 라우트 없음). 프롬프트는 `readSlideAdmin` 으로 누구에게나 props 로 실음(2026-10-19 공개). 원본(`source: 'oppadu'`) 카드엔 「원본」 배지, 상세 창엔 출처 줄 |
 | `/ai/brand/` | `.../ai/(hub)/brand/page.tsx` | 브랜드 룩북. 누구나(2026-10-19 공개) iframe(`data-testid=brand-frame`, 높이 `calc(100dvh - nav - footer)`)으로 `/ai/brand/site/` 를 띄움. 사본이라 noindex, robots.txt `Disallow: /ai/brand/` 유지 |
 | `GET /ai/brand/site/[[...path]]` | `.../ai/(hub)/brand/site/[[...path]]/route.ts` | 권한 확인 없이(2026-10-19 공개) Volume `private/brand/<rel>` 을 `serveBrandFile` 로 응답. `.html` 에는 `brand-embed.ts` 의 덮어쓰기 `<style>` 을 `</head>` 앞에 끼워 사본의 허브 셸(`.aih-side`·`.aih-mnav`·`.aihx-crumb`·목록의 `.otl-band--content`)을 숨기고 필터·결과만 남김(사본 파일은 그대로)(Cache-Control private, X-Robots-Tag noindex). 허용 rel 은 `volume.ts` `isBrandFile` |
 | `/ai/join/` | `.../ai/(hub)/join/{page,actions}.tsx` | 승인신청(이름·소속). Server Action `applyAction` → PENDING 생성/갱신 |
@@ -106,7 +107,7 @@
 | `/ai/motion/admin/`, `/ai/motion/admin/[id]/` | `.../ai/(app)/motion/admin/` | (app) 전체 화면 어두운 앱. `requireMember` — 관리자(`ADMIN_EMAILS`) 또는 승인 회원. 프롬프트·장면표·소리 큐. 목록 머리글 「회원 관리」 링크는 관리자만 |
 | `/ai/admin/members/` | `.../ai/(app)/admin/members/{page,actions}.tsx` | 관리자만(`requireAdmin`). 회원 목록·대기 승인·보류·대기 삭제·추가·이름/소속 수정 — Server Actions `approveAction`/`suspendAction`/`deleteAction`/`addMemberAction`/`updateProfileAction` |
 | `/motion/…` (옛 경로) | `web/next.config.ts` `redirects()` | 308 → `/ai/motion/…`, `/motion/admin/viewers` → `/ai/admin/members/`, `/motion/signin-error` → `/ai/signin-error/` (슬래시 유무 모두) |
-| `GET/HEAD /media/[...path]` | `web/src/app/media/[...path]/route.ts` | `media/motion/<id>/(video.mp4\|preview.mp4\|poster.webp)`, `media/slide/<id>/[s/\|t/]<k>.webp` 만 Range 스트리밍(`volume.ts` `SERVABLE`). 그 외 404 |
+| `GET/HEAD /media/[...path]` | `web/src/app/media/[...path]/route.ts` | `media/motion/<id>/(video.mp4\|preview.mp4\|poster.webp)`(id 숫자 2–3자리), `media/slide/<id>/[s/\|t/]<k>.webp` 만 Range 스트리밍(`volume.ts` `SERVABLE`). 그 외 404 |
 | `PUT /api/media?path=` | `web/src/app/api/media/route.ts` | `MEDIA_UPLOAD_TOKEN` Bearer. 같은 허용 경로만 |
 | `GET /api/media/manifest` | `.../api/media/manifest/route.ts` | 토큰. Volume 파일 해시 목록(media:push 가 차이만 업로드). `?set=slide` 면 `media/slide/manifest.json`, `?set=brand` 면 `private/brand/manifest.json` |
 | `/api/health` | `.../api/health/route.ts` | Railway 헬스체크 |
@@ -146,9 +147,9 @@ zod 스키마로 검증되는 JSON. `getContent(locale)` 이 파싱·캐시, `np
 | `tokensSchema` | `tokens.json` | color(12개 hex), font{sans,mono}, radius{card} | → `tokens.css` `@theme` 변수 (`--color-*`, `--font-*`, `--radius-card`) |
 | `narrationSchema` | `ko/narration.json` | opening, tagline, timeline{id→문장}, pillars, projects{id→문장}, ending | ko 전용. 키는 `narrationKeys()` 로 `timeline.car-2012` 식 클립 키가 됨 |
 | `Stats` | `stats.ts` | years, books, services, awards | 강의 수는 숫자 대신 `ui.stats.lecturesValue` |
-| `motionPublicSchema` | `content/motion/schema.ts` + `public.json`(커밋) | id(`NN-slug`), no, group(9개 `MOTION_GROUPS`), name, en, use, concept, featured | `.strict()` — 관리자 필드가 섞이면 파싱 실패. 렌더된 id 만 `getRenderedMotions()` 가 노출 |
-| `motionAdminSchema` | Volume `private/motion-admin.json` (**git 에 없음**) | id, prompt, ko, shots[[시간,장면,이유]], cues[[시각,소리,이벤트]] | 관리자 페이지 전용. `motion:import` 가 `.media-out/` 에 만들고 업로드 |
-| `slidePublicSchema` | `content/slide/schema.ts` + `public.json`(커밋) | id(2–3자리 원천 번호), no, family(7종 `SLIDE_FAMILIES`), name, look, use, topic, slides(1–12), cover, body(대표 장 번호), added(YYYY-MM-DD) | `.strict()`. 배열 순서 = 인기순(`getSlideList()` 는 정렬 안 함). 그림이 다 올라간 덱만 `getRenderedSlides()` 가 노출 |
+| `motionPublicSchema` | `content/motion/schema.ts` + `public.json`(커밋) | id(`NN-slug`/`NNN-slug`, regex `^\d{2,3}-[a-z0-9-]+$`), no(상한 없음, 원본은 51–119 중간 빈 번호 있음), group(9개 `MOTION_GROUPS`), name, en, use, concept, featured, source(`MOTION_SOURCES` = `chois`·`oppadu`, 필수) | `.strict()` — 관리자 필드가 섞이면 파싱 실패. 렌더된 id 만 `getRenderedMotions()` 가 노출 |
+| `motionAdminSchema` | Volume `private/motion-admin.json` (**git 에 없음**) | id, prompt, ko, shots[[시간,장면,이유]], cues[[시각,소리,이벤트]] | 관리자 페이지 전용. `motion:import` 가 `.media-out/` 에 만들고 업로드. 원본 항목의 prompt/ko 는 빈칸이 이미 채워진 완성본(`final.en`/`final.ko`) — 원본 v2 틀 문법이 사이트 빈칸 문법과 달라서 |
+| `slidePublicSchema` | `content/slide/schema.ts` + `public.json`(커밋) | id(2–3자리 원천 번호), no, family(7종 `SLIDE_FAMILIES`), name, look, use, topic?(원본엔 없음 → 상세 창 「예시 주제」 생략), slides(1–12), cover, body(대표 장 번호), added(YYYY-MM-DD), source(`SLIDE_SOURCES` = `school`·`oppadu`, 필수) | `.strict()`. 배열 순서 = 오빠두 원본의 현재 인기순(학교 덱이 있는 자리는 학교 덱, 원본 목록에 없는 학교 덱은 뒤에)(`getSlideList()` 는 정렬 안 함). 전체 748 스타일. 그림이 다 올라간 덱만 `getRenderedSlides()` 가 노출 |
 | `slideAdminSchema` | Volume `private/slide-admin.json` (**git 에 없음**) | [{id, prompt}] | `slide:import` 가 `.media-out/` 에 만들고 `media:push -- --set slide` 로 업로드 |
 | `mediaManifestSchema` | Volume `media/motion/manifest.json` | 경로 → {size, sha256, updatedAt} | `media:prepare` 산출, 서버 `/api/media/manifest` 가 diff 기준으로 제공 |
 | Volume 구조 | `$RAILWAY_VOLUME_MOUNT_PATH` | `media/motion/<id>/{video.mp4,preview.mp4,poster.webp}`, `media/motion/manifest.json`, `private/motion-admin.json` · `media/slide/<id>/{k}.webp`(1376×768), `s/{k}.webp`(172×96 장 넘김 썸네일), `t/{k}.webp`(760×424, 표지·본문 장만 카드용), `media/slide/manifest.json`, `private/slide-admin.json` · `private/brand/`(`BRAND_DIR`) — `index.html`, `brand/<slug>.html`, `assets/{app,ai-hub-static,shell}.js`, `assets/{app,ai-hub,shell,tokens}.css`, `assets/fonts/PretendardVariable.woff2`, `data/brands-index.json`, `data/{hero,detail}/<slug>.json`, `private/brand/manifest.json`(`BRAND_MANIFEST_PATH`) | `/media/*` 는 `SERVABLE` 패턴(모션 3파일·슬라이드 webp)만 공개, manifest·`private/` 는 절대 서빙 안 함. 단 `private/brand/` 는 `/ai/brand/site/` 가 누구에게나 `isBrandFile` 허용 경로만 서빙(2026-10-19 공개) |
@@ -161,7 +162,7 @@ zod 스키마로 검증되는 JSON. `getContent(locale)` 이 파싱·캐시, `np
 | `HomePage` | `web/src/components/HomePage.tsx` | 서버 컴포넌트. getContent + computeStats → 섹션 8개 + `LegacyAiAnchor` + `SiteFooter`(`ui.footer`). 모션 데이터는 읽지 않음 |
 | `Nav` | `web/src/components/Nav.tsx` | `max-w-site` + `gutter`(2026-10-19 데스크탑 폭 체계). `SECTION_IDS`(hero 제외) 앵커 + 마지막 항목 AI활용(`ui.nav.ai`) → `/ai/`(`AI_HOME`), 로그인 여부와 무관하게 항상 링크(2026-10-19 공개; 홈 연락 섹션의 `contact-ai` 도 같음). 우측 상단은 비로그인이면 `SignInButton`(「로그인 · 승인신청」, `ui.ai.signIn`), 로그인하면 계정 메뉴 |
 | `Contact` | `web/src/components/sections/Contact.tsx` | 연락처 + AI활용 링크(`/ai/`, 라벨은 `ui.nav.ai` 하나 — 탭 이름은 나열하지 않음). 비로그인이면 비활성 span. `isSignedIn` prop(HomePage 가 `getViewerState` 로 판정) |
-| `SiteFooter` | `web/src/components/SiteFooter.tsx` | 화면 바닥 고정 footer(높이 `--footer-h`, globals.css) + 같은 높이 spacer. 문구가 달라 페이지별로 렌더: 홈은 `ui.footer`, `ai/(hub)/layout.tsx` 는 oppadu.com/ai 2차 저작물 고지(링크). (app) 전체 화면 앱은 없음 |
+| `SiteFooter` | `web/src/components/SiteFooter.tsx` | 화면 바닥 고정 footer(높이 `--footer-h`, globals.css) + 같은 높이 spacer. 문구가 달라 페이지별로 렌더: 홈은 `ui.footer`, `ai/(hub)/layout.tsx` 는 `HubFooterNote`(oppadu.com/ai 고지 링크 — 모션·슬라이드 「…의 자료를 가공하거나 출처를 밝혀 옮긴 것입니다.」, 브랜드 「…에서 옮겨온 자료입니다.」). (app) 전체 화면 앱은 없음 |
 | `LegacyAiAnchor` | `web/src/components/LegacyAiAnchor.tsx` | 'use client'. 해시 `#ai`/`#motion` 이면 `location.replace('/ai/')` — 해시는 서버로 안 가서 `redirects()` 로 못 잡음 |
 | `Section` | `web/src/components/Section.tsx` | 섹션 래퍼 (id, title, dark, `width: site \| wide`, `gutter`, nav 높이 scroll-mt). 히어로만 이 래퍼를 쓰지 않는다 |
 | `Hero` | `web/src/components/sections/Hero.tsx` | `HeroStage` 안에 Typewriter 3줄(소속·이름·태그라인) + 픽토그램 + VideoDialog |
@@ -180,7 +181,8 @@ zod 스키마로 검증되는 JSON. `getContent(locale)` 이 파싱·캐시, `np
 | `member-input.ts` | `web/src/lib/member-input.ts` (+test) | zod `applySchema`·`adminAddSchema`·`memberIdSchema` (이메일 trim·소문자) |
 | `access.ts` | `web/src/lib/access.ts` | 요청별 권한. `getAccess`(env `ADMIN_EMAILS` 먼저 → admin, 아니면 DB 조회, DB 오류는 `unavailable` = fail-closed), `requireMember`/`requireAdmin`(미로그인 redirect, 권한 없음 404), `loadMotionAdmin`, `getViewerState`(헤더·계정 메뉴용), `isMember(state)`(공개 상세가 편집기 링크를 보일지). 탭 게이트 함수(`getPromptAccess`·`getSlidePromptAccess`·`getBrandAccess`)는 2026-10-19 공개 전환으로 삭제 |
 | `ai-paths.ts` | `web/src/lib/ai-paths.ts` (+test) | `/ai/…` 경로 상수(`AI_BRAND='/ai/brand/'`, `AI_BRAND_SITE='/ai/brand/site/'` 포함)와 `aiMotionPath`/`aiMotionAdminPath`, `safeReturnPath`(`/ai/…` 와 홈 `/`·`/en/` 만)·`joinPath`·`signOutReturnPath`(open redirect 방지) |
-| `ai-tabs.ts` | `web/src/lib/ai-tabs.ts` (+test) | `AI_TABS`(motion·slide·brand 순) — 새 허브 탭은 여기 한 항목 + `(hub)/<id>/` 라우트 추가 |
+| `ai-tabs.ts` | `web/src/lib/ai-tabs.ts` (+test) | `AI_TABS`(motion·slide·brand 순) — 새 허브 탭은 여기 한 항목 + `(hub)/<id>/` 라우트 추가. motion·slide intro 는 원본을 출처와 함께 싣는다는 문장 포함 |
+| `OriginalBadge`, `OriginalCredit` | `web/src/components/ai-hub/OriginalSource.tsx` | 오빠두 원본(`source: 'oppadu'`) 표시. `OriginalBadge` = 카드 좌상단 「원본」 배지(MotionCard·SlideCard), `OriginalCredit` = 「출처 오빠두엑셀 「…」 원본 예시·프롬프트」 링크 줄(모션 상세·SlideViewer). URL 상수 `OPPADU_MOTION_URL`·`OPPADU_SLIDE_URL`. 허락 조건이 출처 표기라 카드·상세 양쪽에 둔다 |
 | `log.ts` | `web/src/lib/log.ts` (+test) | `errorTag` — 오류를 태그로만 로그(이메일 등 개인정보 미기록) |
 | `slides.ts` | `web/src/lib/slides.ts` (+test) | server-only. `slideRel`, `renderedSlides`/`getRenderedSlides`(manifest 기준 `?v=sha8` 붙은 URL, 빠진 그림 있는 덱 제외), `readSlideAdmin`(mtime 캐시) |
 | `brand-site.ts` | `web/src/lib/brand-site.ts` | `serveBrandFile(root, rel)` — Volume `private/brand/` 파일 응답(Cache-Control private, X-Robots-Tag noindex) |
@@ -210,7 +212,7 @@ zod 스키마로 검증되는 JSON. `getContent(locale)` 이 파싱·캐시, `np
 ## 외부 의존성
 - 외부 서비스: Railway(호스팅·Volume·PostgreSQL), Google OAuth(관리자·회원 로그인, next-auth 5.0.0-beta.32).
 - 서버 환경변수: `RAILWAY_VOLUME_MOUNT_PATH`(절대경로), `PORT`(Railway 자동), `AUTH_SECRET`, `AUTH_URL`(운영 `https://me.chois.pro`), `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET`, `ADMIN_EMAILS`(쉼표 구분), `MEDIA_UPLOAD_TOKEN`, `DATABASE_URL`(운영은 Railway 참조 `${{Postgres.DATABASE_URL}}`, 로컬은 `web/.env.local`). 예시는 루트 `.env.example`.
-- 스크립트 전용: `MOTION_SRC`(motion 폴더, motion:import), `SLIDE_SRC`(슬라이드 원천, slide:import — 기본 `/Volumes/Chois_SD2/dev/motion/slide/school`), `BRAND_SRC`(브랜드 룩북 원천, brand:import — 기본 `/Volumes/Chois_SD2/dev/motion/brand`), `MEDIA_PUSH_URL`(+`MEDIA_UPLOAD_TOKEN`, media:push), `E2E_DATABASE_URL`(e2e 전용, localhost 만 허용, 실행마다 `Member` TRUNCATE 후 `viewer@`(APPROVED)·`pending@`(PENDING, admin.spec 이 변경)·`pending2@`(PENDING, 읽기 전용) 시드. 없으면 회원 e2e skip. Playwright 서버의 `DATABASE_URL` 은 항상 이 값으로 덮어씀).
+- 스크립트 전용: `MOTION_SRC`(motion 폴더, motion:import), `SLIDE_SRC`(슬라이드 원천, slide:import — 기본 `/Volumes/Chois_SD2/dev/motion/slide/school`), `OPPADU_SLIDE_SRC`(오빠두 슬라이드 원본 스크랩, slide:import — 기본 `SLIDE_SRC` 의 상위 폴더 = `/Volumes/Chois_SD2/dev/motion/slide`), `BRAND_SRC`(브랜드 룩북 원천, brand:import — 기본 `/Volumes/Chois_SD2/dev/motion/brand`), `MEDIA_PUSH_URL`(+`MEDIA_UPLOAD_TOKEN`, media:push), `E2E_DATABASE_URL`(e2e 전용, localhost 만 허용, 실행마다 `Member` TRUNCATE 후 `viewer@`(APPROVED)·`pending@`(PENDING, admin.spec 이 변경)·`pending2@`(PENDING, 읽기 전용) 시드. 없으면 회원 e2e skip. Playwright 서버의 `DATABASE_URL` 은 항상 이 값으로 덮어씀).
 - `scripts/narrate.ts` 만 선택적으로 사용:
 
 | 키 | 용도 | 기본값 |
@@ -230,9 +232,9 @@ zod 스키마로 검증되는 JSON. `getContent(locale)` 이 파싱·캐시, `np
 | `npm run e2e` | standalone 서버(3100, `web/e2e/.volume` 픽스처 = `scripts/e2e-fixture.ts`)로 Playwright — `build:web` 선행 필요 |
 | `npm start` | standalone 서버 실행 (`RAILWAY_VOLUME_MOUNT_PATH` 절대경로 필요) |
 | `npm -w web run db:migrate` / `db:deploy` | `prisma migrate dev` / `prisma migrate deploy`. 로컬 DB 는 `npx prisma dev -n motion-e2e --detach` (TCP `postgres://postgres:postgres@localhost:51214/template1?sslmode=disable`). Claude 세션에서는 Prisma 가 `migrate reset` 을 막으므로 픽스처는 migrate deploy + TRUNCATE |
-| `npm run motion:import` | motion 폴더 → `content/motion/public.json`(커밋) + `.media-out/` 관리자 데이터 |
-| `npm run media:prepare` | 렌더 mp4 → 웹용 video/preview/poster 인코딩 + manifest |
-| `npm run slide:import` | 원천 `/Volumes/Chois_SD2/dev/motion/slide/school/` 의 `manifest.json` + `<id>/deck.pdf` + `prompt.txt` → `content/slide/public.json`(커밋) + `.media-out/`(webp 3종·manifest·`private/slide-admin.json`). `deck.pdf` 없는 덱은 건너뜀. env `SLIDE_SRC` |
+| `npm run motion:import` | motion 폴더 `data/chois-gallery.json` + `data/oppadu-v2/gallery.json`(motion 폴더 `scripts/build-oppadu-v2.cjs` 산출물) → `content/motion/public.json`(커밋) + `.media-out/` 관리자 데이터. Chois판 없는 id 는 `source: 'oppadu'` 로 추가(현재 106 = chois 50 + oppadu 56) |
+| `npm run media:prepare` | Chois 렌더 mp4 → 웹용 video/preview/poster 인코딩. Chois판 없는 id 는 `MOTION_SRC/media/oppadu/{v,c,p}/<id>`(이미 1280×720 영상 / 640×360 무음 미리보기 / 1280×720 webp 포스터)를 재인코딩 없이 faststart remux(`-c copy`)·포스터 복사, stamp 는 세 원본 sha 를 이은 값. + manifest(현재 318파일) |
+| `npm run slide:import` | 원천 `/Volumes/Chois_SD2/dev/motion/slide/school/` 의 `manifest.json` + `<id>/deck.pdf` + `prompt.txt` → `content/slide/public.json`(커밋) + `.media-out/`(webp 3종·manifest·`private/slide-admin.json`). `deck.pdf` 없는 덱은 건너뜀. 학교 덱 없는 스타일은 `OPPADU_SLIDE_SRC` 의 `data/styles.json`(`parseOriginalStyles`) + `img/{id}-{k}.webp`·`img/s/`·`img/t/` 를 그대로 `.media-out/media/slide/<id>/` 에 복사(그림 하나라도 없으면 그 스타일 제외). 순서는 `buildSlideData(entries, decks, originals)`. env `SLIDE_SRC`, `OPPADU_SLIDE_SRC` |
 | `npm run brand:import` | `BRAND_SRC`(기본 `/Volumes/Chois_SD2/dev/motion/brand`, 그 폴더 `build.cjs` 산출물) → `.media-out/private/brand/`(881파일 ≈ 44MB) + manifest(`buildBrandManifest`). index.html 의 형제 링크 2개(`../index.html`, `../slide/index.html`)만 oppadu 원본 URL 로 되돌리고, 각 html 에 교차 출처 링크를 새 탭으로 여는 작은 클릭 스크립트를 주입(원본 사이트는 iframe 에 안 뜸) |
 | `npm run media:push` | manifest diff 로 바뀐 파일만 `PUT /api/media` 업로드 (재배포 불필요). `-- --set slide` 면 슬라이드 세트, `-- --set brand` 면 브랜드 룩북(admin 파일 없음)(기본 motion) |
 | `npm run assets` | asset/ → web/public/img, video/public/img, 파비콘 |
@@ -247,8 +249,8 @@ zod 스키마로 검증되는 JSON. `getContent(locale)` 이 파싱·캐시, `np
 - **`AUTH_URL` 필수**: standalone 서버가 `HOSTNAME=0.0.0.0`·`PORT=8080` 으로 떠서, 없으면 Auth.js 가 로그인·콜백 URL 을 `https://0.0.0.0:8080/...` 로 만든다(2026-10-12 실제 장애). 도메인을 바꾸면 이 값과 Google 리디렉션 URI 를 함께 바꾼다.
 - Railway CLI 링크: 이 폴더를 위 서비스에 연결해 둠(`railway status`). `AUTH_SECRET` 은 바꾸면 관리자 세션이 모두 풀린다.
 - Volume 내용: 모션 01–50 전부 영상·미리보기·포스터(manifest 150파일, 약 299 MB / Volume 1 GB) + `private/motion-admin.json`(50개). 운영 확인: `/ai/motion/` 카드 50, 홈 `#ai` 카드 6, 영상 Range 206, `/media/private/...` 404, 공개 HTML 에 프롬프트 0건. (홈 `#ai` 섹션은 2026-10-13 제거)
-- 슬라이드 원천: `/Volumes/Chois_SD2/dev/motion/slide/` 는 오빠두엑셀 스크랩(개인 참고용, **공개 배포 금지** — 코드·문구·이미지를 이 저장소에 복사하지 않음). 학교용 덱은 `school/<id>/{source.md,prompt.txt,instructions.txt,deck.pdf,notebook.txt}` 에서 NotebookLM(`notebooklm generate slide-deck`)으로 만들고, `school/manifest.json` 이 공개 문구·순서를 가진다.
-- 영상 원천: `/Volumes/Chois_SD2/dev/motion` (`MOTION_SRC` 기본값). 그 폴더의 `data/chois-gallery.json` 과 `media/chois/<id>.mp4` 만 읽는다. 렌더 절차는 그 폴더의 `.claude/PROJECT_MAP.md` 「21–50 렌더 절차」.
+- 슬라이드 원천: `/Volumes/Chois_SD2/dev/motion/slide/` 는 오빠두엑셀 스크랩. 2026-10-28 허락으로 출처 표기 시 원본 예시·프롬프트 공개 가능(학교 덱 없는 스타일) — 단 **원본 그림·프롬프트는 Volume 에만 두고 이 저장소(git)에는 복사하지 않는다**(공개 메타데이터 `content/slide/public.json` 만 커밋). 학교용 덱은 `school/<id>/{source.md,prompt.txt,instructions.txt,deck.pdf,notebook.txt}` 에서 NotebookLM(`notebooklm generate slide-deck`)으로 만들고, `school/manifest.json` 이 공개 문구·순서를 가진다.
+- 영상 원천: `/Volumes/Chois_SD2/dev/motion` (`MOTION_SRC` 기본값). 그 폴더의 `data/chois-gallery.json`·`media/chois/<id>.mp4` 와 오빠두 원본 `data/oppadu-v2/gallery.json`·`media/oppadu/{v,c,p}/<id>` 만 읽는다. 렌더 절차는 그 폴더의 `.claude/PROJECT_MAP.md` 「21–50 렌더 절차」.
 - 업로드 명령(토큰을 화면에 내지 않음):
   `T=$(railway variables --json | python3 -c 'import json,sys;print(json.load(sys.stdin)["MEDIA_UPLOAD_TOKEN"])') && MEDIA_PUSH_URL=https://me.chois.pro MEDIA_UPLOAD_TOKEN="$T" npm run media:push`
 - 남은 일:
@@ -262,10 +264,12 @@ zod 스키마로 검증되는 JSON. `getContent(locale)` 이 파싱·캐시, `np
   - [ ] 다른 Google 계정으로 가입 신청 → 관리자 승인 → 프롬프트 사용 → 대기로 변경 시 차단 확인
   - [ ] 운영에서 Server Action Origin 검사 동작 확인
   - [ ] 로컬 e2e PGlite(:51214)에 남은 테스트용 `MotionViewer` 테이블 정리 (사용자 확인 필요)
+  - [ ] (feat/ai-oppadu-originals) **Volume 용량 확장 필요**: push 후 예상 사용량 ≈ 1.3 GB(모션 558 MB, 슬라이드 ≈ 700 MB, private 47 MB)로 현재 Volume 1 GB 초과. 확장 전에는 `media:push` 가 중간에 실패할 수 있음
 
 ## 주의사항 / 특이 패턴
 - **관리자 데이터는 Volume 에만**: 프롬프트·장면표·소리 큐(`motion-admin.json`)·`slide-admin.json` 은 git·빌드 산출물에 들어가면 안 된다. 2026-10-19 공개 전환 뒤 **완성 프롬프트**(빈칸을 기본값으로 채운 `finalPrompt` 결과, 슬라이드 스타일 프롬프트)는 공개 상세 `/ai/motion/[id]/`·`/ai/slide/` HTML 에 누구에게나 실린다. 원문 빈칸 템플릿(`{{Channel name=`)·장면표 원본은 여전히 편집기(회원)에서만. `web/e2e/security.spec.ts` 가 프롬프트를 싣지 않는 화면(홈·목록·승인신청)의 마커(`E2E-ADMIN-MARKER`) 유출, 모든 공개 화면의 `{{Channel name=` 유출, 빌드 산출물, `/media` 경로 우회, 토큰 없는 업로드를 검사.
 - **슬라이드 프롬프트도 git·공개 HTML 금지**: `private/slide-admin.json` 은 Volume 에만, 공개 데이터 `content/slide/public.json` 은 `.strict()` 라 프롬프트가 섞이면 파싱 실패. security.spec 이 `/ai/slide/` 와 `/media/private/slide-admin.json`·`/media/slide/manifest.json` 404 도 검사. e2e 픽스처는 슬라이드 `24`·`63` 두 덱만 렌더된 상태.
+- **오빠두 원본 병행(2026-10-28)**: 출처 표기가 허락 조건이므로 `source: 'oppadu'` 항목엔 카드 「원본」 배지와 상세 출처 줄(`OriginalSource.tsx`)을 반드시 유지. 원본 그림·영상·프롬프트는 Volume 에만(git 금지, 공개 메타데이터만 커밋). 다시 만든 판이 생기면 원천 쪽(Chois 렌더·학교 덱)만 추가하고 import 를 다시 돌리면 같은 id 가 자동으로 교체된다. Volume 사용량이 1 GB 를 넘으므로(≈ 1.3 GB 예상) push 전 Volume 확장 필요(미완).
 - **브랜드 룩북 콘텐츠는 git 금지**: 저장소가 public 이라 oppadu 브랜드 룩북 복사본은 Volume `private/brand/` 에만 둔다(작성자 허락 하 재배포). `/ai/brand/` 는 페이지 전체가 승인 회원 전용이고 파일 라우트도 요청마다 권한 확인. e2e 픽스처(`scripts/e2e-fixture.ts`)는 마커 `E2E-BRAND-MARKER` 를 가진 작은 `private/brand/` 만 쓴다(`brand.spec.ts`).
 - **AI활용 탭은 공개, 회원제는 보관(2026-10-19 결정)**: 오빠두엑셀의 허락으로 AI활용 탭(모션·슬라이드 프롬프트, 브랜드 룩북)은 비로그인 방문자에게도 연다. 로그인(Google)·승인신청(`/ai/join/`)·회원 관리(`/ai/admin/members/`)·프롬프트 편집기(`/ai/motion/admin/`)는 **일부러 그대로 남겨 두었다** — 앞으로 제한이 필요한 페이지를 만들 때 쓰기 위해서다. 그때는 회원제를 다시 설계하지 말고 **그 페이지에만** 판정을 붙인다: 서버 라우트/레이아웃/Server Action 은 `requireMember(path)`(미로그인 → 승인신청으로 redirect, 권한 없음 → 404) 또는 `requireAdmin(path)`, 공개 화면 안에서 회원에게만 보일 UI 는 `isMember(await getViewerState())`. 사이트 전체나 허브 레이아웃에 게이트를 다시 두지 않는다(운영자 1인, 방문자 적음 — main 직접 반영 흐름).
 - **데스크탑 폭 체계(2026-10-19, spec `2026-10-19-desktop-layout-design.md`)**: 폭 숫자는 `web/src/app/globals.css` 의 `@theme` 토큰 `--container-site`(120rem=1920, 셸·갤러리·상세·통계·프로젝트·저서)와 `--container-wide`(96rem=1536, 글이 섞인 3기둥·경력·강의·연락)뿐이다 → 유틸리티 `max-w-site`/`max-w-wide`. 좌우 여백은 `--gutter`(8→12→16→24→32→40px, 미디어 쿼리) 하나와 `gutter` 유틸리티. 새 화면은 `gutter` + `max-w-site|wide` 를 쓰고 `max-w-6xl`·`px-2 sm:px-3 …` 나열은 쓰지 않는다. 홈 섹션은 `Section` 의 `width` prop. 히어로는 `Section` 밖(배경 full-bleed, 내용 `max-w-site`). 그리드 열 수: 모션 2/3/4/5(xl)/6(2xl), 슬라이드 1/2/3/4(xl), 프로젝트 1/2/3/4(xl)/5(2xl), 저서 1/3/6(xl, 3칸만 사용), 타임라인 소그리드 1/2/3/4(xl). 모션 상세는 `xl:` 2단(영상 왼쪽, 정보 오른쪽 sticky). 검사: `web/e2e/desktop.spec.ts`(1920·2560·1024).
@@ -297,4 +301,4 @@ zod 스키마로 검증되는 JSON. `getContent(locale)` 이 파싱·캐시, `np
 - 문서 불일치 메모: `video/public/audio/README.md` 는 BGM 볼륨 0.6 이라 적혀 있으나 실제 `Intro.tsx` `BGM_LEVEL` 은 0.22.
 
 ---
-마지막 업데이트: 2026-10-13
+마지막 업데이트: 2026-10-28

@@ -9,13 +9,13 @@ export const AI_TABS: readonly AiTab[] = [
     id: 'motion',
     label: { ko: '모션', en: 'Motion' },
     href: AI_MOTION,
-    intro: { ko: '기초 바이브코딩부터 에이전틱 AI까지 — HyperFrames 로 직접 만든 10초 인트로.', en: '10-second intros I made with HyperFrames — from vibe-coding basics to agentic AI.' },
+    intro: { ko: '기초 바이브코딩부터 에이전틱 AI까지 — HyperFrames 로 직접 만든 10초 인트로. 아직 다시 만들지 않은 광고·포스터·수업 영상은 오빠두엑셀 원본을 출처와 함께 싣습니다.', en: '10-second intros I made with HyperFrames — from vibe-coding basics to agentic AI. Styles I have not remade yet show the oppadu.com original, credited.' },
   },
   {
     id: 'slide',
     label: { ko: '슬라이드', en: 'Slides' },
     href: AI_SLIDE,
-    intro: { ko: 'NotebookLM·이미지 생성 AI로 수업 자료와 학교 행사 슬라이드를 만들 때 쓰는 스타일 프롬프트 모음입니다. 예시 슬라이드는 모두 학교 상황으로 새로 만들었습니다.', en: 'Style prompts for class materials and school-event slides made with NotebookLM and image-generation AI. Every example deck was remade for school settings.' },
+    intro: { ko: 'NotebookLM·이미지 생성 AI로 수업 자료와 학교 행사 슬라이드를 만들 때 쓰는 스타일 프롬프트 모음입니다. 학교 상황으로 새로 만든 덱이 있으면 그것을, 아직 없으면 오빠두엑셀 원본 예시를 출처와 함께 보여 줍니다.', en: 'Style prompts for class materials and school-event slides made with NotebookLM and image-generation AI. Styles with a school remake show it; the rest show the oppadu.com original, credited.' },
   },
   {
     id: 'brand',

@@ -40,8 +40,8 @@ test('footer is pinned to the bottom with a page-specific text', async ({ page }
   for (const [p, text] of [
     ['/', '© 최재혁, 대구광역시교육청 수학교사'],
     ['/en/', '© Jae-hyuk Choi, Math Teacher, Daegu Metropolitan Office of Education'],
-    ['/ai/motion/', '© 이 페이지는 oppadu.com/ai를 가공한 2차 저작물입니다.'],
-    ['/ai/slide/', '© 이 페이지는 oppadu.com/ai를 가공한 2차 저작물입니다.'],
+    ['/ai/motion/', '© 이 페이지는 oppadu.com/ai의 자료를 가공하거나 출처를 밝혀 옮긴 것입니다.'],
+    ['/ai/slide/', '© 이 페이지는 oppadu.com/ai의 자료를 가공하거나 출처를 밝혀 옮긴 것입니다.'],
   ] as const) {
     await page.goto(p);
     const footer = page.getByTestId('site-footer');

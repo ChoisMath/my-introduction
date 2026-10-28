@@ -6,18 +6,23 @@ export const MOTION_GROUPS = [
 ] as const;
 export type MotionGroup = (typeof MOTION_GROUPS)[number];
 
-export const motionIdSchema = z.string().regex(/^\d{2}-[a-z0-9-]+$/);
+export const motionIdSchema = z.string().regex(/^\d{2,3}-[a-z0-9-]+$/);
+
+// chois = HyperFrames 로 직접 다시 만든 판, oppadu = 아직 변형하지 않아 원본(oppadu.com/ai/motion-styles)을 출처와 함께 싣는 편.
+export const MOTION_SOURCES = ['chois', 'oppadu'] as const;
+export type MotionSource = (typeof MOTION_SOURCES)[number];
 
 // .strict() — 프롬프트·장면표 같은 관리자 필드가 공개 데이터에 섞이면 파싱이 실패해야 한다.
 export const motionPublicSchema = z.object({
   id: motionIdSchema,
-  no: z.number().int().min(1).max(50),
+  no: z.number().int().min(1),
   group: z.enum(MOTION_GROUPS),
   name: z.string().min(1),
   en: z.string().min(1),
   use: z.string().min(1),
   concept: z.string().min(1),
   featured: z.boolean(),
+  source: z.enum(MOTION_SOURCES),
 }).strict();
 export type MotionPublic = z.infer<typeof motionPublicSchema>;
 

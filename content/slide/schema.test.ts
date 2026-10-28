@@ -4,7 +4,7 @@ import { getSlideList, slideAdminListSchema, slidePublicListSchema, slidePublicS
 
 const base = {
   id: '24', no: 24, family: 'hand', name: '스케치노트', look: '설명', use: '용도', topic: '주제',
-  slides: 8, cover: 1, body: 3, added: '2026-10-12',
+  slides: 8, cover: 1, body: 3, added: '2026-10-12', source: 'school',
 };
 
 describe('slidePublicSchema', () => {
@@ -18,6 +18,11 @@ describe('slidePublicSchema', () => {
     expect(() => slidePublicSchema.parse({ ...base, id: '7' })).toThrow();
     expect(() => slidePublicSchema.parse({ ...base, id: '24-a' })).toThrow();
     expect(() => slidePublicSchema.parse({ ...base, family: 'neon' })).toThrow();
+    expect(() => slidePublicSchema.parse({ ...base, source: 'other' })).toThrow();
+  });
+  it('lets originals go without a topic', () => {
+    const { topic: _topic, ...rest } = base;
+    expect(slidePublicSchema.parse({ ...rest, source: 'oppadu' }).topic).toBeUndefined();
   });
 });
 

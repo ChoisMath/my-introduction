@@ -1,3 +1,4 @@
+import { OriginalBadge } from '@/components/ai-hub/OriginalSource';
 import type { SlideCardData } from '@/lib/slides';
 import type { ViewKey } from './slide-order';
 
@@ -15,6 +16,7 @@ export function SlideCard({ item, view, familyLabel, onOpen }: {
         <img data-testid="slide-card-front" src={front} alt={`${item.name} ${view === 'cover' ? '표지' : '본문'}`} width={760} height={424} loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
         {/* eslint-disable-next-line @next/next/no-img-element -- 위와 같음 */}
         <img src={back} alt="" aria-hidden="true" width={760} height={424} loading="lazy" className="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100" />
+        {item.source === 'oppadu' ? <OriginalBadge /> : null}
       </span>
       <span className="mt-1.5 flex min-w-0 items-baseline gap-2">
         <span className="font-mono text-xs text-muted">{item.no}</span>

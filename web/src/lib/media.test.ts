@@ -12,7 +12,7 @@ const manifest: MediaManifest = {
   'media/motion/01-pixel/preview.mp4': entry('c'),
   'media/motion/02-comics/video.mp4': entry('d'),
 };
-const item = (id: string, no: number, featured = false): MotionPublic => ({ id, no, group: '게임·만화', name: id, en: id, use: 'u', concept: 'c', featured });
+const item = (id: string, no: number, featured = false): MotionPublic => ({ id, no, group: '게임·만화', name: id, en: id, use: 'u', concept: 'c', featured, source: 'chois' });
 
 describe('mediaUrl', () => {
   it('builds a versioned url', () => expect(mediaUrl(manifest, '01-pixel', 'video')).toBe('/media/motion/01-pixel/video.mp4?v=aaaaaaaa'));

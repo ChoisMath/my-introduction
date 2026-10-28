@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getContent } from '@me/content';
+import { OPPADU_MOTION_URL, OriginalCredit } from '@/components/ai-hub/OriginalSource';
 import { KeyNav } from '@/components/motion-gallery/KeyNav';
 import { PromptCopy } from '@/components/motion-gallery/PromptCopy';
 import { finalPrompt, type PromptState } from '@/components/motion-gallery/admin/placeholders';
@@ -63,6 +64,7 @@ export default async function MotionDetailPage({ params }: Props) {
           </header>
           <p className="mt-1 text-sm text-muted">{item.use}</p>
           <p className="mt-4 leading-relaxed">{item.concept}</p>
+          {item.source === 'oppadu' ? <OriginalCredit href={OPPADU_MOTION_URL} gallery="모션 스타일 갤러리" className="mt-3 text-muted" /> : null}
           <PromptCopy
             id={item.id}
             canEdit={isMember(viewer)}

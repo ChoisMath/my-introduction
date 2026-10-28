@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { useRef } from 'react';
 import type { MotionCardData } from '@/lib/media';
 import { aiMotionPath } from '@/lib/ai-paths';
+import { OriginalBadge } from '@/components/ai-hub/OriginalSource';
 
 export function MotionCard({ item, label, href, subtitle }: { item: MotionCardData; label: string; href?: string; subtitle?: string | null }) {
   const video = useRef<HTMLVideoElement>(null);
@@ -35,6 +36,7 @@ export function MotionCard({ item, label, href, subtitle }: { item: MotionCardDa
         {item.preview ? (
           <video ref={video} muted loop playsInline preload="none" aria-hidden className="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100" />
         ) : null}
+        {item.source === 'oppadu' ? <OriginalBadge /> : null}
       </div>
       <div className="flex items-baseline gap-2 px-2 pt-2">
         <span className="font-mono text-xs text-muted">{String(item.no).padStart(2, '0')}</span>

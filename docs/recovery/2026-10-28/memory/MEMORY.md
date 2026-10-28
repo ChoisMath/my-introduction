@@ -1,0 +1,6 @@
+- [모션 가이드 프로젝트](motion-guide-project.md) — 오빠두 모션 스타일 갤러리 로컬 가이드 + Chois의 바이브코딩 재작성판. 출처·저작권(개인용)·브리프·빌드 명령 (2026-10-11)
+- [모바일 파일 전송 중단](feedback-no-mobile-file.md) — 노트북으로 보므로 chois-guide.html 을 매번 보내지 않는다 (2026-10-11)
+- [모션 챕터·Railway 이전](motion-chapter-railway.md) — me.chois.pro Railway 배포·영상 01–50 업로드·AI활용 허브(/ai/)·교사 가입 승인(Member) 운영 반영, 영상만 공개·프롬프트는 관리자, 남은 배포 단계 (2026-10-12)
+- [슬라이드 갤러리 스크랩](slide-gallery-scrape.md) — motion/slide/ 오빠두 슬라이드 갤러리 150개 로컬판, Chrome JS 객체 반환으로 프롬프트 추출, 재생성 명령 (2026-10-12)
+- [브랜드 룩북 사본](brand-lookbook-scrape.md) — motion/brand/ 오빠두 디자인 시스템 갤러리 290개 로컬판, 공개 JSON이라 쿠키 불필요, 재생성 명령 (2026-10-13)
+- [오빠두 허락·AI 반영 원칙](oppadu-permission-and-ai-policy.md) — 출처 표기만 하면 전부 사용 가능(2026-10-28), 변형본 우선·없으면 원본, 멤버십 회원 (2026-10-28)

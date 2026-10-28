@@ -5,7 +5,7 @@ import { describe, expect, it } from 'vitest';
 import type { MediaManifest, SlidePublic } from '@me/content';
 import { readSlideAdmin, renderedSlides, slideRel } from './slides';
 
-const deck: SlidePublic = { id: '24', no: 24, family: 'hand', name: 'n', look: 'l', use: 'u', topic: 't', slides: 3, cover: 1, body: 2, added: '2026-10-12' };
+const deck: SlidePublic = { id: '24', no: 24, family: 'hand', name: 'n', look: 'l', use: 'u', topic: 't', slides: 3, cover: 1, body: 2, added: '2026-10-12', source: 'school' };
 const entry = { size: 1, sha256: 'a'.repeat(64), updatedAt: 'x' };
 const full = (d: SlidePublic): MediaManifest => Object.fromEntries([
   ...Array.from({ length: d.slides }, (_, i) => [slideRel(d.id, i + 1, 'full'), entry]),

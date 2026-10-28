@@ -2,6 +2,7 @@
 import { useEffect, useRef } from 'react';
 import type { SlideFamily } from '@me/content';
 import type { SlideCardData } from '@/lib/slides';
+import { OPPADU_SLIDE_URL, OriginalCredit } from '@/components/ai-hub/OriginalSource';
 import { SlidePrompt } from './SlidePrompt';
 import { stepSlide, stepStyle, type ViewerPos } from './slide-order';
 
@@ -112,7 +113,8 @@ export function SlideViewer({ list, pos, onMove, onClose, familyLabel, prompts }
           <h2 id="slide-viewer-name" className="text-xl font-bold">{style.name}</h2>
           <p className="text-sm leading-relaxed">{style.look}</p>
           <p className="text-sm"><span className="mr-2 font-semibold whitespace-nowrap">이럴 때 좋아요</span>{style.use}</p>
-          <p className="text-sm"><span className="mr-2 font-semibold whitespace-nowrap">예시 주제</span>{style.topic}</p>
+          {style.topic ? <p className="text-sm"><span className="mr-2 font-semibold whitespace-nowrap">예시 주제</span>{style.topic}</p> : null}
+          {style.source === 'oppadu' ? <OriginalCredit href={OPPADU_SLIDE_URL} gallery="슬라이드 스타일" className="text-dark-fg/70" /> : null}
           <SlidePrompt id={style.id} prompt={prompts?.[style.id] ?? null} />
         </aside>
       </div>

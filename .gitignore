@@ -33,3 +33,4 @@ video/sting/.waveform-cache/
 .local-volume/
 web/e2e/.volume/
 web/src/generated/
+.media-broken/

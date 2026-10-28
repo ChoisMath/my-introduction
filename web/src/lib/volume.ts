@@ -11,7 +11,7 @@ export const BRAND_DIR = 'private/brand/';
 export const BRAND_MANIFEST_PATH = 'private/brand/manifest.json';
 
 const SERVABLE = [
-  /^media\/motion\/\d{2}-[a-z0-9-]+\/(video\.mp4|preview\.mp4|poster\.webp)$/,
+  /^media\/motion\/\d{2,3}-[a-z0-9-]+\/(video\.mp4|preview\.mp4|poster\.webp)$/,
   /^media\/slide\/\d{2,3}\/(?:[st]\/)?\d{1,2}\.webp$/,
 ];
 // 브랜드 룩북 사본(build 산출물) 중 페이지가 실제로 읽는 파일만. 회원 전용이라 /media 가 아니라 private/ 에 둔다.
